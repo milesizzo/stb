@@ -46,6 +46,7 @@
     <Compile Include="GameElement.cs" />
     <Compile Include="Physics.cs" />
     <Compile Include="Projectile.cs" />
+    <Compile Include="Scene.cs" />
     <Compile Include="SpriteStore.cs" />
     <Compile Include="StopTheBoats.cs" />
     <Compile Include="GameObject.cs" />

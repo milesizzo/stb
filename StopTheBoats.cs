@@ -45,6 +45,8 @@ namespace StopTheBoats
             //
         }
 
+        public int NumObjects { get { return this.objects.Count; } }
+
         public void AddObject(GameObject obj)
         {
             this.objects.Add(obj);
@@ -90,7 +92,9 @@ namespace StopTheBoats
     {
         private Camera2D camera;
         private float zoomAmount;
-        private float rotationAmount;
+        private float zoomTarget;
+        private float zoomSource;
+        //private float rotationAmount;
         private RenderStore render;
         private GameStore store = new GameStore();
         private Boat player;
@@ -99,6 +103,7 @@ namespace StopTheBoats
         private TemplateStore<BoatTemplate> boats;
         private TemplateStore<WeaponTemplate> weapons;
         private bool spacePressed;
+        private int lastScroll;
 
         public StopTheBoats()
         {
@@ -122,8 +127,9 @@ namespace StopTheBoats
         {
             // TODO: Add your initialization logic here
             this.camera = new Camera2D(this.GraphicsDevice);
-            this.camera.Rotation = MathHelper.ToRadians(1);
-            this.camera.Zoom = 6;
+            this.camera.Rotation = 0;
+            this.camera.Zoom = 1;
+            this.zoomTarget = this.zoomSource = this.camera.Zoom;
             base.Initialize();
         }
 
@@ -226,8 +232,8 @@ namespace StopTheBoats
                 }
                 if (keyboard.IsKeyDown(Keys.OemTilde))
                 {
-                    this.zoomAmount = 0;
-                    this.rotationAmount = 0;
+                    //this.zoomAmount = 0;
+                    //this.rotationAmount = 0;
                 }
                 if (keyboard.IsKeyDown(Keys.Space) && !this.spacePressed)
                 {
@@ -257,6 +263,14 @@ namespace StopTheBoats
                         }
                     }
                 }
+                if (mouse.ScrollWheelValue != this.lastScroll)
+                {
+                    var change = mouse.ScrollWheelValue - this.lastScroll;
+                    this.zoomSource = this.camera.Zoom;
+                    this.zoomTarget = Math.Max(1f, this.camera.Zoom + change / 200f);
+                    this.zoomAmount = 0;
+                    this.lastScroll = mouse.ScrollWheelValue;
+                }
                 this.mouse = this.camera.ScreenToWorld(mouse.X, mouse.Y);
 
                 foreach (var weapon in this.player.Weapons)
@@ -274,11 +288,20 @@ namespace StopTheBoats
             }
             this.camera.LookAt(this.player.Position);
 
-            this.camera.Zoom = MathHelper.SmoothStep(6, 1, this.zoomAmount);
-            this.camera.Rotation = MathHelper.SmoothStep(0, MathHelper.Pi * 2, this.rotationAmount);
+            this.camera.Zoom = MathHelper.SmoothStep(this.zoomSource, this.zoomTarget, this.zoomAmount);
+            this.zoomAmount = this.zoomAmount + gameTime.GetElapsedSeconds() * 4;
+            if (this.zoomAmount > 1f)
+            {
+                this.camera.Zoom = this.zoomTarget;
+                this.zoomSource = this.zoomTarget;
+                this.zoomAmount = 0;
+            }
 
-            this.zoomAmount = Math.Min(1.0f, this.zoomAmount + gameTime.GetElapsedSeconds() / 2);
-            this.rotationAmount = Math.Min(1.0f, this.rotationAmount + gameTime.GetElapsedSeconds() / 2);
+            //this.camera.Zoom = MathHelper.SmoothStep(6, 1, this.zoomAmount);
+            //this.camera.Rotation = MathHelper.SmoothStep(0, MathHelper.Pi * 2, this.rotationAmount);
+
+            //this.zoomAmount = Math.Min(1.0f, this.zoomAmount + gameTime.GetElapsedSeconds() / 2);
+            //this.rotationAmount = Math.Min(1.0f, this.rotationAmount + gameTime.GetElapsedSeconds() / 2);
 
             base.Update(gameTime);
         }
@@ -310,6 +333,9 @@ namespace StopTheBoats
             //this.sprites["patrol_boat"].Draw(this.spriteBatch, this.player.Position, this.player.Bearing);
             //this.sprites["gun_single_barrel"].Draw(this.spriteBatch, this.player.Weapon.Position, this.player.Weapon.Bearing);
             //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);
+            this.render.DrawString("envy", string.Format("#objects: {0}", this.store.NumObjects), this.camera.ScreenToWorld(10, 10), Color.White);
+            this.render.DrawString("envy", string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), this.camera.ScreenToWorld(10, 24), Color.White);
+            this.render.DrawString("envy", string.Format("zoom: {0}", this.camera.Zoom), this.camera.ScreenToWorld(10, 36), Color.White);
             this.render.DrawString("envy", string.Format("Speed: {0}", this.player.Velocity), this.player.Position - new Vector2(0, 100), Color.White);
             //this.spriteBatch.DrawPoint(this.mouse, Color.Yellow, size: 8);
             this.render.Render.DrawCircle(new CircleF(this.mouse, 8), 16, Color.IndianRed);
