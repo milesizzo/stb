@@ -91,19 +91,19 @@ namespace StopTheBoats
             this.Rotation += MathHelper.ToRadians(amountDegrees);
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameContext context, GameTime gameTime)
         {
             this.Velocity += this.acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            base.Update(gameTime);
+            base.Update(context, gameTime);
 
             this.acceleration = Vector2.Zero;
         }
 
-        public override void Draw(RenderStore render)
+        public override void Draw(GameContext context)
         {
-            base.Draw(render);
+            base.Draw(context);
             var origin = -this.SpriteTemplate.Origin + this.Position;
-            render.Render.DrawRectangle(origin + new Vector2(0, -64), new Vector2(this.SpriteTemplate.Texture.Width, 16), Color.Black);
+            context.Render.Render.DrawRectangle(origin + new Vector2(0, -64), new Vector2(this.SpriteTemplate.Texture.Width, 16), Color.Black);
             var colour = Color.LightGreen;
             if (this.health < this.BoatTemplate.MaxHealth / 3)
             {
@@ -114,27 +114,36 @@ namespace StopTheBoats
                 colour = Color.Yellow;
             }
             var width = (this.SpriteTemplate.Texture.Width - 2) * health / this.BoatTemplate.MaxHealth;
-            render.Render.FillRectangle(origin + new Vector2(1, -63), new Vector2(width, 14), colour);
-            render.DrawString("envy12", string.Format("velocity: {0}", this.Velocity), origin + new Vector2(0, -96), Color.White);
+            context.Render.Render.FillRectangle(origin + new Vector2(1, -63), new Vector2(width, 14), colour);
+            if (GameObject.DebugInfo)
+            {
+                context.Render.DrawString(context.Assets.Fonts["envy12"], string.Format("velocity: {0}", this.Velocity), origin + new Vector2(0, -96), Color.White);
+            }
         }
 
-        public override void OnCollision(List<CollisionResult<PolygonBounds>> collisions)
+        public override void OnCollision(IPhysicsObject<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
         {
-            base.OnCollision(collisions);
-            if (collisions == null) return;
-            foreach (var collision in collisions)
+            base.OnCollision(entity, collision);
+            var asProjectile = entity as Projectile;
+            if (asProjectile != null && asProjectile.Owner != this && collision.Intersecting)
             {
-                var asProjectile = collision.Entity as Projectile;
-                if (asProjectile != null && asProjectile.Owner != this && collision.Intersecting)
+                // we were hit
+                this.health = this.health - asProjectile.Damage;
+                if (this.health <= 0f)
                 {
-                    // we were hit
-                    this.health = this.health - asProjectile.Damage;
-                    if (this.health <= 0f)
+                    this.health = 0;
+                    this.AwaitingDeletion = true;
+
+                    var random = new Random();
+                    var assetName = random.Choice("explosion_sheet2", "explosion_sheet3");
+                    this.Context.AddObject(new GameElement(FrictionMedium.Air)
                     {
-                        this.health = 0;
-                        this.AwaitingDeletion = true;
-                        // queue explosion?
-                    }
+                        Position = this.Position,
+                        Velocity = this.Velocity,
+                        SpriteTemplate = this.Context.Assets.Sprites[assetName],
+                        Bounds = null,
+                        DeleteAfterAnimation = true,
+                    });
                 }
             }
         }

@@ -22,9 +22,9 @@ namespace StopTheBoats
             this.Medium = medium;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameContext context, GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.Update(context, gameTime);
 
             float frictionCoeff;
             switch (this.Medium)

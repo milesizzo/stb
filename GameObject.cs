@@ -13,11 +13,13 @@ namespace StopTheBoats
 {
     public abstract class GameObject : IMovable
     {
+        public static bool DebugInfo = true;
         private GameObject parent;
         private readonly List<GameObject> children = new List<GameObject>();
         private Transformation local;
         private Vector2 velocity = Vector2.Zero;
         protected bool AwaitingDeletion = false;
+        public GameContext Context;
 
         public bool IsAwaitingDeletion { get { return this.AwaitingDeletion; } }
 
@@ -61,7 +63,7 @@ namespace StopTheBoats
             this.local = new Transformation();
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(GameContext context, GameTime gameTime)
         {
             this.Position += this.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.children.RemoveAll(o => o.IsAwaitingDeletion);
@@ -114,6 +116,6 @@ namespace StopTheBoats
             }
         }
 
-        public abstract void Draw(RenderStore render);
+        public abstract void Draw(GameContext context);
     }
 }

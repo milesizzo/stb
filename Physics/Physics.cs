@@ -15,7 +15,7 @@ namespace StopTheBoats.Physics
 
         Transformation GetWorldTransform();
 
-        void OnCollision(List<CollisionResult<T>> collisions);
+        void OnCollision(IPhysicsObject<T> entity, CollisionResult<T> collision);
     }
 
     public interface IBounds
@@ -24,7 +24,6 @@ namespace StopTheBoats.Physics
 
     public class CollisionResult<T> where T : IBounds
     {
-        public IPhysicsObject<T> Entity;
         public bool WillIntersect;
         public bool Intersecting;
         public Vector2 MinimumTranslationVector;
@@ -33,11 +32,15 @@ namespace StopTheBoats.Physics
     public class PolygonBounds : IBounds
     {
         private readonly List<Vector2> points = new List<Vector2>();
+        private Vector2[] transformedPoints;
+        private Vector2[] edges;
         //private readonly List<Vector2> edges = new List<Vector2>();
 
         public PolygonBounds(IEnumerable<Vector2> points)
         {
             this.points.AddRange(points);
+            this.transformedPoints = new Vector2[this.points.Count];
+            this.edges = new Vector2[this.points.Count];
             //this.BuildEdges();
         }
 
@@ -45,24 +48,23 @@ namespace StopTheBoats.Physics
         {
         }
 
-        public static List<Vector2> BuildEdges(List<Vector2> points)
+        private Vector2[] BuildEdges()
         {
             Vector2 p1, p2;
-            var edges = new List<Vector2>();
-            for (var i = 0; i < points.Count; i++)
+            for (var i = 0; i < this.transformedPoints.Length; i++)
             {
-                p1 = points[i];
-                if (i + 1 >= points.Count)
+                p1 = transformedPoints[i];
+                if (i + 1 >= transformedPoints.Length)
                 {
-                    p2 = points[0];
+                    p2 = transformedPoints[0];
                 }
                 else
                 {
-                    p2 = points[i + 1];
+                    p2 = transformedPoints[i + 1];
                 }
-                edges.Add(p2 - p1);
+                this.edges[i] = p2 - p1;
             }
-            return edges;
+            return this.edges;
         }
 
         /*public IReadOnlyList<Vector2> Edges
@@ -89,10 +91,24 @@ namespace StopTheBoats.Physics
             }
         }
 
-        public List<Vector2> TransformPoints(Transformation transform)
+        /*public List<Vector2> TransformPoints(Transformation transform)
         {
             return this.points.Select(p => transform.TransformVector(p)).ToList();
+        }*/
+        public void TransformPoints(Transformation transform)
+        {
+            for (var i = 0; i < this.points.Count; i++)
+            {
+                this.transformedPoints[i] = transform.TransformVector(this.points[i]);
+            }
+            //points = this.transformedPoints;
+            this.BuildEdges();
+            //edges = this.edges;
         }
+
+        public Vector2[] TransformedPoints { get { return this.transformedPoints; } }
+
+        public Vector2[] TransformedEdges { get { return this.edges; } }
 
         /*public List<Vector2> TransformEdges(Transformation transform)
         {
@@ -125,25 +141,23 @@ namespace StopTheBoats.Physics
         {
             var worldA = target.GetWorldTransform();
             var worldB = candidate.GetWorldTransform();
-            //var polygonA = target.Bounds;
-            //var polygonB = candidate.Bounds;
-            var pointsA = target.Bounds.TransformPoints(worldA);
-            var pointsB = candidate.Bounds.TransformPoints(worldB);
-            //var edgesA = target.Bounds.TransformEdges(worldA);
-            //var edgesB = candidate.Bounds.TransformEdges(worldB);
-            var edgesA = PolygonBounds.BuildEdges(pointsA);
-            var edgesB = PolygonBounds.BuildEdges(pointsB);
+            /*Vector2[] pointsA, pointsB, edgesA, edgesB;
+            target.Bounds.TransformPoints(worldA, out pointsA, out edgesA);
+            candidate.Bounds.TransformPoints(worldB, out pointsB, out edgesB);*/
+            var pointsA = target.Bounds.TransformedPoints;
+            var edgesA = target.Bounds.TransformedEdges;
+            var pointsB = candidate.Bounds.TransformedPoints;
+            var edgesB = candidate.Bounds.TransformedEdges;
 
             var velocity = target.Velocity;
             var result = new CollisionResult<PolygonBounds>
             {
-                Entity = candidate,
                 Intersecting = true,
                 WillIntersect = true,
             };
 
-            var edgeCountA = edgesA.Count;
-            var edgeCountB = edgesB.Count;
+            var edgeCountA = edgesA.Length;
+            var edgeCountB = edgesB.Length;
             float minIntervalDistance = float.PositiveInfinity;
             var translationAxis = new Vector2();
             Vector2 edge;
@@ -238,12 +252,12 @@ namespace StopTheBoats.Physics
             return minA - maxB;
         }
 
-        private static void ProjectPolygon(Vector2 axis, List<Vector2> points, ref float min, ref float max)
+        private static void ProjectPolygon(Vector2 axis, Vector2[] points, ref float min, ref float max)
         {
             var d = Vector2.Dot(axis, points[0]);
             min = d;
             max = d;
-            for (var i = 0; i < points.Count; i++)
+            for (var i = 0; i < points.Length; i++)
             {
                 d = Vector2.Dot(points[i], axis);
                 if (d < min)
@@ -322,25 +336,50 @@ namespace StopTheBoats.Physics
 
         public void DetectCollisions()
         {
+            if (this.actors.Count < 2) return;
+
+            // this bit is dodgy! figure out a better way of doing it
+            foreach (var actor in this.actors)
+            {
+                if (actor.Bounds == null) continue;
+                (actor.Bounds as PolygonBounds).TransformPoints(actor.GetWorldTransform());
+            }
+
+            for (var i = 0; i < this.actors.Count - 1; i++)
+            {
+                var target = this.actors[i];
+                if (target.Bounds == null) continue; // no physics information
+                for (var j = i+1; j < this.actors.Count; j++)
+                {
+                    var candidate = this.actors[j];
+                    if (candidate.Bounds == null) continue; // no physics information
+                    var collision = this.detector.DetectCollision(target, candidate);
+                    if (collision != null)
+                    {
+                        target.OnCollision(candidate, collision);
+                        candidate.OnCollision(target, collision);
+                    }
+                }
+            }
+            /*
             foreach (var target in this.actors)
             {
                 if (target.Bounds == null) continue;
-                List<CollisionResult<T>> collisions = null;
                 foreach (var candidate in this.actors)
                 {
                     if (candidate.Bounds == null) continue;
                     if (candidate != target)
                     {
                         var collision = this.detector.DetectCollision(target, candidate);
-                        if (collision.Intersecting || collision.WillIntersect)
+                        if (collision != null)
                         {
-                            if (collisions == null) collisions = new List<CollisionResult<T>>();
-                            collisions.Add(collision);
+                            target.OnCollision(candidate, collision);
+                            candidate.OnCollision(target, collision);
                         }
                     }
                 }
-                target.OnCollision(collisions);
             }
+            */
         }
     }
 }

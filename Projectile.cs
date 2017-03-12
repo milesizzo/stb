@@ -36,9 +36,9 @@ namespace StopTheBoats
 
         public GameObject Owner { get { return this.owner; } }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameContext context, GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.Update(context, gameTime);
             var length = this.Velocity.LengthSquared();
             if (length < 1000)
             {
@@ -46,7 +46,7 @@ namespace StopTheBoats
             }
         }
 
-        public override void Draw(RenderStore render)
+        public override void Draw(GameContext context)
         {
             var length = this.Velocity.LengthSquared();
             Color colour = new Color(0.5f, 0.5f, 0.5f);
@@ -54,24 +54,29 @@ namespace StopTheBoats
             {
                 colour = new Color(0.5f, 0.5f, 0.5f, (length / (500 * 500)));
             }
-            render.Render.DrawCircle(this.Position, 5f, 12, colour, 1.5f);
-            var world = this.World;
-            var points = this.Bounds.Points.Select(p => world.TransformVector(p));
-            render.Render.DrawPolygon(Vector2.Zero, points.ToArray(), this.physicsColour);
+            context.Render.Render.DrawCircle(this.Position, 5f, 12, colour, 1.5f);
+            if (GameObject.DebugInfo)
+            {
+                var world = this.World;
+                var points = this.Bounds.Points.Select(p => world.TransformVector(p));
+                context.Render.Render.DrawPolygon(Vector2.Zero, points.ToArray(), this.physicsColour);
+            }
         }
 
-        public override void OnCollision(List<CollisionResult<PolygonBounds>> collisions)
+        public override void OnCollision(IPhysicsObject<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
         {
-            base.OnCollision(collisions);
-            if (collisions == null) return;
-            foreach (var collision in collisions)
+            base.OnCollision(entity, collision);
+            var asProjectile = entity as Projectile;
+            if (collision.Intersecting && entity != this.owner && (asProjectile == null || asProjectile.owner != this.owner))
             {
-                var asProjectile = collision.Entity as Projectile;
-                if (collision.Intersecting && collision.Entity != this.owner && (asProjectile == null || asProjectile.owner != this.owner))
-                {
-                    // hit?
-                    this.AwaitingDeletion = true;
-                }
+                // hit?
+                this.AwaitingDeletion = true;
+                this.Context.AddObject(new GameElement(FrictionMedium.Air) {
+                    Position = this.Position,
+                    SpriteTemplate = this.Context.Assets.Sprites["explosion_sheet1"],
+                    Bounds = null,
+                    DeleteAfterAnimation = true,
+                });
             }
         }
     }
