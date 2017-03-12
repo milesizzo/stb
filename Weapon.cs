@@ -12,6 +12,7 @@ namespace StopTheBoats
         public float ProjectileVelocity;
         public TimeSpan FireRate;
         public SpriteTemplate SpriteTemplate;
+        public float Damage;
     }
 
     public class Weapon : GameElement
@@ -34,9 +35,9 @@ namespace StopTheBoats
                 return null;
             }
             this.lastFire = gameTime.TotalGameTime;
-            var projectile = new Projectile();
-            var world = this.World;
             var velocity = this.WeaponTemplate.ProjectileVelocity;
+            var projectile = new Projectile(this.Parent, this.WeaponTemplate.Damage, velocity);
+            var world = this.World;
             projectile.Position = world.Position;
             projectile.Velocity = new Vector2((float)(velocity * Math.Cos(world.Rotation)), (float)(velocity * Math.Sin(world.Rotation)));
             //projectile.Rotation = world.Rotation;

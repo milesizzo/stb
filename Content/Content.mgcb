@@ -13,12 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Envy.spritefont
+#begin Envy12.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Envy.spritefont
+/build:Envy12.spritefont
 
 #begin gun_single_barrel.png
 /importer:TextureImporter
@@ -67,4 +67,11 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:rock1.png
+
+#begin Envy16.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Envy16.spritefont
 

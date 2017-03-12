@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using StopTheBoats.Physics;
 
 namespace StopTheBoats
 {
@@ -39,10 +40,11 @@ namespace StopTheBoats
     public class GameStore
     {
         private readonly List<GameObject> objects = new List<GameObject>();
+        private readonly Physics<PolygonBounds> physics;
 
         public GameStore()
         {
-            //
+            this.physics = new Physics<PolygonBounds>(new PolygonCollidor());
         }
 
         public int NumObjects { get { return this.objects.Count; } }
@@ -50,18 +52,38 @@ namespace StopTheBoats
         public void AddObject(GameObject obj)
         {
             this.objects.Add(obj);
+            var asPhysics = obj as IPhysicsObject<PolygonBounds>;
+            if (asPhysics != null)
+            {
+                this.physics.AddActor(asPhysics);
+            }
+        }
+
+        private void RemovePhysics(GameObject obj)
+        {
+            var asPhysics = obj as IPhysicsObject<PolygonBounds>;
+            if (asPhysics != null)
+            {
+                this.physics.RemoveActor(asPhysics);
+            }
         }
 
         public void RemoveObject(GameObject obj)
         {
             this.objects.Remove(obj);
+            this.RemovePhysics(obj);
         }
 
         public void Update(GameTime gameTime)
         {
+            this.physics.DetectCollisions();
             foreach (var obj in this.objects)
             {
                 obj.Update(gameTime);
+                if (obj.IsAwaitingDeletion)
+                {
+                    this.RemovePhysics(obj);
+                }
             }
             this.objects.RemoveAll(o => o.IsAwaitingDeletion);
         }
@@ -104,6 +126,8 @@ namespace StopTheBoats
         private TemplateStore<WeaponTemplate> weapons;
         private bool spacePressed;
         private int lastScroll;
+        private int frameCounter;
+        private double frameRate;
 
         public StopTheBoats()
         {
@@ -143,7 +167,8 @@ namespace StopTheBoats
             this.render.LoadContent();
 
             // TODO: use this.Content to load your game content here
-            this.render.Fonts.Add("envy", new FontTemplate(this.Content.Load<SpriteFont>("Envy")));
+            this.render.Fonts.Add("envy12", new FontTemplate(this.Content.Load<SpriteFont>("Envy12")));
+            this.render.Fonts.Add("envy16", new FontTemplate(this.Content.Load<SpriteFont>("Envy16")));
 
             var patrol_boat = this.render.Sprites.Load("patrol_boat");
             patrol_boat.Origin = new Vector2(19, 31);
@@ -155,7 +180,8 @@ namespace StopTheBoats
 
             var patrolBoat = new BoatTemplate {
                 Acceleration = 50.0f,
-                SpriteTemplate = patrol_boat
+                SpriteTemplate = patrol_boat,
+                MaxHealth = 1000f,
             };
             patrolBoat.WeaponLocations.Add(new Vector2(99, 0));
             patrolBoat.WeaponLocations.Add(new Vector2(20, 0));
@@ -164,7 +190,8 @@ namespace StopTheBoats
             var smallBoat = new BoatTemplate
             {
                 Acceleration = 75.0f,
-                SpriteTemplate = small_boat
+                SpriteTemplate = small_boat,
+                MaxHealth = 200f,
             };
             this.boats.Add("small", smallBoat);
 
@@ -173,6 +200,7 @@ namespace StopTheBoats
                 SpriteTemplate = gun_single_barrel,
                 ProjectileVelocity = 1000f,
                 FireRate = TimeSpan.FromSeconds(1),
+                Damage = 100f,
             });
 
             this.player = new Boat(this.boats["patrol"]);
@@ -303,6 +331,12 @@ namespace StopTheBoats
             //this.zoomAmount = Math.Min(1.0f, this.zoomAmount + gameTime.GetElapsedSeconds() / 2);
             //this.rotationAmount = Math.Min(1.0f, this.rotationAmount + gameTime.GetElapsedSeconds() / 2);
 
+            if (gameTime.GetElapsedSeconds() > 0)
+            {
+                this.frameRate = this.frameCounter / gameTime.GetElapsedSeconds();
+            }
+            this.frameCounter = 0;
+
             base.Update(gameTime);
         }
 
@@ -333,15 +367,17 @@ namespace StopTheBoats
             //this.sprites["patrol_boat"].Draw(this.spriteBatch, this.player.Position, this.player.Bearing);
             //this.sprites["gun_single_barrel"].Draw(this.spriteBatch, this.player.Weapon.Position, this.player.Weapon.Bearing);
             //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);
-            this.render.DrawString("envy", string.Format("#objects: {0}", this.store.NumObjects), this.camera.ScreenToWorld(10, 10), Color.White);
-            this.render.DrawString("envy", string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), this.camera.ScreenToWorld(10, 24), Color.White);
-            this.render.DrawString("envy", string.Format("zoom: {0}", this.camera.Zoom), this.camera.ScreenToWorld(10, 36), Color.White);
-            this.render.DrawString("envy", string.Format("Speed: {0}", this.player.Velocity), this.player.Position - new Vector2(0, 100), Color.White);
+            this.render.DrawString("envy12", string.Format("#objects: {0}", this.store.NumObjects), this.camera.ScreenToWorld(10, 10), Color.White);
+            this.render.DrawString("envy12", string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), this.camera.ScreenToWorld(10, 24), Color.White);
+            this.render.DrawString("envy12", string.Format("zoom: {0}", this.camera.Zoom), this.camera.ScreenToWorld(10, 36), Color.White);
+            this.render.DrawString("envy16", string.Format("FPS: {0:0.0}", this.frameRate), this.camera.ScreenToWorld(1024, 10), Color.White);
             //this.spriteBatch.DrawPoint(this.mouse, Color.Yellow, size: 8);
             this.render.Render.DrawCircle(new CircleF(this.mouse, 8), 16, Color.IndianRed);
             this.render.Render.End();
 
             base.Draw(gameTime);
+
+            this.frameCounter++;
         }
     }
 }

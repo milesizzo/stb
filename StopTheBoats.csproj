@@ -44,7 +44,7 @@
     <Compile Include="Boat.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="GameElement.cs" />
-    <Compile Include="Physics.cs" />
+    <Compile Include="Physics\Physics.cs" />
     <Compile Include="Projectile.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="SpriteStore.cs" />
@@ -76,6 +76,7 @@
     <None Include="app.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

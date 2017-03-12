@@ -7,10 +7,11 @@ using System.Linq;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Shapes;
+using StopTheBoats.Physics;
 
 namespace StopTheBoats
 {
-    public abstract class GameObject : IMovable, ICollidable, IActorTarget
+    public abstract class GameObject : IMovable
     {
         private GameObject parent;
         private readonly List<GameObject> children = new List<GameObject>();
@@ -20,15 +21,13 @@ namespace StopTheBoats
 
         public bool IsAwaitingDeletion { get { return this.AwaitingDeletion; } }
 
-        public abstract RectangleF BoundingBox { get; }
-
-        public Vector2 Position
+        public virtual Vector2 Position
         {
             get { return this.local.Position; }
             set { this.local.Position = value; }
         }
 
-        public float Rotation
+        public virtual float Rotation
         {
             get { return this.local.Rotation; }
             set { this.local.Rotation = value; }
@@ -44,15 +43,12 @@ namespace StopTheBoats
             }
         }
 
+        protected GameObject Parent { get { return this.parent; } }
+
         public Vector2 Velocity
         {
             get { return this.velocity; }
             set { this.velocity = value; }
-        }
-
-        public void OnCollision(CollisionInfo collisionInfo)
-        {
-            //
         }
 
         public IList<GameObject> Children
@@ -104,6 +100,11 @@ namespace StopTheBoats
             scale = new Vector2(scale3.X, scale3.Y);
         }
         */
+
+        public Transformation Local
+        {
+            get { return this.local; }
+        }
 
         public Transformation World
         {
