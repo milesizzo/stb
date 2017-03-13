@@ -6,18 +6,24 @@ namespace StopTheBoats.Graphics
 {
     public class Renderer
     {
-        public SpriteBatch Render;
+        private SpriteBatch render;
         public readonly GraphicsDeviceManager Graphics;
 
         public Renderer(Game game)
         {
             this.Graphics = new GraphicsDeviceManager(game);
+
+            // TODO: figure out how to make this configurable
+            this.Graphics.PreferredBackBufferWidth = 2560;
+            this.Graphics.PreferredBackBufferHeight = 1440;
+            //this.Graphics.IsFullScreen = true;
+            this.Graphics.ApplyChanges();
+
+            // NOTE! we can only create the SpriteBatch after the changes have been applied!
+            this.render = new SpriteBatch(this.Graphics.GraphicsDevice);
         }
 
-        public void LoadContent()
-        {
-            this.Render = new SpriteBatch(this.Graphics.GraphicsDevice);
-        }
+        public SpriteBatch Render { get { return this.render; } }
 
         public void DrawString(FontTemplate font, string text, Vector2 position, Color colour)
         {

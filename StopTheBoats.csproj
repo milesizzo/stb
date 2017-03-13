@@ -45,12 +45,14 @@
     <Compile Include="GameObjects\Boat.cs" />
     <Compile Include="GameObjects\GameContext.cs" />
     <Compile Include="GameObjects\GameElement.cs" />
+    <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\Renderer.cs" />
     <Compile Include="Physics\Physics.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="Physics\PolygonBounds.cs" />
     <Compile Include="Physics\PolygonDetector.cs" />
-    <Compile Include="Scene.cs" />
+    <Compile Include="Scenes\GameScene.cs" />
+    <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Content\SpriteStore.cs" />
     <Compile Include="StopTheBoats.cs" />
     <Compile Include="GameObjects\GameObject.cs" />

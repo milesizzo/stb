@@ -83,6 +83,12 @@ namespace StopTheBoats.Physics
             this.detector = detector;
         }
 
+        public void Reset()
+        {
+            // clear everything and start again
+            this.actors.Clear();
+        }
+
         public void AddActor(IPhysicsObject<T> actor)
         {
             this.actors.Add(actor);

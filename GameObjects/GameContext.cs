@@ -1,4 +1,6 @@
-﻿using StopTheBoats.Content;
+﻿using Microsoft.Xna.Framework;
+using StopTheBoats.Content;
+using StopTheBoats.Graphics;
 
 namespace StopTheBoats.GameObjects
 {
@@ -10,6 +12,12 @@ namespace StopTheBoats.GameObjects
 
         void RemoveObject(GameObject obj);
 
+        void Reset();
+
         AssetStore Assets { get; }
+
+        void Update(GameTime gameTime);
+
+        void Draw(Renderer renderer);
     }
 }

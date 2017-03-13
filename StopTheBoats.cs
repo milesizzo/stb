@@ -14,6 +14,7 @@ using StopTheBoats.GameObjects;
 using StopTheBoats.Common;
 using StopTheBoats.Graphics;
 using StopTheBoats.Content;
+using StopTheBoats.Scenes;
 
 namespace StopTheBoats
 {
@@ -34,6 +35,17 @@ namespace StopTheBoats
         {
             this.physics = new Physics<PolygonBounds>(new PolygonDetector());
             this.assets = assets;
+        }
+
+        public void Reset()
+        {
+            this.physics.Reset();
+            foreach (var obj in this.objects)
+            {
+                obj.Context = null;
+            }
+            this.objects.Clear();
+            this.scheduled.Clear();
         }
 
         public AssetStore Assets { get { return this.assets; } }
@@ -114,40 +126,264 @@ namespace StopTheBoats
         }
     }
 
+    public class StopTheBoatsScene : GameScene<GameContext>
+    {
+        private float zoomAmount;
+        private float zoomTarget;
+        private float zoomSource;
+        private Boat player;
+        private readonly TemplateStore<BoatTemplate> boats;
+        private readonly TemplateStore<WeaponTemplate> weapons;
+        private readonly List<Boat> enemies = new List<Boat>();
+        private bool spacePressed = false;
+        private int lastScroll = 0;
+        private Vector2 mouse;
+
+        public StopTheBoatsScene(GraphicsDevice graphics, AssetStore assets) : base(graphics, new GameContext(assets))
+        {
+            this.Camera.Rotation = 0;
+            this.Camera.Zoom = 1;
+            this.zoomTarget = this.zoomSource = this.Camera.Zoom;
+
+            this.boats = new TemplateStore<BoatTemplate>();
+            this.weapons = new TemplateStore<WeaponTemplate>();
+        }
+
+        public override void SetUp(AssetStore assets)
+        {
+            base.SetUp(assets);
+
+            // load sprite templates
+            var patrol_boat = assets.Sprites.GetOrAdd("patrol_boat", (key) =>
+            {
+                var obj = assets.Sprites.Load(key);
+                obj.Origin = new Vector2(19, 31);
+                return obj;
+            });
+            var small_boat = assets.Sprites.GetOrAdd("small_boat", (key) =>
+            {
+                var obj = assets.Sprites.Load(key);
+                obj.Origin = new Vector2(19, 27);
+                return obj;
+            });
+            var gun_single_barrel = assets.Sprites.GetOrAdd("gun_single_barrel", (key) =>
+            {
+                var obj = assets.Sprites.Load(key);
+                obj.Origin = new Vector2(11, 11);
+                return obj;
+            });
+            var rock1 = assets.Sprites.GetOrAdd("rock1", (key) =>
+            {
+                return assets.Sprites.Load(key);
+            });
+            var explosion1 = assets.Sprites.GetOrAdd("explosion_sheet1", (key) =>
+            {
+                var obj = assets.Sprites.Load(64, 64, key);
+                obj.FPS = 30;
+                return obj;
+            });
+            var explosion2 = assets.Sprites.GetOrAdd("explosion_sheet2", (key) =>
+            {
+                var obj = assets.Sprites.Load(100, 100, key);
+                obj.FPS = 60;
+                return obj;
+            });
+            var explosion3 = assets.Sprites.GetOrAdd("explosion_sheet3", (key) =>
+            {
+                var obj = assets.Sprites.Load(100, 100, key);
+                obj.FPS = 50;
+                return obj;
+            });
+
+            // load boat templates
+            var patrolBoat = this.boats.GetOrAdd("patrol", (key) =>
+            {
+                var boat = new BoatTemplate
+                {
+                    Acceleration = 50.0f,
+                    SpriteTemplate = patrol_boat,
+                    MaxHealth = 1000f,
+                };
+                boat.WeaponLocations.Add(new Vector2(99, 0));
+                boat.WeaponLocations.Add(new Vector2(20, 0));
+                return boat;
+            });
+            var smallBoat = this.boats.GetOrAdd("small", (key) =>
+            {
+                return new BoatTemplate
+                {
+                    Acceleration = 75.0f,
+                    SpriteTemplate = small_boat,
+                    MaxHealth = 200f,
+                };
+            });
+
+            // load weapon templates
+            this.weapons.GetOrAdd("single_barrel_gun", (key) =>
+            {
+                return new WeaponTemplate
+                {
+                    SpriteTemplate = gun_single_barrel,
+                    ProjectileVelocity = 1000f,
+                    FireRate = TimeSpan.FromSeconds(1),
+                    Damage = 100f,
+                };
+            });
+
+            // set up and add player
+            this.player = new Boat(this.boats["patrol"]);
+            this.player.Position = Vector2.Zero;
+            this.player.AddWeapon(this.weapons["single_barrel_gun"]);
+            this.player.AddWeapon(this.weapons["single_barrel_gun"]);
+            this.Context.AddObject(this.player);
+
+            // set up and add a random rock
+            var random = new Random();
+            this.Context.AddObject(new GameElement(FrictionMedium.None)
+            {
+                Position = new Vector2(200, 200),
+                SpriteTemplate = this.Context.Assets.Sprites["rock1"],
+                Rotation = MathHelper.ToRadians(random.Next(0, 360)),
+            });
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            var mouse = Mouse.GetState();
+            var keyboard = Keyboard.GetState();
+
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Escape))
+            {
+                this.SceneEnded = true;
+            }
+            if (keyboard.IsKeyDown(Keys.W))
+            {
+                this.player.Accelerate(1f);
+            }
+            if (keyboard.IsKeyDown(Keys.S))
+            {
+                this.player.Accelerate(-1f);
+            }
+            if (keyboard.IsKeyDown(Keys.A))
+            {
+                this.player.Turn(-20 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+            if (keyboard.IsKeyDown(Keys.D))
+            {
+                this.player.Turn(20 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+            if (keyboard.IsKeyDown(Keys.Space) && !this.spacePressed)
+            {
+                var random = new Random();
+                var enemy = new Boat(this.boats["small"]);
+                var topLeft = this.Camera.ScreenToWorld(0, -100);
+                var topRight = this.Camera.ScreenToWorld(this.Camera.Viewport.Width, -100);
+                enemy.Position = Vector2.Lerp(topLeft, topRight, (float)random.NextDouble());
+                //enemy.Position = new Vector2((float)random.NextDouble() * 2560, -100);
+                enemy.Rotation = MathHelper.ToRadians(90 + random.Next(-30, 30));
+                this.enemies.Add(enemy);
+                this.Context.AddObject(enemy);
+                this.spacePressed = true;
+            }
+            if (!keyboard.IsKeyDown(Keys.Space))
+            {
+                this.spacePressed = false;
+            }
+            if (mouse.LeftButton == ButtonState.Pressed)
+            {
+                foreach (var weapon in this.player.Weapons)
+                {
+                    var projectile = weapon.Fire(gameTime);
+                    if (projectile != null)
+                    {
+                        this.Context.AddObject(projectile);
+                    }
+                }
+            }
+            if (mouse.ScrollWheelValue != this.lastScroll)
+            {
+                var change = mouse.ScrollWheelValue - this.lastScroll;
+                this.zoomSource = this.Camera.Zoom;
+                this.zoomTarget = Math.Max(1f, this.Camera.Zoom + change / 200f);
+                this.zoomAmount = 0;
+                this.lastScroll = mouse.ScrollWheelValue;
+            }
+            this.mouse = this.Camera.ScreenToWorld(mouse.X, mouse.Y);
+
+            foreach (var weapon in this.player.Weapons)
+            {
+                var world = weapon.World;
+                weapon.WorldRotation = (float)Math.Atan2(this.mouse.Y - world.Position.Y, this.mouse.X - world.Position.X);
+            }
+
+            base.Update(gameTime);
+
+            foreach (var enemy in this.enemies)
+            {
+                enemy.Accelerate(1f);
+            }
+            this.Camera.LookAt(this.player.Position);
+
+            this.Camera.Zoom = MathHelper.SmoothStep(this.zoomSource, this.zoomTarget, this.zoomAmount);
+            this.zoomAmount = this.zoomAmount + gameTime.GetElapsedSeconds() * 4;
+            if (this.zoomAmount > 1f)
+            {
+                this.Camera.Zoom = this.zoomTarget;
+                this.zoomSource = this.zoomTarget;
+                this.zoomAmount = 0;
+            }
+        }
+
+        public override void Draw(Renderer renderer)
+        {
+            this.Camera.Clear(Color.DarkSlateBlue);
+
+            base.Draw(renderer);
+
+            foreach (var weapon in this.player.Weapons)
+            {
+                var lastPos = weapon.World.Position;
+                var colour = Color.Black;
+                for (var i = 0; i < 4; i++)
+                {
+                    var pos = lastPos.AtBearing(weapon.World.Rotation, 128);
+                    renderer.Render.DrawLine(lastPos, pos, colour);
+                    colour.A -= 256 / 4;
+                    lastPos = pos;
+                }
+            }
+            //this.sprites["patrol_boat"].Draw(this.spriteBatch, this.player.Position, this.player.Bearing);
+            //this.sprites["gun_single_barrel"].Draw(this.spriteBatch, this.player.Weapon.Position, this.player.Weapon.Bearing);
+            //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);
+            var envy12 = this.Context.Assets.Fonts["envy12"];
+            var envy16 = this.Context.Assets.Fonts["envy16"];
+            renderer.DrawString(envy12, string.Format("#objects: {0}", this.Context.NumObjects), this.Camera.ScreenToWorld(10, 10), Color.White);
+            renderer.DrawString(envy12, string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), this.Camera.ScreenToWorld(10, 24), Color.White);
+            renderer.DrawString(envy12, string.Format("zoom: {0}", this.Camera.Zoom), this.Camera.ScreenToWorld(10, 36), Color.White);
+
+            renderer.Render.DrawCircle(new CircleF(this.mouse, 8), 16, Color.IndianRed);
+        }
+    }
+
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
     public class StopTheBoats : Game
     {
-        private Camera2D camera;
-        private float zoomAmount;
-        private float zoomTarget;
-        private float zoomSource;
-        //private float rotationAmount;
-        private GameContext store;
+        private IScene currentScene;
+        private TemplateStore<IScene> scenes;
+        private AssetStore assets;
         private Renderer renderer;
-        private Boat player;
-        private readonly List<Boat> enemies = new List<Boat>();
-        private Vector2 mouse;
-        private TemplateStore<BoatTemplate> boats;
-        private TemplateStore<WeaponTemplate> weapons;
-        private bool spacePressed;
-        private int lastScroll;
         private int frameCounter;
         private double frameRate;
 
         public StopTheBoats()
         {
             this.Content.RootDirectory = "Content";
-            this.store = new GameContext(new AssetStore(this.Content));
             this.renderer = new Renderer(this);
-            this.renderer.Graphics.PreferredBackBufferWidth = 2560;
-            this.renderer.Graphics.PreferredBackBufferHeight = 1440;
-            //this.renderer.Graphics.IsFullScreen = true;
-            this.renderer.Graphics.ApplyChanges();
 
-            this.boats = new TemplateStore<BoatTemplate>();
-            this.weapons = new TemplateStore<WeaponTemplate>();
+            this.assets = new AssetStore(this.Content);
+            this.scenes = new TemplateStore<IScene>();
         }
 
         /// <summary>
@@ -159,10 +395,6 @@ namespace StopTheBoats
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            this.camera = new Camera2D(this.GraphicsDevice);
-            this.camera.Rotation = 0;
-            this.camera.Zoom = 1;
-            this.zoomTarget = this.zoomSource = this.camera.Zoom;
             base.Initialize();
         }
 
@@ -173,65 +405,15 @@ namespace StopTheBoats
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            this.renderer.LoadContent();
+            //this.renderer.LoadContent();
 
             // TODO: use this.Content to load your game content here
-            this.store.Assets.Fonts.Add("envy12", new FontTemplate(this.Content.Load<SpriteFont>("Envy12")));
-            this.store.Assets.Fonts.Add("envy16", new FontTemplate(this.Content.Load<SpriteFont>("Envy16")));
+            this.assets.Fonts.Add("envy12", new FontTemplate(this.Content.Load<SpriteFont>("Envy12")));
+            this.assets.Fonts.Add("envy16", new FontTemplate(this.Content.Load<SpriteFont>("Envy16")));
 
-            var patrol_boat = this.store.Assets.Sprites.Load("patrol_boat");
-            patrol_boat.Origin = new Vector2(19, 31);
-            var small_boat = this.store.Assets.Sprites.Load("small_boat");
-            small_boat.Origin = new Vector2(19, 27);
-            var gun_single_barrel = this.store.Assets.Sprites.Load("gun_single_barrel");
-            gun_single_barrel.Origin = new Vector2(11, 11);
-            var rock1 = this.store.Assets.Sprites.Load("rock1");
-            var explosion1 = this.store.Assets.Sprites.Load(64, 64, "explosion_sheet1");
-            explosion1.FPS = 30;
-            var explosion2 = this.store.Assets.Sprites.Load(100, 100, "explosion_sheet2");
-            explosion2.FPS = 60;
-            var explosion3 = this.store.Assets.Sprites.Load(100, 100, "explosion_sheet3");
-            explosion3.FPS = 50;
-
-            var patrolBoat = new BoatTemplate {
-                Acceleration = 50.0f,
-                SpriteTemplate = patrol_boat,
-                MaxHealth = 1000f,
-            };
-            patrolBoat.WeaponLocations.Add(new Vector2(99, 0));
-            patrolBoat.WeaponLocations.Add(new Vector2(20, 0));
-            this.boats.Add("patrol", patrolBoat);
-
-            var smallBoat = new BoatTemplate
-            {
-                Acceleration = 75.0f,
-                SpriteTemplate = small_boat,
-                MaxHealth = 200f,
-            };
-            this.boats.Add("small", smallBoat);
-
-            this.weapons.Add("single_barrel_gun", new WeaponTemplate
-            {
-                SpriteTemplate = gun_single_barrel,
-                ProjectileVelocity = 1000f,
-                FireRate = TimeSpan.FromSeconds(1),
-                Damage = 100f,
-            });
-
-            this.player = new Boat(this.boats["patrol"]);
-            this.player.Position = Vector2.Zero;
-            this.player.AddWeapon(this.weapons["single_barrel_gun"]);
-            this.player.AddWeapon(this.weapons["single_barrel_gun"]);
-
-            this.store.AddObject(this.player);
-
-            var random = new Random();
-            this.store.AddObject(new GameElement(FrictionMedium.None)
-            {
-                Position = new Vector2(200, 200),
-                SpriteTemplate = this.store.Assets.Sprites["rock1"],
-                Rotation = MathHelper.ToRadians(random.Next(0, 360)),
-            });
+            var scene = new StopTheBoatsScene(this.GraphicsDevice, this.assets);
+            this.scenes.Add("game", scene);
+            //scene.SetUp(this.assets);
         }
 
         /// <summary>
@@ -250,101 +432,28 @@ namespace StopTheBoats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (this.IsActive)
+            if (Keyboard.GetState().IsKeyDown(Keys.Delete))
             {
-                var mouse = Mouse.GetState();
-                var keyboard = Keyboard.GetState();
-
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Escape))
-                    Exit();
-                if (keyboard.IsKeyDown(Keys.W))
-                {
-                    this.player.Accelerate(1f);
-                }
-                if (keyboard.IsKeyDown(Keys.S))
-                {
-                    this.player.Accelerate(-1f);
-                }
-                if (keyboard.IsKeyDown(Keys.A))
-                {
-                    this.player.Turn(-20 * (float)gameTime.ElapsedGameTime.TotalSeconds);
-                }
-                if (keyboard.IsKeyDown(Keys.D))
-                {
-                    this.player.Turn(20 * (float)gameTime.ElapsedGameTime.TotalSeconds);
-                }
-                if (keyboard.IsKeyDown(Keys.OemTilde))
-                {
-                    //this.zoomAmount = 0;
-                    //this.rotationAmount = 0;
-                }
-                if (keyboard.IsKeyDown(Keys.Space) && !this.spacePressed)
-                {
-                    var random = new Random();
-                    var enemy = new Boat(this.boats["small"]);
-                    var topLeft = this.camera.ScreenToWorld(0, -100);
-                    var topRight = this.camera.ScreenToWorld(this.GraphicsDevice.Viewport.Width, -100);
-                    enemy.Position = Vector2.Lerp(topLeft, topRight, (float)random.NextDouble());
-                    //enemy.Position = new Vector2((float)random.NextDouble() * 2560, -100);
-                    enemy.Rotation = MathHelper.ToRadians(90 + random.Next(-30, 30));
-                    this.enemies.Add(enemy);
-                    this.store.AddObject(enemy);
-                    this.spacePressed = true;
-                }
-                if (!keyboard.IsKeyDown(Keys.Space))
-                {
-                    this.spacePressed = false;
-                }
-                if (mouse.LeftButton == ButtonState.Pressed)
-                {
-                    foreach (var weapon in this.player.Weapons)
-                    {
-                        var projectile = weapon.Fire(gameTime);
-                        if (projectile != null)
-                        {
-                            this.store.AddObject(projectile);
-                        }
-                    }
-                }
-                if (mouse.ScrollWheelValue != this.lastScroll)
-                {
-                    var change = mouse.ScrollWheelValue - this.lastScroll;
-                    this.zoomSource = this.camera.Zoom;
-                    this.zoomTarget = Math.Max(1f, this.camera.Zoom + change / 200f);
-                    this.zoomAmount = 0;
-                    this.lastScroll = mouse.ScrollWheelValue;
-                }
-                this.mouse = this.camera.ScreenToWorld(mouse.X, mouse.Y);
-
-                foreach (var weapon in this.player.Weapons)
-                {
-                    var world = weapon.World;
-                    weapon.WorldRotation = (float)Math.Atan2(this.mouse.Y - world.Position.Y, this.mouse.X - world.Position.X);
-                }
+                this.currentScene = null;
+            }
+            else if (this.currentScene == null)
+            {
+                this.currentScene = this.scenes["game"];
+                this.currentScene.SetUp(this.assets);
             }
 
-            // TODO: Add your update logic here
-            this.store.Update(gameTime);
-            foreach (var enemy in this.enemies)
+            if (this.currentScene != null)
             {
-                enemy.Accelerate(1f);
+                if (this.IsActive)
+                {
+                    this.currentScene.Update(gameTime);
+                }
+
+                if (this.currentScene.SceneEnded)
+                {
+                    this.Exit();
+                }
             }
-            this.camera.LookAt(this.player.Position);
-
-            this.camera.Zoom = MathHelper.SmoothStep(this.zoomSource, this.zoomTarget, this.zoomAmount);
-            this.zoomAmount = this.zoomAmount + gameTime.GetElapsedSeconds() * 4;
-            if (this.zoomAmount > 1f)
-            {
-                this.camera.Zoom = this.zoomTarget;
-                this.zoomSource = this.zoomTarget;
-                this.zoomAmount = 0;
-            }
-
-            //this.camera.Zoom = MathHelper.SmoothStep(6, 1, this.zoomAmount);
-            //this.camera.Rotation = MathHelper.SmoothStep(0, MathHelper.Pi * 2, this.rotationAmount);
-
-            //this.zoomAmount = Math.Min(1.0f, this.zoomAmount + gameTime.GetElapsedSeconds() / 2);
-            //this.rotationAmount = Math.Min(1.0f, this.rotationAmount + gameTime.GetElapsedSeconds() / 2);
 
             if (gameTime.GetElapsedSeconds() > 0)
             {
@@ -361,36 +470,21 @@ namespace StopTheBoats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkSlateBlue);
-
-            // TODO: Add your drawing code here
-            this.renderer.Render.Begin(blendState: BlendState.NonPremultiplied, transformMatrix: this.camera.GetViewMatrix());
-            this.store.Draw(this.renderer);
-
-            foreach (var weapon in this.player.Weapons)
+            if (this.currentScene != null)
             {
-                var lastPos = weapon.World.Position;
-                var colour = Color.Black;
-                for (var i = 0; i < 4; i++)
+                this.renderer.Render.Begin(blendState: BlendState.NonPremultiplied, transformMatrix: this.currentScene.Camera.GetViewMatrix());
+                try
                 {
-                    var pos = lastPos.AtBearing(weapon.World.Rotation, 128);
-                    this.renderer.Render.DrawLine(lastPos, pos, colour);
-                    colour.A -= 256 / 4;
-                    lastPos = pos;
+                    this.currentScene.Draw(this.renderer);
+
+                    var envy16 = this.assets.Fonts["envy16"];
+                    this.renderer.DrawString(envy16, string.Format("FPS: {0:0.0}", this.frameRate), this.currentScene.Camera.ScreenToWorld(1024, 10), Color.White);
+                }
+                finally
+                {
+                    this.renderer.Render.End();
                 }
             }
-            //this.sprites["patrol_boat"].Draw(this.spriteBatch, this.player.Position, this.player.Bearing);
-            //this.sprites["gun_single_barrel"].Draw(this.spriteBatch, this.player.Weapon.Position, this.player.Weapon.Bearing);
-            //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);
-            var envy12 = this.store.Assets.Fonts["envy12"];
-            var envy16 = this.store.Assets.Fonts["envy16"];
-            this.renderer.DrawString(envy12, string.Format("#objects: {0}", this.store.NumObjects), this.camera.ScreenToWorld(10, 10), Color.White);
-            this.renderer.DrawString(envy12, string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), this.camera.ScreenToWorld(10, 24), Color.White);
-            this.renderer.DrawString(envy12, string.Format("zoom: {0}", this.camera.Zoom), this.camera.ScreenToWorld(10, 36), Color.White);
-            this.renderer.DrawString(envy16, string.Format("FPS: {0:0.0}", this.frameRate), this.camera.ScreenToWorld(1024, 10), Color.White);
-            this.renderer.Render.DrawCircle(new CircleF(this.mouse, 8), 16, Color.IndianRed);
-            this.renderer.Render.End();
-
             base.Draw(gameTime);
 
             this.frameCounter++;

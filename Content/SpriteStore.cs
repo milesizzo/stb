@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Linq;
 using StopTheBoats.Templates;
 
@@ -18,14 +19,12 @@ namespace StopTheBoats.Content
         {
             var texture = this.content.Load<Texture2D>(assetName);
             var obj = new SingleSpriteTemplate(texture);
-            this.Add(assetName, obj);
             return obj;
         }
 
         public AnimatedSpriteTemplate Load(string name, params string[] assetNames)
         {
             var obj = new AnimatedSpriteTemplate(assetNames.Select(a => this.content.Load<Texture2D>(a)));
-            this.Add(name, obj);
             return obj;
         }
 
@@ -33,7 +32,6 @@ namespace StopTheBoats.Content
         {
             var texture = this.content.Load<Texture2D>(assetName);
             var obj = new AnimatedSpriteSheetTemplate(texture, width, height);
-            this.Add(assetName, obj);
             return obj;
         }
     }
