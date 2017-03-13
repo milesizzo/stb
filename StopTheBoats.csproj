@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Content\AssetStore.cs" />
+    <Compile Include="GameContext.cs" />
     <Compile Include="GameObjects\Boat.cs" />
     <Compile Include="GameObjects\GameAssetStore.cs" />
     <Compile Include="GameObjects\GameContext.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="Physics\PolygonBounds.cs" />
     <Compile Include="Physics\PolygonDetector.cs" />
+    <Compile Include="PolygonBoundsEditor.cs" />
     <Compile Include="Scenes\GameScene.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Content\SpriteStore.cs" />
@@ -61,6 +63,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameObjects\Sprite.cs" />
     <Compile Include="Common\SystemExtensions.cs" />
+    <Compile Include="StopTheBoatsHelper.cs" />
+    <Compile Include="StopTheBoatsScene.cs" />
     <Compile Include="Templates\GameObjectTemplate.cs" />
     <Compile Include="Templates\TemplateStore.cs" />
     <Compile Include="Templates\BoatTemplate.cs" />
