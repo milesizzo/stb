@@ -2,7 +2,7 @@
 
 namespace StopTheBoats.Templates
 {
-    public class WeaponTemplate : ITemplate
+    public class WeaponTemplate : IGameObjectTemplate
     {
         public float ProjectileVelocity;
         public TimeSpan FireRate;

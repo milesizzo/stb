@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StopTheBoats.Templates
 {
-    public class BoatTemplate : ITemplate
+    public class BoatTemplate : IGameObjectTemplate
     {
         public int Crew;
         public int Passengers;

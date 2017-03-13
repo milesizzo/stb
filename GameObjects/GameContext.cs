@@ -14,7 +14,7 @@ namespace StopTheBoats.GameObjects
 
         void Reset();
 
-        AssetStore Assets { get; }
+        GameAssetStore Assets { get; }
 
         void Update(GameTime gameTime);
 

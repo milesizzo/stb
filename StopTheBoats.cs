@@ -28,10 +28,10 @@ namespace StopTheBoats
 
         private readonly List<GameObject> objects = new List<GameObject>();
         private readonly Physics<PolygonBounds> physics;
-        private readonly AssetStore assets;
+        private readonly GameAssetStore assets;
         private readonly List<ScheduledObject> scheduled = new List<ScheduledObject>();
 
-        public GameContext(AssetStore assets)
+        public GameContext(GameAssetStore assets)
         {
             this.physics = new Physics<PolygonBounds>(new PolygonDetector());
             this.assets = assets;
@@ -48,7 +48,7 @@ namespace StopTheBoats
             this.scheduled.Clear();
         }
 
-        public AssetStore Assets { get { return this.assets; } }
+        public GameAssetStore Assets { get { return this.assets; } }
 
         public int NumObjects { get { return this.objects.Count; } }
 
@@ -126,77 +126,62 @@ namespace StopTheBoats
         }
     }
 
-    public class StopTheBoatsScene : GameScene<GameContext>
+    public class GameObjectsScene : GameScene<GameContext>
     {
-        private float zoomAmount;
-        private float zoomTarget;
-        private float zoomSource;
-        private Boat player;
-        private readonly TemplateStore<BoatTemplate> boats;
-        private readonly TemplateStore<WeaponTemplate> weapons;
-        private readonly List<Boat> enemies = new List<Boat>();
-        private bool spacePressed = false;
-        private int lastScroll = 0;
-        private Vector2 mouse;
-
-        public StopTheBoatsScene(GraphicsDevice graphics, AssetStore assets) : base(graphics, new GameContext(assets))
+        public GameObjectsScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, new GameContext(assets))
         {
             this.Camera.Rotation = 0;
             this.Camera.Zoom = 1;
-            this.zoomTarget = this.zoomSource = this.Camera.Zoom;
-
-            this.boats = new TemplateStore<BoatTemplate>();
-            this.weapons = new TemplateStore<WeaponTemplate>();
         }
 
-        public override void SetUp(AssetStore assets)
+        public override void SetUp()
         {
-            base.SetUp(assets);
+            base.SetUp();
 
             // load sprite templates
-            var patrol_boat = assets.Sprites.GetOrAdd("patrol_boat", (key) =>
+            var patrol_boat = this.Assets.Sprites.GetOrAdd("patrol_boat", (key) =>
             {
-                var obj = assets.Sprites.Load(key);
+                var obj = this.Assets.Sprites.Load(key);
                 obj.Origin = new Vector2(19, 31);
                 return obj;
             });
-            var small_boat = assets.Sprites.GetOrAdd("small_boat", (key) =>
+            var small_boat = this.Assets.Sprites.GetOrAdd("small_boat", (key) =>
             {
-                var obj = assets.Sprites.Load(key);
+                var obj = this.Assets.Sprites.Load(key);
                 obj.Origin = new Vector2(19, 27);
                 return obj;
             });
-            var gun_single_barrel = assets.Sprites.GetOrAdd("gun_single_barrel", (key) =>
+            var gun_single_barrel = this.Assets.Sprites.GetOrAdd("gun_single_barrel", (key) =>
             {
-                var obj = assets.Sprites.Load(key);
+                var obj = this.Assets.Sprites.Load(key);
                 obj.Origin = new Vector2(11, 11);
                 return obj;
             });
-            var rock1 = assets.Sprites.GetOrAdd("rock1", (key) =>
+            var rock1 = this.Assets.Sprites.GetOrAdd("rock1", (key) =>
             {
-                return assets.Sprites.Load(key);
+                return this.Assets.Sprites.Load(key);
             });
-            var explosion1 = assets.Sprites.GetOrAdd("explosion_sheet1", (key) =>
+            var explosion1 = this.Assets.Sprites.GetOrAdd("explosion_sheet1", (key) =>
             {
-                var obj = assets.Sprites.Load(64, 64, key);
+                var obj = this.Assets.Sprites.Load(64, 64, key);
                 obj.FPS = 30;
                 return obj;
             });
-            var explosion2 = assets.Sprites.GetOrAdd("explosion_sheet2", (key) =>
+            var explosion2 = this.Assets.Sprites.GetOrAdd("explosion_sheet2", (key) =>
             {
-                var obj = assets.Sprites.Load(100, 100, key);
+                var obj = this.Assets.Sprites.Load(100, 100, key);
                 obj.FPS = 60;
                 return obj;
             });
-            var explosion3 = assets.Sprites.GetOrAdd("explosion_sheet3", (key) =>
+            var explosion3 = this.Assets.Sprites.GetOrAdd("explosion_sheet3", (key) =>
             {
-                var obj = assets.Sprites.Load(100, 100, key);
+                var obj = this.Assets.Sprites.Load(100, 100, key);
                 obj.FPS = 50;
                 return obj;
             });
 
             // load boat templates
-            var patrolBoat = this.boats.GetOrAdd("patrol", (key) =>
+            var patrolBoat = this.Assets.Objects.GetOrAdd("boat.patrol", (key) =>
             {
                 var boat = new BoatTemplate
                 {
@@ -208,7 +193,7 @@ namespace StopTheBoats
                 boat.WeaponLocations.Add(new Vector2(20, 0));
                 return boat;
             });
-            var smallBoat = this.boats.GetOrAdd("small", (key) =>
+            var smallBoat = this.Assets.Objects.GetOrAdd("boat.small", (key) =>
             {
                 return new BoatTemplate
                 {
@@ -219,7 +204,7 @@ namespace StopTheBoats
             });
 
             // load weapon templates
-            this.weapons.GetOrAdd("single_barrel_gun", (key) =>
+            this.Assets.Objects.GetOrAdd("gun.single_barrel", (key) =>
             {
                 return new WeaponTemplate
                 {
@@ -229,12 +214,34 @@ namespace StopTheBoats
                     Damage = 100f,
                 };
             });
+        }
+    }
+
+    public class StopTheBoatsScene : GameObjectsScene
+    {
+        private float zoomAmount;
+        private float zoomTarget;
+        private float zoomSource;
+        private Boat player;
+        private readonly List<Boat> enemies = new List<Boat>();
+        private bool spacePressed = false;
+        private int lastScroll = 0;
+        private Vector2 mouse;
+
+        public StopTheBoatsScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, assets)
+        {
+            this.zoomTarget = this.zoomSource = this.Camera.Zoom;
+        }
+
+        public override void SetUp()
+        {
+            base.SetUp();
 
             // set up and add player
-            this.player = new Boat(this.boats["patrol"]);
+            this.player = new Boat(this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
             this.player.Position = Vector2.Zero;
-            this.player.AddWeapon(this.weapons["single_barrel_gun"]);
-            this.player.AddWeapon(this.weapons["single_barrel_gun"]);
+            this.player.AddWeapon(this.Assets.Objects.Get<WeaponTemplate>("gun.single_barrel"));
+            this.player.AddWeapon(this.Assets.Objects.Get<WeaponTemplate>("gun.single_barrel"));
             this.Context.AddObject(this.player);
 
             // set up and add a random rock
@@ -275,7 +282,7 @@ namespace StopTheBoats
             if (keyboard.IsKeyDown(Keys.Space) && !this.spacePressed)
             {
                 var random = new Random();
-                var enemy = new Boat(this.boats["small"]);
+                var enemy = new Boat(this.Assets.Objects.Get<BoatTemplate>("boat.small"));
                 var topLeft = this.Camera.ScreenToWorld(0, -100);
                 var topRight = this.Camera.ScreenToWorld(this.Camera.Viewport.Width, -100);
                 enemy.Position = Vector2.Lerp(topLeft, topRight, (float)random.NextDouble());
@@ -411,7 +418,7 @@ namespace StopTheBoats
             this.assets.Fonts.Add("envy12", new FontTemplate(this.Content.Load<SpriteFont>("Envy12")));
             this.assets.Fonts.Add("envy16", new FontTemplate(this.Content.Load<SpriteFont>("Envy16")));
 
-            var scene = new StopTheBoatsScene(this.GraphicsDevice, this.assets);
+            var scene = new StopTheBoatsScene(this.GraphicsDevice, new GameAssetStore(this.assets));
             this.scenes.Add("game", scene);
             //scene.SetUp(this.assets);
         }
@@ -439,7 +446,7 @@ namespace StopTheBoats
             else if (this.currentScene == null)
             {
                 this.currentScene = this.scenes["game"];
-                this.currentScene.SetUp(this.assets);
+                this.currentScene.SetUp();
             }
 
             if (this.currentScene != null)

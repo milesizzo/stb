@@ -1,23 +1,27 @@
 ﻿using Microsoft.Xna.Framework;
 using StopTheBoats.GameObjects;
 using StopTheBoats.Graphics;
-using StopTheBoats.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace StopTheBoats.Scenes
 {
-    public class GameScene<T> : IScene where T : IGameContext
+    // any scene that requires game assets
+    public abstract class GameAssetScene : IScene
     {
-        protected readonly T Context;
+        private readonly GameAssetStore assets;
         private readonly Camera camera;
         private bool sceneEnded;
 
-        public GameScene(GraphicsDevice graphics, T context)
+        public GameAssetScene(GraphicsDevice graphics, GameAssetStore assets)
         {
-            this.Context = context;
+            this.assets = assets;
             this.camera = new Camera(graphics);
             this.sceneEnded = false;
         }
+
+        public Camera Camera { get { return this.camera; } }
+
+        protected GameAssetStore Assets { get { return this.assets; } }
 
         public bool SceneEnded
         {
@@ -25,19 +29,34 @@ namespace StopTheBoats.Scenes
             protected set { this.sceneEnded = value; }
         }
 
-        public Camera Camera { get { return this.camera; } }
+        public abstract void SetUp();
 
-        public virtual void SetUp(AssetStore assets)
+        public abstract void Update(GameTime gameTime);
+
+        public abstract void Draw(Renderer renderer);
+    }
+
+    // a game asset scene that also includes a game context
+    public abstract class GameScene<T> : GameAssetScene where T : IGameContext
+    {
+        protected readonly T Context;
+
+        public GameScene(GraphicsDevice graphics, T context) : base(graphics, context.Assets)
+        {
+            this.Context = context;
+        }
+
+        public override void SetUp()
         {
             this.Context.Reset();
         }
 
-        public virtual void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             this.Context.Update(gameTime);
         }
 
-        public virtual void Draw(Renderer renderer)
+        public override void Draw(Renderer renderer)
         {
             this.Context.Draw(renderer);
         }

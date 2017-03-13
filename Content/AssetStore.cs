@@ -13,5 +13,11 @@ namespace StopTheBoats.Content
             this.Sprites = new SpriteStore(content);
             this.Fonts = new TemplateStore<FontTemplate>();
         }
+
+        public AssetStore(SpriteStore sprites, TemplateStore<FontTemplate> fonts)
+        {
+            this.Sprites = sprites;
+            this.Fonts = fonts;
+        }
     }
 }

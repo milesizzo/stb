@@ -11,7 +11,7 @@ namespace StopTheBoats.Scenes
 
         bool SceneEnded { get; }
 
-        void SetUp(AssetStore assets);
+        void SetUp();
 
         void Update(GameTime gameTime);
 

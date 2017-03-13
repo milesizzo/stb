@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StopTheBoats.Templates
 {
-    public class TemplateStore<T> where T : class, ITemplate
+    public class TemplateStore<T> : ITemplate where T : class, ITemplate
     {
         protected Dictionary<string, T> store = new Dictionary<string, T>();
 
@@ -48,6 +48,17 @@ namespace StopTheBoats.Templates
                 }
                 return template;
             }
+        }
+
+        public TSubClass Get<TSubClass>(string key) where TSubClass : class, T
+        {
+            var obj = this[key];
+            var typed = obj as TSubClass;
+            if (typed == null)
+            {
+                throw new InvalidOperationException(string.Format("Invalid type; expected {0} but got {1}", typeof(TSubClass).Name, obj.GetType().Name));
+            }
+            return typed;
         }
 
         public bool TryGet(string key, out T obj)
