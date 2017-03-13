@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace StopTheBoats
+namespace StopTheBoats.Templates
 {
-    public class Template { }
-
-    public class TemplateStore<T> where T : Template
+    public class TemplateStore<T> where T : ITemplate
     {
         protected Dictionary<string, T> store = new Dictionary<string, T>();
 

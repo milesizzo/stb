@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
+using StopTheBoats.Templates;
 
 namespace StopTheBoats
 {
-    public class SpriteStore : TemplateStore<BaseSpriteTemplate>
+    public class SpriteStore : TemplateStore<SpriteTemplate>
     {
         private ContentManager content;
 
@@ -13,10 +14,10 @@ namespace StopTheBoats
             this.content = content;
         }
 
-        public SpriteTemplate Load(string assetName)
+        public SingleSpriteTemplate Load(string assetName)
         {
             var texture = this.content.Load<Texture2D>(assetName);
-            var obj = new SpriteTemplate(texture);
+            var obj = new SingleSpriteTemplate(texture);
             this.Add(assetName, obj);
             return obj;
         }

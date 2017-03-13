@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace StopTheBoats
+namespace StopTheBoats.Common
 {
     public class Transformation
     {

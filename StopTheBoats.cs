@@ -9,6 +9,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StopTheBoats.Physics;
+using StopTheBoats.Templates;
+using StopTheBoats.GameObjects;
+using StopTheBoats.Common;
 
 namespace StopTheBoats
 {
@@ -61,7 +64,7 @@ namespace StopTheBoats
 
         public GameContext(AssetStore assets, RenderStore render)
         {
-            this.physics = new Physics<PolygonBounds>(new PolygonCollidor());
+            this.physics = new Physics<PolygonBounds>(new PolygonDetector());
             this.Assets = assets;
             this.Render = render;
         }
@@ -139,16 +142,6 @@ namespace StopTheBoats
             {
                 obj.Draw(this);
             }
-        }
-    }
-
-    public class FontTemplate : Template
-    {
-        public SpriteFont Font;
-
-        public FontTemplate(SpriteFont font)
-        {
-            this.Font = font;
         }
     }
 
@@ -409,7 +402,7 @@ namespace StopTheBoats
                 var colour = Color.Black;
                 for (var i = 0; i < 4; i++)
                 {
-                    var pos = Common.AtBearing(lastPos, weapon.World.Rotation, 128);
+                    var pos = lastPos.AtBearing(weapon.World.Rotation, 128);
                     this.store.Render.Render.DrawLine(lastPos, pos, colour);
                     colour.A -= 256 / 4;
                     lastPos = pos;

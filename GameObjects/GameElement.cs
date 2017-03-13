@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 
-namespace StopTheBoats
+namespace StopTheBoats.GameObjects
 {
     public enum FrictionMedium
     {

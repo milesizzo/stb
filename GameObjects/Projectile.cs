@@ -6,7 +6,7 @@ using StopTheBoats.Physics;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StopTheBoats
+namespace StopTheBoats.GameObjects
 {
     public class Projectile : GameElement, IPhysicsObject<PolygonBounds>
     {

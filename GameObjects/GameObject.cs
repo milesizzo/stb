@@ -1,15 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.Linq;
 using MonoGame.Extended;
-using MonoGame.Extended.Collisions;
-using MonoGame.Extended.Shapes;
-using StopTheBoats.Physics;
+using StopTheBoats.Common;
 
-namespace StopTheBoats
+namespace StopTheBoats.GameObjects
 {
     public abstract class GameObject : IMovable
     {

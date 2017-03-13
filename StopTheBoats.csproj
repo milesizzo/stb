@@ -41,22 +41,28 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Boat.cs" />
-    <Compile Include="Common.cs" />
-    <Compile Include="GameElement.cs" />
+    <Compile Include="GameObjects\Boat.cs" />
+    <Compile Include="GameObjects\GameElement.cs" />
     <Compile Include="Physics\Physics.cs" />
-    <Compile Include="Projectile.cs" />
+    <Compile Include="GameObjects\Projectile.cs" />
+    <Compile Include="Physics\PolygonBounds.cs" />
+    <Compile Include="Physics\PolygonDetector.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="SpriteStore.cs" />
     <Compile Include="StopTheBoats.cs" />
-    <Compile Include="GameObject.cs" />
+    <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sprite.cs" />
-    <Compile Include="SystemExtensions.cs" />
-    <Compile Include="TemplateStore.cs" />
-    <Compile Include="Transformation.cs" />
-    <Compile Include="Weapon.cs" />
+    <Compile Include="GameObjects\Sprite.cs" />
+    <Compile Include="Common\SystemExtensions.cs" />
+    <Compile Include="Templates\TemplateStore.cs" />
+    <Compile Include="Templates\BoatTemplate.cs" />
+    <Compile Include="Templates\FontTemplate.cs" />
+    <Compile Include="Templates\SpriteTemplate.cs" />
+    <Compile Include="Templates\Template.cs" />
+    <Compile Include="Templates\WeaponTemplate.cs" />
+    <Compile Include="Common\Transformation.cs" />
+    <Compile Include="GameObjects\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Extended, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

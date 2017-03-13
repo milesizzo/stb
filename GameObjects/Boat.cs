@@ -1,25 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using StopTheBoats.Physics;
 using MonoGame.Extended.Shapes;
+using StopTheBoats.Physics;
+using StopTheBoats.Templates;
+using StopTheBoats.Common;
 
-namespace StopTheBoats
+namespace StopTheBoats.GameObjects
 {
-    public class BoatTemplate : Template
-    {
-        public int Crew;
-        public int Passengers;
-        public float Acceleration;
-        public float MaxHealth;
-        public SpriteTemplate SpriteTemplate;
-
-        public List<Vector2> WeaponLocations = new List<Vector2>();
-    }
-
     public class Boat : GameElement
     {
         public readonly BoatTemplate BoatTemplate;

@@ -1,20 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using StopTheBoats.Templates;
 
-namespace StopTheBoats
+namespace StopTheBoats.GameObjects
 {
-    public class WeaponTemplate : Template
-    {
-        public float ProjectileVelocity;
-        public TimeSpan FireRate;
-        public SpriteTemplate SpriteTemplate;
-        public float Damage;
-    }
-
     public class Weapon : GameElement
     {
         public readonly WeaponTemplate WeaponTemplate;
