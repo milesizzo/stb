@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StopTheBoats.Physics;
 using System.Collections.Generic;
 using System.Linq;
+using StopTheBoats.Physics;
+using StopTheBoats.Graphics;
 
 namespace StopTheBoats.Templates
 {
@@ -40,12 +41,12 @@ namespace StopTheBoats.Templates
             }
         }
 
-        public virtual void DrawSprite(RenderStore render, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
+        public virtual void DrawSprite(Renderer render, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
             render.Render.Draw(this.Texture, position, null, colour, rotation, this.Origin, scale, effects, 0f);
         }
 
-        public abstract void DrawSprite(RenderStore render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects);
+        public abstract void DrawSprite(Renderer render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects);
     }
 
     public class AnimatedSpriteTemplate : SpriteTemplate
@@ -86,7 +87,7 @@ namespace StopTheBoats.Templates
             this.textures.Add(texture);
         }
 
-        public override void DrawSprite(RenderStore render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
+        public override void DrawSprite(Renderer render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
             render.Render.Draw(this.textures[frame], position, null, colour, rotation, this.Origin, scale, effects, 0f);
         }
@@ -130,7 +131,7 @@ namespace StopTheBoats.Templates
             }
         }
 
-        public override void DrawSprite(RenderStore render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
+        public override void DrawSprite(Renderer render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
             var x = (frame % this.gridWidth) * this.width;
             var y = (frame / this.gridWidth) * this.height;
@@ -163,7 +164,7 @@ namespace StopTheBoats.Templates
             }
         }
 
-        public override void DrawSprite(RenderStore render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
+        public override void DrawSprite(Renderer render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
             this.DrawSprite(render, position, colour, rotation, scale, effects);
         }

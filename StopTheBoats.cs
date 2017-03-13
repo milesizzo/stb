@@ -12,43 +12,12 @@ using StopTheBoats.Physics;
 using StopTheBoats.Templates;
 using StopTheBoats.GameObjects;
 using StopTheBoats.Common;
+using StopTheBoats.Graphics;
+using StopTheBoats.Content;
 
 namespace StopTheBoats
 {
-    public class AssetStore
-    {
-        public readonly TemplateStore<FontTemplate> Fonts;
-        public readonly SpriteStore Sprites;
-
-        public AssetStore(ContentManager content)
-        {
-            this.Sprites = new SpriteStore(content);
-            this.Fonts = new TemplateStore<FontTemplate>();
-        }
-    }
-
-    public class RenderStore
-    {
-        public SpriteBatch Render;
-        public readonly GraphicsDeviceManager Graphics;
-
-        public RenderStore(Game game)
-        {
-            this.Graphics = new GraphicsDeviceManager(game);
-        }
-
-        public void LoadContent()
-        {
-            this.Render = new SpriteBatch(this.Graphics.GraphicsDevice);
-        }
-
-        public void DrawString(FontTemplate font, string text, Vector2 position, Color colour)
-        {
-            this.Render.DrawString(font.Font, text, position, colour);
-        }
-    }
-
-    public class GameContext
+    public class GameContext : IGameContext
     {
         private class ScheduledObject
         {
@@ -58,16 +27,16 @@ namespace StopTheBoats
 
         private readonly List<GameObject> objects = new List<GameObject>();
         private readonly Physics<PolygonBounds> physics;
-        public readonly AssetStore Assets;
-        public readonly RenderStore Render;
+        private readonly AssetStore assets;
         private readonly List<ScheduledObject> scheduled = new List<ScheduledObject>();
 
-        public GameContext(AssetStore assets, RenderStore render)
+        public GameContext(AssetStore assets)
         {
             this.physics = new Physics<PolygonBounds>(new PolygonDetector());
-            this.Assets = assets;
-            this.Render = render;
+            this.assets = assets;
         }
+
+        public AssetStore Assets { get { return this.assets; } }
 
         public int NumObjects { get { return this.objects.Count; } }
 
@@ -127,7 +96,7 @@ namespace StopTheBoats
             }
             foreach (var obj in this.objects)
             {
-                obj.Update(this, gameTime);
+                obj.Update(gameTime);
                 if (obj.IsAwaitingDeletion)
                 {
                     this.RemovePhysics(obj);
@@ -136,11 +105,11 @@ namespace StopTheBoats
             this.objects.RemoveAll(o => o.IsAwaitingDeletion);
         }
 
-        public void Draw()
+        public void Draw(Renderer renderer)
         {
             foreach (var obj in this.objects)
             {
-                obj.Draw(this);
+                obj.Draw(renderer);
             }
         }
     }
@@ -156,6 +125,7 @@ namespace StopTheBoats
         private float zoomSource;
         //private float rotationAmount;
         private GameContext store;
+        private Renderer renderer;
         private Boat player;
         private readonly List<Boat> enemies = new List<Boat>();
         private Vector2 mouse;
@@ -169,11 +139,12 @@ namespace StopTheBoats
         public StopTheBoats()
         {
             this.Content.RootDirectory = "Content";
-            this.store = new GameContext(new AssetStore(this.Content), new RenderStore(this));
-            this.store.Render.Graphics.PreferredBackBufferWidth = 2560;
-            this.store.Render.Graphics.PreferredBackBufferHeight = 1440;
-            //this.store.Render.Graphics.IsFullScreen = true;
-            this.store.Render.Graphics.ApplyChanges();
+            this.store = new GameContext(new AssetStore(this.Content));
+            this.renderer = new Renderer(this);
+            this.renderer.Graphics.PreferredBackBufferWidth = 2560;
+            this.renderer.Graphics.PreferredBackBufferHeight = 1440;
+            //this.renderer.Graphics.IsFullScreen = true;
+            this.renderer.Graphics.ApplyChanges();
 
             this.boats = new TemplateStore<BoatTemplate>();
             this.weapons = new TemplateStore<WeaponTemplate>();
@@ -202,7 +173,7 @@ namespace StopTheBoats
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            this.store.Render.LoadContent();
+            this.renderer.LoadContent();
 
             // TODO: use this.Content to load your game content here
             this.store.Assets.Fonts.Add("envy12", new FontTemplate(this.Content.Load<SpriteFont>("Envy12")));
@@ -393,8 +364,8 @@ namespace StopTheBoats
             GraphicsDevice.Clear(Color.DarkSlateBlue);
 
             // TODO: Add your drawing code here
-            this.store.Render.Render.Begin(blendState: BlendState.NonPremultiplied, transformMatrix: this.camera.GetViewMatrix());
-            this.store.Draw();
+            this.renderer.Render.Begin(blendState: BlendState.NonPremultiplied, transformMatrix: this.camera.GetViewMatrix());
+            this.store.Draw(this.renderer);
 
             foreach (var weapon in this.player.Weapons)
             {
@@ -403,7 +374,7 @@ namespace StopTheBoats
                 for (var i = 0; i < 4; i++)
                 {
                     var pos = lastPos.AtBearing(weapon.World.Rotation, 128);
-                    this.store.Render.Render.DrawLine(lastPos, pos, colour);
+                    this.renderer.Render.DrawLine(lastPos, pos, colour);
                     colour.A -= 256 / 4;
                     lastPos = pos;
                 }
@@ -413,13 +384,12 @@ namespace StopTheBoats
             //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);
             var envy12 = this.store.Assets.Fonts["envy12"];
             var envy16 = this.store.Assets.Fonts["envy16"];
-            this.store.Render.DrawString(envy12, string.Format("#objects: {0}", this.store.NumObjects), this.camera.ScreenToWorld(10, 10), Color.White);
-            this.store.Render.DrawString(envy12, string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), this.camera.ScreenToWorld(10, 24), Color.White);
-            this.store.Render.DrawString(envy12, string.Format("zoom: {0}", this.camera.Zoom), this.camera.ScreenToWorld(10, 36), Color.White);
-            this.store.Render.DrawString(envy16, string.Format("FPS: {0:0.0}", this.frameRate), this.camera.ScreenToWorld(1024, 10), Color.White);
-            //this.spriteBatch.DrawPoint(this.mouse, Color.Yellow, size: 8);
-            this.store.Render.Render.DrawCircle(new CircleF(this.mouse, 8), 16, Color.IndianRed);
-            this.store.Render.Render.End();
+            this.renderer.DrawString(envy12, string.Format("#objects: {0}", this.store.NumObjects), this.camera.ScreenToWorld(10, 10), Color.White);
+            this.renderer.DrawString(envy12, string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), this.camera.ScreenToWorld(10, 24), Color.White);
+            this.renderer.DrawString(envy12, string.Format("zoom: {0}", this.camera.Zoom), this.camera.ScreenToWorld(10, 36), Color.White);
+            this.renderer.DrawString(envy16, string.Format("FPS: {0:0.0}", this.frameRate), this.camera.ScreenToWorld(1024, 10), Color.White);
+            this.renderer.Render.DrawCircle(new CircleF(this.mouse, 8), 16, Color.IndianRed);
+            this.renderer.Render.End();
 
             base.Draw(gameTime);
 

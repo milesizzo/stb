@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using MonoGame.Extended;
 using StopTheBoats.Common;
+using StopTheBoats.Graphics;
 
 namespace StopTheBoats.GameObjects
 {
@@ -14,7 +15,7 @@ namespace StopTheBoats.GameObjects
         private Transformation local;
         private Vector2 velocity = Vector2.Zero;
         protected bool AwaitingDeletion = false;
-        public GameContext Context;
+        public IGameContext Context;
 
         public bool IsAwaitingDeletion { get { return this.AwaitingDeletion; } }
 
@@ -58,7 +59,7 @@ namespace StopTheBoats.GameObjects
             this.local = new Transformation();
         }
 
-        public virtual void Update(GameContext context, GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             this.Position += this.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.children.RemoveAll(o => o.IsAwaitingDeletion);
@@ -111,6 +112,6 @@ namespace StopTheBoats.GameObjects
             }
         }
 
-        public abstract void Draw(GameContext context);
+        public abstract void Draw(Renderer renderer);
     }
 }

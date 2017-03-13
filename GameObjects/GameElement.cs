@@ -21,9 +21,9 @@ namespace StopTheBoats.GameObjects
             this.Medium = medium;
         }
 
-        public override void Update(GameContext context, GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            base.Update(context, gameTime);
+            base.Update(gameTime);
 
             float frictionCoeff;
             switch (this.Medium)

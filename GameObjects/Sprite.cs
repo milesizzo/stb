@@ -6,6 +6,7 @@ using StopTheBoats.Physics;
 using System.Linq;
 using StopTheBoats.Templates;
 using StopTheBoats.Common;
+using StopTheBoats.Graphics;
 
 namespace StopTheBoats.GameObjects
 {
@@ -21,30 +22,30 @@ namespace StopTheBoats.GameObjects
         {
         }
 
-        public void DrawSprite(RenderStore render, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
+        public void DrawSprite(Renderer render, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
             this.SpriteTemplate.DrawSprite(render, (int)Math.Floor(this.animFrame), position, colour, rotation, scale, effects);
         }
 
-        public override void Draw(GameContext context)
+        public override void Draw(Renderer renderer)
         {
             var world = this.World;
-            this.DrawSprite(context.Render, world.Position, Color.White, world.Rotation, world.Scale, SpriteEffects.None);
+            this.DrawSprite(renderer, world.Position, Color.White, world.Rotation, world.Scale, SpriteEffects.None);
             if (GameObject.DebugInfo && this.Bounds != null)
             {
                 var points = this.Bounds.Points.Select(p => world.TransformVector(p));
-                context.Render.Render.DrawPolygon(Vector2.Zero, points.ToArray(), this.physicsColour);
+                renderer.Render.DrawPolygon(Vector2.Zero, points.ToArray(), this.physicsColour);
             }
             foreach (var child in this.Children)
             {
-                child.Draw(context);
+                child.Draw(renderer);
             }
             this.physicsColour = Color.White;
         }
 
-        public override void Update(GameContext context, GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            base.Update(context, gameTime);
+            base.Update(gameTime);
             if (this.SpriteTemplate != null && this.SpriteTemplate.NumberOfFrames > 1)
             {
                 this.animFrame += (float)gameTime.ElapsedGameTime.TotalSeconds * this.SpriteTemplate.FPS;

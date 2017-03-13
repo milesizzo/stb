@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using StopTheBoats.Templates;
 
-namespace StopTheBoats
+namespace StopTheBoats.Content
 {
     public class SpriteStore : TemplateStore<SpriteTemplate>
     {

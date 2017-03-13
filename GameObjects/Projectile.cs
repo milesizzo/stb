@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Shapes;
+﻿using MonoGame.Extended.Shapes;
 using Microsoft.Xna.Framework;
-using StopTheBoats.Physics;
-using System.Collections.Generic;
 using System.Linq;
+using StopTheBoats.Physics;
+using StopTheBoats.Graphics;
 
 namespace StopTheBoats.GameObjects
 {
@@ -36,9 +34,9 @@ namespace StopTheBoats.GameObjects
 
         public GameObject Owner { get { return this.owner; } }
 
-        public override void Update(GameContext context, GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            base.Update(context, gameTime);
+            base.Update(gameTime);
             var length = this.Velocity.LengthSquared();
             if (length < 1000)
             {
@@ -46,7 +44,7 @@ namespace StopTheBoats.GameObjects
             }
         }
 
-        public override void Draw(GameContext context)
+        public override void Draw(Renderer renderer)
         {
             var length = this.Velocity.LengthSquared();
             Color colour = new Color(0.5f, 0.5f, 0.5f);
@@ -54,12 +52,12 @@ namespace StopTheBoats.GameObjects
             {
                 colour = new Color(0.5f, 0.5f, 0.5f, (length / (500 * 500)));
             }
-            context.Render.Render.DrawCircle(this.Position, 5f, 12, colour, 1.5f);
+            renderer.Render.DrawCircle(this.Position, 5f, 12, colour, 1.5f);
             if (GameObject.DebugInfo)
             {
                 var world = this.World;
                 var points = this.Bounds.Points.Select(p => world.TransformVector(p));
-                context.Render.Render.DrawPolygon(Vector2.Zero, points.ToArray(), this.physicsColour);
+                renderer.Render.DrawPolygon(Vector2.Zero, points.ToArray(), this.physicsColour);
             }
         }
 
@@ -71,7 +69,8 @@ namespace StopTheBoats.GameObjects
             {
                 // hit?
                 this.AwaitingDeletion = true;
-                this.Context.AddObject(new GameElement(FrictionMedium.Air) {
+                this.Context.AddObject(new GameElement(FrictionMedium.Air)
+                {
                     Position = this.Position,
                     SpriteTemplate = this.Context.Assets.Sprites["explosion_sheet1"],
                     Bounds = null,

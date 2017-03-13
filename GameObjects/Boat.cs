@@ -6,6 +6,7 @@ using MonoGame.Extended.Shapes;
 using StopTheBoats.Physics;
 using StopTheBoats.Templates;
 using StopTheBoats.Common;
+using StopTheBoats.Graphics;
 
 namespace StopTheBoats.GameObjects
 {
@@ -80,19 +81,19 @@ namespace StopTheBoats.GameObjects
             this.Rotation += MathHelper.ToRadians(amountDegrees);
         }
 
-        public override void Update(GameContext context, GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             this.Velocity += this.acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            base.Update(context, gameTime);
+            base.Update(gameTime);
 
             this.acceleration = Vector2.Zero;
         }
 
-        public override void Draw(GameContext context)
+        public override void Draw(Renderer renderer)
         {
-            base.Draw(context);
+            base.Draw(renderer);
             var origin = -this.SpriteTemplate.Origin + this.Position;
-            context.Render.Render.DrawRectangle(origin + new Vector2(0, -64), new Vector2(this.SpriteTemplate.Texture.Width, 16), Color.Black);
+            renderer.Render.DrawRectangle(origin + new Vector2(0, -64), new Vector2(this.SpriteTemplate.Texture.Width, 16), Color.Black);
             var colour = Color.LightGreen;
             if (this.health < this.BoatTemplate.MaxHealth / 3)
             {
@@ -103,10 +104,10 @@ namespace StopTheBoats.GameObjects
                 colour = Color.Yellow;
             }
             var width = (this.SpriteTemplate.Texture.Width - 2) * health / this.BoatTemplate.MaxHealth;
-            context.Render.Render.FillRectangle(origin + new Vector2(1, -63), new Vector2(width, 14), colour);
+            renderer.Render.FillRectangle(origin + new Vector2(1, -63), new Vector2(width, 14), colour);
             if (GameObject.DebugInfo)
             {
-                context.Render.DrawString(context.Assets.Fonts["envy12"], string.Format("velocity: {0}", this.Velocity), origin + new Vector2(0, -96), Color.White);
+                renderer.DrawString(this.Context.Assets.Fonts["envy12"], string.Format("velocity: {0}", this.Velocity), origin + new Vector2(0, -96), Color.White);
             }
         }
 
