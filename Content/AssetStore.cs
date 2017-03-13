@@ -5,16 +5,16 @@ namespace StopTheBoats.Content
 {
     public class AssetStore
     {
-        public readonly TemplateStore<FontTemplate> Fonts;
+        public readonly FontStore Fonts;
         public readonly SpriteStore Sprites;
 
         public AssetStore(ContentManager content)
         {
             this.Sprites = new SpriteStore(content);
-            this.Fonts = new TemplateStore<FontTemplate>();
+            this.Fonts = new FontStore(content);
         }
 
-        public AssetStore(SpriteStore sprites, TemplateStore<FontTemplate> fonts)
+        public AssetStore(SpriteStore sprites, FontStore fonts)
         {
             this.Sprites = sprites;
             this.Fonts = fonts;

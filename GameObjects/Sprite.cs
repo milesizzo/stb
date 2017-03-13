@@ -89,7 +89,13 @@ namespace StopTheBoats.GameObjects
 
         public virtual void OnCollision(IPhysicsObject<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
         {
-            if (collision.Intersecting)
+            if (collision.WillIntersect && !collision.Intersecting)
+            {
+                this.physicsColour = Color.Yellow;
+                //this.Position -= collision.MinimumTranslationVector;
+                //this.Velocity = -this.Velocity;
+            }
+            else if (collision.Intersecting)
             {
                 this.physicsColour = Color.Red;
                 //this.Position -= this.Velocity + collision.MinimumTranslationVector;

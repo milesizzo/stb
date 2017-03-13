@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StopTheBoats.Content;
 using StopTheBoats.GameObjects;
 using StopTheBoats.Templates;
 using System;
@@ -7,6 +8,18 @@ namespace StopTheBoats
 {
     public static class StopTheBoatsHelper
     {
+        public static void LoadFonts(AssetStore assets)
+        {
+            assets.Fonts.GetOrAdd("envy12", (key) =>
+            {
+                return assets.Fonts.Load("Envy12");
+            });
+            assets.Fonts.GetOrAdd("envy16", (key) =>
+            {
+                return assets.Fonts.Load("Envy16");
+            });
+        }
+
         public static void LoadGameAssets(GameAssetStore assets)
         {
             // load sprite templates

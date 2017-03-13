@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace StopTheBoats.Physics
 {
     public class PolygonDetector : ICollisionDetector<PolygonBounds, PolygonBounds>
     {
-        public CollisionResult<PolygonBounds> DetectCollision(IPhysicsObject<PolygonBounds> target, IPhysicsObject<PolygonBounds> candidate)
+        public CollisionResult<PolygonBounds> DetectCollision(GameTime gameTime, IPhysicsObject<PolygonBounds> target, IPhysicsObject<PolygonBounds> candidate)
         {
             var worldA = target.GetWorldTransform();
             var worldB = candidate.GetWorldTransform();
@@ -21,7 +22,7 @@ namespace StopTheBoats.Physics
             var pointsB = candidate.Bounds.TransformedPoints;
             var edgesB = candidate.Bounds.TransformedEdges;
 
-            var velocity = target.Velocity;
+            var velocity = target.Velocity * gameTime.GetElapsedSeconds();
             var result = new CollisionResult<PolygonBounds>
             {
                 Intersecting = true,

@@ -9,7 +9,7 @@ namespace StopTheBoats.GameObjects
 {
     public abstract class GameObject : IMovable
     {
-        public static bool DebugInfo = true;
+        public static bool DebugInfo = false;
         private GameObject parent;
         private readonly List<GameObject> children = new List<GameObject>();
         private Transformation local;

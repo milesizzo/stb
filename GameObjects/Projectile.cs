@@ -63,7 +63,7 @@ namespace StopTheBoats.GameObjects
 
         public override void OnCollision(IPhysicsObject<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
         {
-            base.OnCollision(entity, collision);
+            //base.OnCollision(entity, collision);
             var asProjectile = entity as Projectile;
             if (collision.Intersecting && entity != this.owner && (asProjectile == null || asProjectile.owner != this.owner))
             {

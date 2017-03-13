@@ -28,7 +28,7 @@ namespace StopTheBoats.Physics
 
     public interface ICollisionDetector<A, B> where A : IBounds where B : IBounds
     {
-        CollisionResult<B> DetectCollision(IPhysicsObject<A> target, IPhysicsObject<B> candidate);
+        CollisionResult<B> DetectCollision(GameTime gameTime, IPhysicsObject<A> target, IPhysicsObject<B> candidate);
     }
 
     /*public class Actor
@@ -99,7 +99,7 @@ namespace StopTheBoats.Physics
             this.actors.Remove(actor);
         }
 
-        public void DetectCollisions()
+        public void DetectCollisions(GameTime gameTime)
         {
             if (this.actors.Count < 2) return;
 
@@ -118,7 +118,7 @@ namespace StopTheBoats.Physics
                 {
                     var candidate = this.actors[j];
                     if (candidate.Bounds == null) continue; // no physics information
-                    var collision = this.detector.DetectCollision(target, candidate);
+                    var collision = this.detector.DetectCollision(gameTime, target, candidate);
                     if (collision != null)
                     {
                         target.OnCollision(candidate, collision);

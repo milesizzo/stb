@@ -79,7 +79,7 @@ namespace StopTheBoats
 
         public void Update(GameTime gameTime)
         {
-            this.physics.DetectCollisions();
+            this.physics.DetectCollisions(gameTime);
             var i = 0;
             while (i < this.scheduled.Count)
             {

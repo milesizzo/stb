@@ -108,8 +108,7 @@ namespace StopTheBoats
             //this.renderer.LoadContent();
 
             // TODO: use this.Content to load your game content here
-            this.assets.Fonts.Add("envy12", new FontTemplate(this.Content.Load<SpriteFont>("Envy12")));
-            this.assets.Fonts.Add("envy16", new FontTemplate(this.Content.Load<SpriteFont>("Envy16")));
+            StopTheBoatsHelper.LoadFonts(this.assets);
 
             this.scenes.GetOrAdd("game", (key) =>
             {
@@ -163,6 +162,10 @@ namespace StopTheBoats
             {
                 this.currentScene = this.scenes["editor.bounds"];
                 this.currentScene.SetUp();
+            }
+            else if (this.KeyPressed(Keys.F12))
+            {
+                GameObject.DebugInfo = !GameObject.DebugInfo;
             }
 
             if (this.currentScene != null)
