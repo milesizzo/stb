@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Content\AssetStore.cs" />
+    <Compile Include="Content\AudioStore.cs" />
     <Compile Include="Content\FontStore.cs" />
     <Compile Include="GameContext.cs" />
     <Compile Include="GameObjects\Boat.cs" />
@@ -66,7 +67,10 @@
     <Compile Include="Common\SystemExtensions.cs" />
     <Compile Include="StopTheBoatsHelper.cs" />
     <Compile Include="StopTheBoatsScene.cs" />
+    <Compile Include="Templates\AudioTemplate.cs" />
     <Compile Include="Templates\GameObjectTemplate.cs" />
+    <Compile Include="Templates\SpriteTemplateSerializer.Load.cs" />
+    <Compile Include="Templates\SpriteTemplateSerializer.Save.cs" />
     <Compile Include="Templates\TemplateStore.cs" />
     <Compile Include="Templates\BoatTemplate.cs" />
     <Compile Include="Templates\FontTemplate.cs" />

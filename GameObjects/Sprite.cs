@@ -22,6 +22,12 @@ namespace StopTheBoats.GameObjects
         {
         }
 
+        public float Mass
+        {
+            get { return this.bounds.Mass; }
+            set { this.bounds.Mass = value; }
+        }
+
         public void DrawSprite(Renderer render, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
             this.SpriteTemplate.DrawSprite(render, (int)Math.Floor(this.animFrame), position, colour, rotation, scale, effects);
@@ -89,6 +95,10 @@ namespace StopTheBoats.GameObjects
 
         public virtual void OnCollision(IPhysicsObject<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
         {
+            /*if (collision.WillIntersect)
+            {
+                this.Velocity = -this.Velocity;
+            }*/
             if (collision.WillIntersect && !collision.Intersecting)
             {
                 this.physicsColour = Color.Yellow;

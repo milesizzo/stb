@@ -69,6 +69,7 @@ namespace StopTheBoats.GameObjects
             {
                 // hit?
                 this.AwaitingDeletion = true;
+                this.Context.Assets.Audio["Audio/explosion1"].Audio.Play(0.1f, 0, 0);
                 this.Context.AddObject(new GameElement(FrictionMedium.Air)
                 {
                     Position = this.Position,

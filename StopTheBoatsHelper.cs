@@ -22,6 +22,13 @@ namespace StopTheBoats
 
         public static void LoadGameAssets(GameAssetStore assets)
         {
+            // load audio
+            assets.Audio.GetOrAdd("Audio/explosion1", assets.Audio.Load);
+            assets.Audio.GetOrAdd("Audio/explosion2", assets.Audio.Load);
+            assets.Audio.GetOrAdd("Audio/cannon1", assets.Audio.Load);
+            assets.Audio.GetOrAdd("Audio/ambient1", assets.Audio.Load);
+            assets.Audio.GetOrAdd("Audio/ambient2", assets.Audio.Load);
+
             // load sprite templates
             var patrol_boat = assets.Sprites.GetOrAdd("patrol_boat", (key) =>
             {
@@ -61,6 +68,11 @@ namespace StopTheBoats
             {
                 var obj = assets.Sprites.Load(100, 100, key);
                 obj.FPS = 50;
+                return obj;
+            });
+            var whale = assets.Sprites.GetOrAdd("whale-swim", (key) =>
+            {
+                var obj = assets.Sprites.Load(62, 31, key, numFrames: 5);
                 return obj;
             });
 

@@ -28,10 +28,10 @@ namespace StopTheBoats.Content
             return obj;
         }
 
-        public AnimatedSpriteSheetTemplate Load(int width, int height, string assetName)
+        public AnimatedSpriteSheetTemplate Load(int width, int height, string assetName, int border = -1, int numFrames = -1)
         {
             var texture = this.content.Load<Texture2D>(assetName);
-            var obj = new AnimatedSpriteSheetTemplate(texture, width, height);
+            var obj = new AnimatedSpriteSheetTemplate(texture, width, height, border, numFrames);
             return obj;
         }
     }

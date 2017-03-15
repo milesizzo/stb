@@ -6,7 +6,15 @@ namespace StopTheBoats.Physics
 {
     public interface IPhysicsObject<T> where T : IBounds
     {
+        Vector2 Position { get; set; }
+
         Vector2 Velocity { get; set; }
+
+        float Angle { get; set; }
+
+        float AngularVelocity { get; set; }
+
+        float Mass { get; }
 
         T Bounds { get; }
 
@@ -17,6 +25,9 @@ namespace StopTheBoats.Physics
 
     public interface IBounds
     {
+        Vector2 Centre { get; }
+
+        float MomentOfInertia { get; }
     }
 
     public class CollisionResult<T> where T : IBounds
@@ -97,6 +108,18 @@ namespace StopTheBoats.Physics
         public void RemoveActor(IPhysicsObject<T> actor)
         {
             this.actors.Remove(actor);
+        }
+
+        public float CalculateTorque(IPhysicsObject<T> actor, Vector2 contactPoint, Vector2 force)
+        {
+            var r = contactPoint - actor.Bounds.Centre;
+            return r.X * force.X - r.Y * force.Y;
+        }
+
+        public float CalculateAngularAcceleration(IPhysicsObject<T> actor, Vector2 contactPoint, Vector2 force)
+        {
+            // calculates angular acceleration due to a force
+            return this.CalculateTorque(actor, contactPoint, force) / actor.Bounds.MomentOfInertia;
         }
 
         public void DetectCollisions(GameTime gameTime)

@@ -39,10 +39,11 @@ namespace StopTheBoats
 
             // set up and add player
             this.player = new Boat(this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
+            this.Context.AddObject(this.player);
+
             this.player.Position = Vector2.Zero;
             this.player.AddWeapon(this.Assets.Objects.Get<WeaponTemplate>("gun.single_barrel"));
             this.player.AddWeapon(this.Assets.Objects.Get<WeaponTemplate>("gun.single_barrel"));
-            this.Context.AddObject(this.player);
 
             // set up and add a random rock
             var random = new Random();
@@ -50,8 +51,18 @@ namespace StopTheBoats
             {
                 Position = new Vector2(200, 200),
                 SpriteTemplate = this.Context.Assets.Sprites["rock1"],
-                Rotation = MathHelper.ToRadians(random.Next(0, 360)),
+                Angle = MathHelper.ToRadians(random.Next(0, 360)),
             });
+
+            // set up and add a whale
+            this.Context.AddObject(new GameElement(FrictionMedium.Water)
+            {
+                Position = new Vector2(100, 300),
+                SpriteTemplate = this.Context.Assets.Sprites["whale-swim"],
+            });
+
+            this.Assets.Audio["Audio/ambient2"].Audio.Play(0.1f, 0, 0);
+            this.Assets.Audio["Audio/ambient1"].Audio.Play(0.02f, 0, -0.8f);
         }
 
         public override void Update(GameTime gameTime)
@@ -87,7 +98,7 @@ namespace StopTheBoats
                 var topRight = this.Camera.ScreenToWorld(this.Camera.Viewport.Width, -100);
                 enemy.Position = Vector2.Lerp(topLeft, topRight, (float)random.NextDouble());
                 //enemy.Position = new Vector2((float)random.NextDouble() * 2560, -100);
-                enemy.Rotation = MathHelper.ToRadians(90 + random.Next(-30, 30));
+                enemy.Angle = MathHelper.ToRadians(90 + random.Next(-30, 30));
                 this.enemies.Add(enemy);
                 this.Context.AddObject(enemy);
                 this.spacePressed = true;

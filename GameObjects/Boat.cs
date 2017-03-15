@@ -73,12 +73,12 @@ namespace StopTheBoats.GameObjects
 
         public void Accelerate(float amount)
         {
-            this.acceleration = amount * new Vector2((float)Math.Cos(this.Rotation) * this.BoatTemplate.Acceleration, (float)Math.Sin(this.Rotation) * this.BoatTemplate.Acceleration);
+            this.acceleration = amount * new Vector2((float)Math.Cos(this.Angle) * this.BoatTemplate.Acceleration, (float)Math.Sin(this.Angle) * this.BoatTemplate.Acceleration);
         }
 
         public void Turn(float amountDegrees)
         {
-            this.Rotation += MathHelper.ToRadians(amountDegrees);
+            this.Angle += MathHelper.ToRadians(amountDegrees);
         }
 
         public override void Update(GameTime gameTime)
@@ -123,6 +123,8 @@ namespace StopTheBoats.GameObjects
                 {
                     this.health = 0;
                     this.AwaitingDeletion = true;
+
+                    this.Context.Assets.Audio["Audio/explosion2"].Audio.Play();
 
                     var random = new Random();
                     var assetName = random.Choice("explosion_sheet2", "explosion_sheet3");

@@ -13,11 +13,34 @@ namespace StopTheBoats.GameObjects
         private GameObject parent;
         private readonly List<GameObject> children = new List<GameObject>();
         private Transformation local;
+        private float angularVelocity = 0f;
         private Vector2 velocity = Vector2.Zero;
         protected bool AwaitingDeletion = false;
-        public IGameContext Context;
+        private IGameContext context = null;
 
         public bool IsAwaitingDeletion { get { return this.AwaitingDeletion; } }
+
+        public IGameContext Context
+        {
+            get
+            {
+                if (this.context != null) return this.context;
+                if (this.parent != null)
+                {
+                    var parent = this.parent;
+                    while (parent != null)
+                    {
+                        if (parent.context != null) return parent.context;
+                        parent = parent.parent;
+                    }
+                }
+                return null;
+            }
+            set
+            {
+                this.context = value;
+            }
+        }
 
         public virtual Vector2 Position
         {
@@ -25,10 +48,16 @@ namespace StopTheBoats.GameObjects
             set { this.local.Position = value; }
         }
 
-        public virtual float Rotation
+        public virtual float Angle
         {
             get { return this.local.Rotation; }
             set { this.local.Rotation = value; }
+        }
+
+        public float AngularVelocity
+        {
+            get { return this.angularVelocity; }
+            set { this.angularVelocity = value; }
         }
 
         public float WorldRotation
@@ -37,7 +66,7 @@ namespace StopTheBoats.GameObjects
             set
             {
                 this.local.Rotation = value;
-                this.local.Rotation -= this.parent.Rotation;
+                this.local.Rotation -= this.parent.Angle;
             }
         }
 
@@ -73,6 +102,7 @@ namespace StopTheBoats.GameObjects
                 throw new InvalidOperationException("GameObject already has a parent");
             }
             obj.parent = this;
+            obj.Context = this.Context;
             this.children.Add(obj);
         }
 
@@ -84,6 +114,7 @@ namespace StopTheBoats.GameObjects
             }
             this.children.Remove(obj);
             obj.parent = null;
+            obj.Context = null;
         }
 
         /*

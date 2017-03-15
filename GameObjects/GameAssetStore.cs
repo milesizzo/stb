@@ -12,7 +12,7 @@ namespace StopTheBoats.GameObjects
         {
         }
 
-        public GameAssetStore(AssetStore other) : base(other.Sprites, other.Fonts)
+        public GameAssetStore(AssetStore other) : base(other.Sprites, other.Fonts, other.Audio)
         {
         }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StopTheBoats.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,14 +30,14 @@ namespace StopTheBoats.Physics
             Vector2 p1, p2;
             for (var i = 0; i < this.transformedPoints.Length; i++)
             {
-                p1 = transformedPoints[i];
-                if (i + 1 >= transformedPoints.Length)
+                p1 = this.transformedPoints[i];
+                if (i + 1 >= this.transformedPoints.Length)
                 {
-                    p2 = transformedPoints[0];
+                    p2 = this.transformedPoints[0];
                 }
                 else
                 {
-                    p2 = transformedPoints[i + 1];
+                    p2 = this.transformedPoints[i + 1];
                 }
                 this.edges[i] = p2 - p1;
             }
@@ -57,13 +58,45 @@ namespace StopTheBoats.Physics
         {
             get
             {
-                float totalX = 0, totalY = 0;
-                for (var i = 0; i < this.points.Count; i++)
-                {
-                    totalX += this.points[i].X;
-                    totalY += this.points[i].Y;
-                }
-                return new Vector2(totalX / this.points.Count, totalY / this.points.Count);
+                return CalculateCentre(this.transformedPoints);
+            }
+        }
+
+        public float Mass { get; set; }
+
+        public static float CalculateMomentOfInertia(Vector2[] points, float mass)
+        {
+            // stolen from https://www.gamedev.net/topic/342822-moment-of-inertia-of-a-polygon-2d/
+            var denom = 0f;
+            var numer = 0f;
+            for (int i = 0, j = points.Length - 1; i < points.Length; j = i, i++)
+            {
+                var p1 = points[j];
+                var p2 = points[i];
+                var a = Math.Abs(p1.X * p2.Y - p1.Y * p2.X); // cross product
+                var b = Vector2.Dot(p2, p2) + Vector2.Dot(p2, p1) + Vector2.Dot(p1, p1);
+                denom += a * b;
+                numer += a;
+            }
+            return (mass / 6f) * (denom / numer);
+        }
+
+        public static Vector2 CalculateCentre(Vector2[] points)
+        {
+            float totalX = 0, totalY = 0;
+            for (var i = 0; i < points.Length; i++)
+            {
+                totalX += points[i].X;
+                totalY += points[i].Y;
+            }
+            return new Vector2(totalX / points.Length, totalY / points.Length);
+        }
+
+        public float MomentOfInertia
+        {
+            get
+            {
+                return CalculateMomentOfInertia(this.transformedPoints, this.Mass);
             }
         }
 
