@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using StopTheBoats.Common;
+using CommonLibrary;
 
-namespace StopTheBoats.Physics
+namespace PhysicsEngine
 {
     public interface IPhysicsObject<T> where T : IBounds
     {

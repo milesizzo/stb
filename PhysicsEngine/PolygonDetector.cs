@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StopTheBoats.Physics
+namespace PhysicsEngine
 {
     public class PolygonDetector : ICollisionDetector<PolygonBounds, PolygonBounds>
     {

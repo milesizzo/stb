@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using StopTheBoats.Physics;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PhysicsEngine;
 
 namespace StopTheBoats.Templates
 {

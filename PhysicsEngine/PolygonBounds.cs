@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using StopTheBoats.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CommonLibrary;
 
-namespace StopTheBoats.Physics
+namespace PhysicsEngine
 {
     public class PolygonBounds : IBounds
     {

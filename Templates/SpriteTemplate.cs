@@ -2,8 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
-using StopTheBoats.Physics;
 using StopTheBoats.Graphics;
+using PhysicsEngine;
 
 namespace StopTheBoats.Templates
 {

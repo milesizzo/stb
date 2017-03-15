@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Shapes;
-using StopTheBoats.Physics;
 using StopTheBoats.Templates;
-using StopTheBoats.Common;
 using StopTheBoats.Graphics;
+using PhysicsEngine;
+using CommonLibrary;
 
 namespace StopTheBoats.GameObjects
 {

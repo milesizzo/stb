@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace StopTheBoats.Common
+namespace CommonLibrary
 {
     public static class RandomExtensions
     {

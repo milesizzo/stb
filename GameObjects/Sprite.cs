@@ -2,11 +2,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Shapes;
-using StopTheBoats.Physics;
+using PhysicsEngine;
 using System.Linq;
 using StopTheBoats.Templates;
-using StopTheBoats.Common;
 using StopTheBoats.Graphics;
+using CommonLibrary;
 
 namespace StopTheBoats.GameObjects
 {

@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StopTheBoats", "StopTheBoat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomContentPipeline", "CustomContentPipeline\CustomContentPipeline.csproj", "{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsEngine", "PhysicsEngine\PhysicsEngine.csproj", "{1282EE44-67D9-488F-BAFD-F12A477ECEFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLibrary", "CommonLibrary\CommonLibrary.csproj", "{107C5647-A532-45D0-85A5-82BFB075D6C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,22 @@ Global
 		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Release|x86.ActiveCfg = Release|Any CPU
 		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Release|x86.Build.0 = Release|Any CPU
+		{1282EE44-67D9-488F-BAFD-F12A477ECEFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1282EE44-67D9-488F-BAFD-F12A477ECEFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1282EE44-67D9-488F-BAFD-F12A477ECEFE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1282EE44-67D9-488F-BAFD-F12A477ECEFE}.Debug|x86.Build.0 = Debug|Any CPU
+		{1282EE44-67D9-488F-BAFD-F12A477ECEFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1282EE44-67D9-488F-BAFD-F12A477ECEFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1282EE44-67D9-488F-BAFD-F12A477ECEFE}.Release|x86.ActiveCfg = Release|Any CPU
+		{1282EE44-67D9-488F-BAFD-F12A477ECEFE}.Release|x86.Build.0 = Release|Any CPU
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|x86.Build.0 = Debug|Any CPU
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Release|x86.ActiveCfg = Release|Any CPU
+		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

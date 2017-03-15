@@ -2,7 +2,7 @@
 using MonoGame.Extended;
 using StopTheBoats.GameObjects;
 using StopTheBoats.Graphics;
-using StopTheBoats.Physics;
+using PhysicsEngine;
 using System.Collections.Generic;
 
 namespace StopTheBoats

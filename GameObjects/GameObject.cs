@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using MonoGame.Extended;
-using StopTheBoats.Common;
 using StopTheBoats.Graphics;
+using CommonLibrary;
 
 namespace StopTheBoats.GameObjects
 {

@@ -1,15 +1,15 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
-using StopTheBoats.Common;
 using StopTheBoats.GameObjects;
 using StopTheBoats.Graphics;
 using StopTheBoats.Scenes;
 using StopTheBoats.Templates;
-using System;
-using System.Collections.Generic;
+using CommonLibrary;
 
 namespace StopTheBoats
 {
