@@ -9,6 +9,7 @@ using PhysicsEngine;
 
 namespace StopTheBoats.Templates
 {
+    /*
     public static partial class SpriteTemplateSerializer
     {
         private const byte SingleSprite = 0x0001;
@@ -98,4 +99,5 @@ namespace StopTheBoats.Templates
             }
         }
     }
+    */
 }

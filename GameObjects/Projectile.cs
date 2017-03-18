@@ -3,65 +3,65 @@ using Microsoft.Xna.Framework;
 using System.Linq;
 using StopTheBoats.Graphics;
 using PhysicsEngine;
+using System;
+using MonoGame.Extended;
 
 namespace StopTheBoats.GameObjects
 {
-    public class Projectile : GameElement, IPhysicsObject<PolygonBounds>
+    public class Projectile : PhysicalObject
     {
         private readonly float damage;
-        private readonly GameObject owner;
+        private readonly IGameObject owner;
         private readonly float maxVelocity;
 
-        public Projectile(GameObject owner, float damage, float maxVelocity) : base(FrictionMedium.Air)
+        public Projectile(IPhysicsEngine physics, IGameObject owner, float damage, float maxVelocity) : base(physics, new PhysicsCircle(5f, 1f))
         {
             this.damage = damage;
             this.maxVelocity = maxVelocity;
             this.owner = owner;
-            this.Bounds = new PolygonBounds(
-                new Vector2(-2.5f, -2.5f),
-                new Vector2(2.5f, -2.5f),
-                new Vector2(2.5f, 2.5f),
-                new Vector2(-2.5f, 2.5f));
         }
 
         public float Damage
         {
             get
             {
-                return this.damage * this.Velocity.Length() / this.maxVelocity;
+                return this.damage * this.LinearVelocity.Length() / this.maxVelocity;
             }
         }
 
-        public GameObject Owner { get { return this.owner; } }
+        public IGameObject Owner { get { return this.owner; } }
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            var length = this.Velocity.LengthSquared();
+            //base.Update(gameTime);
+            var length = this.LinearVelocity.LengthSquared();
             if (length < 1000)
             {
-                this.AwaitingDeletion = true;
+                this.IsAwaitingDeletion = true;
             }
+            base.Update(gameTime);
         }
 
         public override void Draw(Renderer renderer)
         {
-            var length = this.Velocity.LengthSquared();
+            var length = this.LinearVelocity.LengthSquared();
             Color colour = new Color(0.5f, 0.5f, 0.5f);
             if (length < 500 * 500)
             {
                 colour = new Color(0.5f, 0.5f, 0.5f, (length / (500 * 500)));
             }
             renderer.Render.DrawCircle(this.Position, 5f, 12, colour, 1.5f);
-            if (GameObject.DebugInfo)
+            /*if (GameObject.DebugInfo)
             {
                 var world = this.World;
                 var points = this.Bounds.Points.Select(p => world.TransformVector(p));
                 renderer.Render.DrawPolygon(Vector2.Zero, points.ToArray(), this.physicsColour);
-            }
+            }*/
+            base.Draw(renderer);
         }
 
-        public override void OnCollision(IPhysicsObject<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
+        /*
+        public override void OnCollision(IActor<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
         {
             //base.OnCollision(entity, collision);
             var asProjectile = entity as Projectile;
@@ -79,5 +79,6 @@ namespace StopTheBoats.GameObjects
                 });
             }
         }
+        */
     }
 }

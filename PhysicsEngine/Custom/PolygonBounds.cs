@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CommonLibrary;
 
-namespace PhysicsEngine
+namespace CustomPhysicsEngine
 {
     public class PolygonBounds : IBounds
     {
@@ -96,7 +96,7 @@ namespace PhysicsEngine
         {
             get
             {
-                return CalculateMomentOfInertia(this.transformedPoints, this.Mass);
+                return CalculateMomentOfInertia(this.points.ToArray(), this.Mass);
             }
         }
 

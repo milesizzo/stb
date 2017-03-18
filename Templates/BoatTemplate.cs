@@ -13,6 +13,8 @@ namespace StopTheBoats.Templates
         public int Passengers;
         public float Acceleration;
         public float MaxHealth;
+        public float Mass;
+        public Vector2 EnginePosition;
         public SingleSpriteTemplate SpriteTemplate;
 
         public List<Vector2> WeaponLocations = new List<Vector2>();

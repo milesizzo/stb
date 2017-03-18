@@ -10,6 +10,8 @@ using StopTheBoats.Graphics;
 using StopTheBoats.Scenes;
 using StopTheBoats.Templates;
 using CommonLibrary;
+using PhysicsEngine;
+using PhysicsEngine.Farseer;
 
 namespace StopTheBoats
 {
@@ -24,8 +26,9 @@ namespace StopTheBoats
         private int lastScroll = 0;
         private Vector2 mouse;
 
-        public StopTheBoatsScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, new GameContext(assets))
+        public StopTheBoatsScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, new GameContext(assets, new FarseerEngine()))
         {
+            this.Context.Physics.WorldDamping = 1f;
             this.Camera.Rotation = 0;
             this.Camera.Zoom = 1;
             this.zoomTarget = this.zoomSource = this.Camera.Zoom;
@@ -38,7 +41,7 @@ namespace StopTheBoats
             StopTheBoatsHelper.LoadGameAssets(this.Assets);
 
             // set up and add player
-            this.player = new Boat(this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
+            this.player = new Boat(this.Context.Physics, this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
             this.Context.AddObject(this.player);
 
             this.player.Position = Vector2.Zero;
@@ -47,18 +50,10 @@ namespace StopTheBoats
 
             // set up and add a random rock
             var random = new Random();
-            this.Context.AddObject(new GameElement(FrictionMedium.None)
+            this.Context.AddObject(new Sprite(this.Context.Physics, this.Context.Assets.Sprites["rock1"])
             {
                 Position = new Vector2(200, 200),
-                SpriteTemplate = this.Context.Assets.Sprites["rock1"],
-                Angle = MathHelper.ToRadians(random.Next(0, 360)),
-            });
-
-            // set up and add a whale
-            this.Context.AddObject(new GameElement(FrictionMedium.Water)
-            {
-                Position = new Vector2(100, 300),
-                SpriteTemplate = this.Context.Assets.Sprites["whale-swim"],
+                Rotation = MathHelper.ToRadians(random.Next(0, 360)),
             });
 
             this.Assets.Audio["Audio/ambient2"].Audio.Play(0.1f, 0, 0);
@@ -82,23 +77,31 @@ namespace StopTheBoats
             {
                 this.player.Accelerate(-1f);
             }
+            if (keyboard.IsKeyDown(Keys.Q))
+            {
+                this.player.Rotation += MathHelper.ToRadians(-20 * gameTime.GetElapsedSeconds());
+            }
+            if (keyboard.IsKeyDown(Keys.E))
+            {
+                this.player.Rotation += MathHelper.ToRadians(+20 * gameTime.GetElapsedSeconds());
+            }
             if (keyboard.IsKeyDown(Keys.A))
             {
-                this.player.Turn(-20 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                this.player.Turn(-20f * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
             if (keyboard.IsKeyDown(Keys.D))
             {
-                this.player.Turn(20 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                this.player.Turn(+20f * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
             if (keyboard.IsKeyDown(Keys.Space) && !this.spacePressed)
             {
                 var random = new Random();
-                var enemy = new Boat(this.Assets.Objects.Get<BoatTemplate>("boat.small"));
+                var enemy = new Boat(this.Context.Physics, this.Assets.Objects.Get<BoatTemplate>("boat.small"));
                 var topLeft = this.Camera.ScreenToWorld(0, -100);
                 var topRight = this.Camera.ScreenToWorld(this.Camera.Viewport.Width, -100);
                 enemy.Position = Vector2.Lerp(topLeft, topRight, (float)random.NextDouble());
                 //enemy.Position = new Vector2((float)random.NextDouble() * 2560, -100);
-                enemy.Angle = MathHelper.ToRadians(90 + random.Next(-30, 30));
+                enemy.Rotation = MathHelper.ToRadians(90 + random.Next(-30, 30));
                 this.enemies.Add(enemy);
                 this.Context.AddObject(enemy);
                 this.spacePressed = true;
@@ -109,6 +112,7 @@ namespace StopTheBoats
             }
             if (mouse.LeftButton == ButtonState.Pressed)
             {
+                /*
                 foreach (var weapon in this.player.Weapons)
                 {
                     var projectile = weapon.Fire(gameTime);
@@ -117,6 +121,7 @@ namespace StopTheBoats
                         this.Context.AddObject(projectile);
                     }
                 }
+                */
             }
             if (mouse.ScrollWheelValue != this.lastScroll)
             {
@@ -128,11 +133,13 @@ namespace StopTheBoats
             }
             this.mouse = this.Camera.ScreenToWorld(mouse.X, mouse.Y);
 
+            /*
             foreach (var weapon in this.player.Weapons)
             {
                 var world = weapon.World;
                 weapon.WorldRotation = (float)Math.Atan2(this.mouse.Y - world.Position.Y, this.mouse.X - world.Position.X);
             }
+            */
 
             base.Update(gameTime);
 
@@ -158,6 +165,7 @@ namespace StopTheBoats
 
             base.Draw(renderer);
 
+            /*
             foreach (var weapon in this.player.Weapons)
             {
                 var lastPos = weapon.World.Position;
@@ -170,6 +178,7 @@ namespace StopTheBoats
                     lastPos = pos;
                 }
             }
+            */
             //this.sprites["patrol_boat"].Draw(this.spriteBatch, this.player.Position, this.player.Bearing);
             //this.sprites["gun_single_barrel"].Draw(this.spriteBatch, this.player.Weapon.Position, this.player.Weapon.Bearing);
             //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);

@@ -4,6 +4,7 @@ using StopTheBoats.GameObjects;
 using StopTheBoats.Graphics;
 using PhysicsEngine;
 using System.Collections.Generic;
+using System;
 
 namespace StopTheBoats
 {
@@ -12,17 +13,17 @@ namespace StopTheBoats
         private class ScheduledObject
         {
             public float TimeRemaining;
-            public GameObject Object;
+            public IGameObject Object;
         }
 
-        private readonly List<GameObject> objects = new List<GameObject>();
-        private readonly Physics<PolygonBounds> physics;
+        private readonly List<IGameObject> objects = new List<IGameObject>();
+        private readonly IPhysicsEngine physics;
         private readonly GameAssetStore assets;
         private readonly List<ScheduledObject> scheduled = new List<ScheduledObject>();
 
-        public GameContext(GameAssetStore assets)
+        public GameContext(GameAssetStore assets, IPhysicsEngine physics)
         {
-            this.physics = new Physics<PolygonBounds>(new PolygonDetector());
+            this.physics = physics;
             this.assets = assets;
         }
 
@@ -37,11 +38,13 @@ namespace StopTheBoats
             this.scheduled.Clear();
         }
 
+        public IPhysicsEngine Physics { get { return this.physics; } }
+
         public GameAssetStore Assets { get { return this.assets; } }
 
         public int NumObjects { get { return this.objects.Count; } }
 
-        public void ScheduleObject(GameObject obj, float waitTime)
+        public void ScheduleObject(IGameObject obj, float waitTime)
         {
             this.scheduled.Add(new ScheduledObject
             {
@@ -50,36 +53,36 @@ namespace StopTheBoats
             });
         }
 
-        public void AddObject(GameObject obj)
+        public void AddObject(IGameObject obj)
         {
+            if (obj.Parent != null)
+            {
+                throw new InvalidOperationException("You cannot add a child object");
+            }
             obj.Context = this;
             this.objects.Add(obj);
-            var asPhysics = obj as IPhysicsObject<PolygonBounds>;
-            if (asPhysics != null)
-            {
-                this.physics.AddActor(asPhysics);
-            }
         }
 
-        private void RemovePhysics(GameObject obj)
+        public void RemoveObject(IGameObject obj)
         {
-            var asPhysics = obj as IPhysicsObject<PolygonBounds>;
-            if (asPhysics != null)
-            {
-                this.physics.RemoveActor(asPhysics);
-            }
+            this.RemoveObject(this.objects.IndexOf(obj));
         }
 
-        public void RemoveObject(GameObject obj)
+        private void RemoveObject(int index)
         {
+            var obj = this.objects[index];
+            if (obj.Parent != null)
+            {
+                throw new InvalidOperationException("You cannot remove a child object");
+            }
             obj.Context = null;
-            this.objects.Remove(obj);
-            this.RemovePhysics(obj);
+            this.objects.RemoveAt(index);
+            obj.OnDestroyed();
         }
 
         public void Update(GameTime gameTime)
         {
-            this.physics.DetectCollisions(gameTime);
+            this.physics.Update(gameTime);
             var i = 0;
             while (i < this.scheduled.Count)
             {
@@ -95,15 +98,20 @@ namespace StopTheBoats
                     i++;
                 }
             }
-            foreach (var obj in this.objects)
+
+            i = 0;
+            while (i < this.objects.Count)
             {
-                obj.Update(gameTime);
+                var obj = this.objects[i];
                 if (obj.IsAwaitingDeletion)
                 {
-                    this.RemovePhysics(obj);
+                    this.RemoveObject(i);
+                }
+                else
+                {
+                    i++;
                 }
             }
-            this.objects.RemoveAll(o => o.IsAwaitingDeletion);
         }
 
         public void Draw(Renderer renderer)
@@ -111,6 +119,10 @@ namespace StopTheBoats
             foreach (var obj in this.objects)
             {
                 obj.Draw(renderer);
+            }
+            if (GameObject.DebugInfo)
+            {
+                this.physics.Draw(renderer.Render);
             }
         }
     }

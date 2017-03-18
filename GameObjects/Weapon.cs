@@ -1,18 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using StopTheBoats.Templates;
+using PhysicsEngine;
 
 namespace StopTheBoats.GameObjects
 {
-    public class Weapon : GameElement
+    public class Weapon : Sprite
     {
         public readonly WeaponTemplate WeaponTemplate;
         private TimeSpan lastFire;
 
-        public Weapon(WeaponTemplate template) : base(FrictionMedium.None)
+        public Weapon(IPhysicsEngine physics, WeaponTemplate template) : base(physics, template.SpriteTemplate)
         {
             this.WeaponTemplate = template;
-            this.SpriteTemplate = this.WeaponTemplate.SpriteTemplate;
             this.lastFire = TimeSpan.Zero;
         }
 
@@ -26,11 +26,9 @@ namespace StopTheBoats.GameObjects
             this.Context.Assets.Audio["Audio/cannon1"].Audio.Play(0.1f, 0, 0);
             this.lastFire = gameTime.TotalGameTime;
             var velocity = this.WeaponTemplate.ProjectileVelocity;
-            var projectile = new Projectile(this.Parent, this.WeaponTemplate.Damage, velocity);
-            var world = this.World;
-            projectile.Position = world.Position;
-            projectile.Velocity = new Vector2((float)(velocity * Math.Cos(world.Rotation)), (float)(velocity * Math.Sin(world.Rotation)));
-            //projectile.Rotation = world.Rotation;
+            var projectile = new Projectile(this.Physics, this, this.WeaponTemplate.Damage, velocity);
+            projectile.Position = this.Position;
+            projectile.LinearVelocity = new Vector2((float)(velocity * Math.Cos(this.Rotation)), (float)(velocity * Math.Sin(this.Rotation)));
             return projectile;
         }
     }

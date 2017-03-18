@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PhysicsEngine
+namespace CustomPhysicsEngine
 {
     public class PolygonDetector : ICollisionDetector<PolygonBounds, PolygonBounds>
     {
-        public CollisionResult<PolygonBounds> DetectCollision(GameTime gameTime, IPhysicsObject<PolygonBounds> target, IPhysicsObject<PolygonBounds> candidate)
+        public CollisionResult<PolygonBounds> DetectCollision(GameTime gameTime, IActor<PolygonBounds> target, IActor<PolygonBounds> candidate)
         {
             var worldA = target.GetWorldTransform();
             var worldB = candidate.GetWorldTransform();
@@ -143,5 +143,54 @@ namespace PhysicsEngine
                 }
             }
         }
+
+        /*
+        public Vector2 FindContactPoints()
+        {
+            // step 1
+            // find the farthest vertex in
+            // the polygon along the separation normal
+            int c = vertices.length;
+            for (int i = 0; i < c; i++)
+            {
+                double projection = n.dot(v);
+                if (projection > max)
+                {
+                    max = projection;
+                    index = i;
+                }
+            }
+
+            // step 2
+            // now we need to use the edge that
+            // is most perpendicular, either the
+            // right or the left
+            Vector2 v = vertices[index];
+            Vector2 v1 = v.next;
+            Vector2 v0 = v.prev;
+            // v1 to v
+            Vector2 l = v - v1;
+            // v0 to v
+            Vector2 r = v - v0;
+            // normalize
+            l.normalize();
+            r.normalize();
+            // the edge that is most perpendicular
+            // to n will have a dot product closer to zero
+            if (r.dot(n) <= l.dot(n))
+            {
+                // the right edge is better
+                // make sure to retain the winding direction
+                return new Edge(v, v0, v);
+            }
+            else
+            {
+                // the left edge is better
+                // make sure to retain the winding direction
+                return new Edge(v, v, v1);
+            }
+            // we return the maximum projection vertex (v)
+            // and the edge points making the best edge (v and either v0 or v1)
+        }*/
     }
 }

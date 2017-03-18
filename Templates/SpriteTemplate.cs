@@ -11,7 +11,7 @@ namespace StopTheBoats.Templates
     {
         public Vector2 Origin;
         public int FPS = 5;
-        private PolygonBounds bounds;
+        private PhysicsShape shape;
 
         public abstract Texture2D Texture { get; set; }
 
@@ -21,27 +21,29 @@ namespace StopTheBoats.Templates
 
         public virtual int Height { get { return this.Texture.Height; } }
 
-        public PolygonBounds DefaultBounds
+        public PhysicsShape DefaultShape
         {
             get
             {
-                return new PolygonBounds(
+                return new PhysicsPolygon(new[]
+                {
                     -this.Origin,
                     new Vector2(this.Width - this.Origin.X, -this.Origin.Y),
                     new Vector2(this.Width - this.Origin.X, this.Height - this.Origin.Y),
-                    new Vector2(-this.Origin.X, this.Height - this.Origin.Y));
+                    new Vector2(-this.Origin.X, this.Height - this.Origin.Y)
+                }, 1f);
             }
         }
 
-        public PolygonBounds Bounds
+        public PhysicsShape Shape
         {
             get
             {
-                return this.bounds ?? this.DefaultBounds;
+                return this.shape?? this.DefaultShape;
             }
             set
             {
-                this.bounds = value;
+                this.shape = value;
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace StopTheBoats.GameObjects
 {
+    /*
     public enum FrictionMedium
     {
         Air,
@@ -48,4 +49,5 @@ namespace StopTheBoats.GameObjects
             }
         }
     }
+    */
 }

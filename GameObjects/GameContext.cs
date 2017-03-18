@@ -6,11 +6,11 @@ namespace StopTheBoats.GameObjects
 {
     public interface IGameContext
     {
-        void ScheduleObject(GameObject obj, float waitTime);
+        void ScheduleObject(IGameObject obj, float waitTime);
 
-        void AddObject(GameObject obj);
+        void AddObject(IGameObject obj);
 
-        void RemoveObject(GameObject obj);
+        void RemoveObject(IGameObject obj);
 
         void Reset();
 

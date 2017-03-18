@@ -10,22 +10,15 @@ using CommonLibrary;
 
 namespace StopTheBoats.GameObjects
 {
-    public class Sprite : GameObject, IPhysicsObject<PolygonBounds>
+    public class Sprite : PhysicalObject
     {
         public bool DeleteAfterAnimation = false;
         private SpriteTemplate spriteTemplate;
-        private PolygonBounds bounds;
-        protected Color physicsColour = Color.White;
         private float animFrame;
 
-        public Sprite()
+        public Sprite(IPhysicsEngine physics, SpriteTemplate sprite) : base(physics, sprite.Shape)
         {
-        }
-
-        public float Mass
-        {
-            get { return this.bounds.Mass; }
-            set { this.bounds.Mass = value; }
+            this.spriteTemplate = sprite;
         }
 
         public void DrawSprite(Renderer render, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
@@ -35,23 +28,21 @@ namespace StopTheBoats.GameObjects
 
         public override void Draw(Renderer renderer)
         {
-            var world = this.World;
-            this.DrawSprite(renderer, world.Position, Color.White, world.Rotation, world.Scale, SpriteEffects.None);
-            if (GameObject.DebugInfo && this.Bounds != null)
+            this.DrawSprite(renderer, this.Position, Color.White, this.Rotation, Vector2.One, SpriteEffects.None);
+            if (GameObject.DebugInfo)
             {
-                var points = this.Bounds.Points.Select(p => world.TransformVector(p));
-                renderer.Render.DrawPolygon(Vector2.Zero, points.ToArray(), this.physicsColour);
+                var loc = this.Position - this.spriteTemplate.Origin;
+                var font = this.Context.Assets.Fonts["envy12"];
+                //renderer.DrawString(this.Context.Assets.Fonts["envy12"], string.Format("velocity: {0}", this.LinearVelocity), origin + new Vector2(0, -96), Color.White);
+                renderer.DrawString(font, $"rotation: {this.Rotation}", loc + new Vector2(0, -96), Color.White);
+                renderer.DrawString(font, $"velocity: {this.LinearVelocity}", loc + new Vector2(0, -96 + 12), Color.White);
+                renderer.DrawString(font, $"position: {this.Position}", loc + new Vector2(0, -96 + 24), Color.White);
             }
-            foreach (var child in this.Children)
-            {
-                child.Draw(renderer);
-            }
-            this.physicsColour = Color.White;
+            base.Draw(renderer);
         }
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
             if (this.SpriteTemplate != null && this.SpriteTemplate.NumberOfFrames > 1)
             {
                 this.animFrame += (float)gameTime.ElapsedGameTime.TotalSeconds * this.SpriteTemplate.FPS;
@@ -60,45 +51,21 @@ namespace StopTheBoats.GameObjects
                     this.animFrame -= this.SpriteTemplate.NumberOfFrames;
                     if (this.DeleteAfterAnimation)
                     {
-                        this.AwaitingDeletion = true;
+                        this.IsAwaitingDeletion = true;
                     }
                 }
             }
+            base.Update(gameTime);
         }
 
         public SpriteTemplate SpriteTemplate
         {
             get { return this.spriteTemplate; }
-            set
-            {
-                this.spriteTemplate = value;
-                this.bounds = new PolygonBounds(value.Bounds.Points);
-            }
         }
 
-        public Transformation GetWorldTransform()
+        /*
+        public virtual void OnCollision(IActor<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
         {
-            return this.World;
-        }
-
-        public PolygonBounds Bounds
-        {
-            get
-            {
-                return this.bounds;
-            }
-            set
-            {
-                this.bounds = value;
-            }
-        }
-
-        public virtual void OnCollision(IPhysicsObject<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
-        {
-            /*if (collision.WillIntersect)
-            {
-                this.Velocity = -this.Velocity;
-            }*/
             if (collision.WillIntersect && !collision.Intersecting)
             {
                 this.physicsColour = Color.Yellow;
@@ -112,5 +79,6 @@ namespace StopTheBoats.GameObjects
                 //this.Velocity = -this.Velocity;
             }
         }
+        */
     }
 }

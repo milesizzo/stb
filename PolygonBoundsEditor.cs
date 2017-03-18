@@ -9,6 +9,7 @@ using StopTheBoats.Graphics;
 using StopTheBoats.Scenes;
 using StopTheBoats.Templates;
 using PhysicsEngine;
+using MonoGame.Extended;
 
 namespace StopTheBoats
 {
@@ -32,7 +33,12 @@ namespace StopTheBoats
             set
             {
                 this.current = value;
-                this.points = new List<Vector2>(this.current.Bounds.Points);
+                var shape = this.current.Shape as PhysicsPolygon;
+                if (shape == null)
+                {
+                    throw new InvalidOperationException("Expected a polygon shape");
+                }
+                this.points = new List<Vector2>(shape.Vertices);
             }
         }
 
@@ -90,7 +96,7 @@ namespace StopTheBoats
             }
             if (keyboard.IsKeyDown(Keys.OemTilde))
             {
-                this.Current.Bounds = new PolygonBounds(this.points.ToArray());
+                this.Current.Shape = new PhysicsPolygon(this.points, 1f);
             }
             if (mouse.LeftButton == ButtonState.Pressed)
             {

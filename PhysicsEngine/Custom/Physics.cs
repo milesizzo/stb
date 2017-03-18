@@ -1,10 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using CommonLibrary;
+using MonoGame.Extended;
+using System.Linq;
 
-namespace PhysicsEngine
+namespace CustomPhysicsEngine
 {
-    public interface IPhysicsObject<T> where T : IBounds
+    public class ForceOnActor
+    {
+        public Vector2 Force;
+        public Vector2 ContactPoint;
+    }
+
+    public interface IActor<T> where T : IBounds
     {
         Vector2 Position { get; set; }
 
@@ -20,7 +28,12 @@ namespace PhysicsEngine
 
         Transformation GetWorldTransform();
 
-        void OnCollision(IPhysicsObject<T> entity, CollisionResult<T> collision);
+        void OnCollision(IActor<T> entity, CollisionResult<T> collision);
+    }
+
+    public interface INewActor<T> : IActor<T> where T : IBounds
+    {
+        IEnumerable<ForceOnActor> Force { get; }
     }
 
     public interface IBounds
@@ -39,7 +52,7 @@ namespace PhysicsEngine
 
     public interface ICollisionDetector<A, B> where A : IBounds where B : IBounds
     {
-        CollisionResult<B> DetectCollision(GameTime gameTime, IPhysicsObject<A> target, IPhysicsObject<B> candidate);
+        CollisionResult<B> DetectCollision(GameTime gameTime, IActor<A> target, IActor<B> candidate);
     }
 
     /*public class Actor
@@ -87,11 +100,16 @@ namespace PhysicsEngine
         }*/
 
         private readonly ICollisionDetector<T, T> detector;
-        private readonly List<IPhysicsObject<T>> actors = new List<IPhysicsObject<T>>();
+        private readonly List<IActor<T>> actors = new List<IActor<T>>();
 
         public Physics(ICollisionDetector<T, T> detector)
         {
             this.detector = detector;
+        }
+
+        public IReadOnlyList<IActor<T>> Actors
+        {
+            get { return this.actors.AsReadOnly(); }
         }
 
         public void Reset()
@@ -100,26 +118,65 @@ namespace PhysicsEngine
             this.actors.Clear();
         }
 
-        public void AddActor(IPhysicsObject<T> actor)
+        public void AddActor(IActor<T> actor)
         {
             this.actors.Add(actor);
         }
 
-        public void RemoveActor(IPhysicsObject<T> actor)
+        public void RemoveActor(IActor<T> actor)
         {
             this.actors.Remove(actor);
         }
 
-        public float CalculateTorque(IPhysicsObject<T> actor, Vector2 contactPoint, Vector2 force)
+        public float CalculateTorque(IActor<T> actor, Vector2 contactPoint, Vector2 force)
         {
-            var r = contactPoint - actor.Bounds.Centre;
+            var r = contactPoint;
             return r.X * force.X - r.Y * force.Y;
         }
 
-        public float CalculateAngularAcceleration(IPhysicsObject<T> actor, Vector2 contactPoint, Vector2 force)
+        public float CalculateAngularAcceleration(IActor<T> actor, Vector2 contactPoint, Vector2 force)
         {
             // calculates angular acceleration due to a force
             return this.CalculateTorque(actor, contactPoint, force) / actor.Bounds.MomentOfInertia;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            var dt = gameTime.GetElapsedSeconds();
+            foreach (var actor in this.actors.OfType<INewActor<T>>())
+            {
+                var linearAcceleration = Vector2.Zero;
+                var angularAcceleration = 0f;
+
+                // this bit is dodgy! figure out a better way of doing it
+                (actor.Bounds as PolygonBounds).TransformPoints(actor.GetWorldTransform());
+                /*
+                foreach (var other in this.actors)
+                {
+                    if (actor == other) continue;
+                    var collision = this.detector.DetectCollision(gameTime, actor, other);
+                    if (collision.WillIntersect)
+                    {
+                        var force = collision.MinimumTranslationVector;
+                        // F = ma, a = F/m
+                        //this.CalculateAngularAcceleration(actor, )
+                    }
+                }
+                */
+                foreach (var force in actor.Force)
+                {
+                    var f = actor.Position - actor.GetWorldTransform().TransformVector(force.Force);
+                    f.Y = -f.Y;
+                    linearAcceleration += f / actor.Mass;
+                    f.Y = -f.Y;
+                    angularAcceleration += this.CalculateAngularAcceleration(actor, force.ContactPoint, f);
+                }
+
+                actor.Velocity += linearAcceleration * dt;
+                actor.Position += actor.Velocity * dt;
+                actor.AngularVelocity += angularAcceleration * dt;
+                actor.Angle += actor.AngularVelocity * dt;
+            }
         }
 
         public void DetectCollisions(GameTime gameTime)
@@ -144,6 +201,10 @@ namespace PhysicsEngine
                     var collision = this.detector.DetectCollision(gameTime, target, candidate);
                     if (collision != null)
                     {
+                        if (collision.WillIntersect)
+                        {
+                            //
+                        }
                         target.OnCollision(candidate, collision);
                         candidate.OnCollision(target, collision);
                     }
