@@ -24,6 +24,7 @@ namespace StopTheBoats.GameObjects
             this.health = this.BoatTemplate.MaxHealth;
             this.weapons = new Weapon[this.BoatTemplate.WeaponLocations.Count];
             this.Body.AngularDamping = this.Body.LinearDamping = PhysicalObject.WaterFriction;
+            this.Fixture.Restitution = 0.01f;
         }
 
         public int WeaponSlots
@@ -78,7 +79,7 @@ namespace StopTheBoats.GameObjects
             //this.acceleration = amount * new Vector2((float)Math.Cos(this.Angle) * this.BoatTemplate.Acceleration, (float)Math.Sin(this.Angle) * this.BoatTemplate.Acceleration);
             //var accel = amount * this.BoatTemplate.Acceleration * new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
             var force = this.Body.GetWorldVector(new Vector2(amount * this.BoatTemplate.Acceleration, 0) * this.Mass);
-            this.Body.ApplyForce(force, this.Body.GetWorldPoint(this.BoatTemplate.EnginePosition));
+            this.Body.ApplyForce(force, this.Body.WorldCenter);
             //this.Body.ApplyImpulse(impulse, this.Body.LocalToWorld(this.BoatTemplate.EnginePosition));
         }
 
@@ -129,13 +130,12 @@ namespace StopTheBoats.GameObjects
             */
         }
 
-        public override bool HandleCollision(PhysicalObject other, Contact contact)
+        public float Health
         {
-            var asProjectile = other as Projectile;
-            if (asProjectile != null)
+            get { return this.health; }
+            set
             {
-                // we were hit
-                this.health = this.health - asProjectile.Damage;
+                this.health = value;
                 if (this.health <= 0f)
                 {
                     this.health = 0;
@@ -155,8 +155,20 @@ namespace StopTheBoats.GameObjects
                     explosion.Body.CollidesWith = Category.None;
                     this.Context.AddObject(explosion);
                 }
+            }
+        }
+
+        public override bool HandleCollision(PhysicalObject other, Contact contact)
+        {
+            var asProjectile = other as Projectile;
+            if (asProjectile != null)
+            {
+                // we were hit by a projectile
+                this.Health -= asProjectile.Damage;
                 return false;
             }
+            this.Health -= (this.LinearVelocity - other.LinearVelocity).Length();
+            this.Health -= Math.Abs(MathHelper.ToDegrees(this.AngularVelocity)) - Math.Abs(MathHelper.ToDegrees(other.AngularVelocity));
             return true;
         }
     }

@@ -58,6 +58,7 @@ namespace StopTheBoats
                 Rotation = MathHelper.ToRadians(random.Next(0, 360)),
             };
             rock.Body.BodyType = BodyType.Static;
+            rock.Fixture.Restitution = 0.001f;
             this.Context.AddObject(rock);
 
             this.Assets.Audio["Audio/ambient2"].Audio.Play(0.1f, 0, 0);

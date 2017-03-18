@@ -33,6 +33,7 @@ namespace StopTheBoats
             var patrol_boat = assets.Sprites.GetOrAdd("patrol_boat", (key) =>
             {
                 var obj = assets.Sprites.Load(key);
+                obj.Origin = new Vector2(19, 31);
                 return obj;
             });
             var small_boat = assets.Sprites.GetOrAdd("small_boat", (key) =>
@@ -88,10 +89,10 @@ namespace StopTheBoats
                     EnginePosition = new Vector2(-71, 0),
                     Mass = 5800000f,
                 };
-                //boat.WeaponLocations.Add(new Vector2(99, 0));
-                //boat.WeaponLocations.Add(new Vector2(20, 0));
-                boat.WeaponLocations.Add(new Vector2(28, 0));
-                boat.WeaponLocations.Add(new Vector2(-52, 0));
+                boat.WeaponLocations.Add(new Vector2(99, 0));
+                boat.WeaponLocations.Add(new Vector2(20, 0));
+                //boat.WeaponLocations.Add(new Vector2(28, 0));
+                //boat.WeaponLocations.Add(new Vector2(-52, 0));
                 return boat;
             });
             var smallBoat = assets.Objects.GetOrAdd("boat.small", (key) =>
