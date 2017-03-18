@@ -61,6 +61,7 @@
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\Renderer.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
+    <Compile Include="KeyboardHelper.cs" />
     <Compile Include="PolygonBoundsEditor.cs" />
     <Compile Include="Scenes\GameScene.cs" />
     <Compile Include="Scenes\Scene.cs" />

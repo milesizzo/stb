@@ -74,7 +74,6 @@ namespace StopTheBoats
         private Renderer renderer;
         private int frameCounter;
         private double frameRate;
-        private Dictionary<Keys, bool> keyHeld = new Dictionary<Keys, bool>();
 
         public StopTheBoats()
         {
@@ -128,23 +127,6 @@ namespace StopTheBoats
             // TODO: Unload any non ContentManager content here
         }
 
-        private bool KeyPressed(Keys key)
-        {
-            if (Keyboard.GetState().IsKeyDown(key))
-            {
-                if (!this.keyHeld.ContainsKey(key))
-                {
-                    this.keyHeld[key] = true;
-                    return true;
-                }
-            }
-            else
-            {
-                this.keyHeld.Remove(key);
-            }
-            return false;
-        }
-
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -152,17 +134,17 @@ namespace StopTheBoats
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (this.KeyPressed(Keys.F1))
+            if (KeyboardHelper.KeyPressed(Keys.F1))
             {
                 this.currentScene = this.scenes["game"];
                 this.currentScene.SetUp();
             }
-            else if (this.KeyPressed(Keys.F2))
+            else if (KeyboardHelper.KeyPressed(Keys.F2))
             {
                 this.currentScene = this.scenes["editor.bounds"];
                 this.currentScene.SetUp();
             }
-            else if (this.KeyPressed(Keys.F12))
+            else if (KeyboardHelper.KeyPressed(Keys.F12))
             {
                 AbstractObject.DebugInfo = !AbstractObject.DebugInfo;
             }

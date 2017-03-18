@@ -11,21 +11,25 @@ using StopTheBoats.Templates;
 using MonoGame.Extended;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
+using System.Linq;
 
 namespace StopTheBoats
 {
     public class PolygonBoundsEditor : GameAssetScene
     {
+        private const float DefaultZoom = 2f;
         private SpriteTemplate current;
         private List<Vector2> points;
         private Vector2 position;
         private int currentPoint = -1;
+        private List<SpriteTemplate> sprites = new List<SpriteTemplate>();
+        private int currentSpriteIndex = 0;
 
         private SpriteTemplate cursor;
 
         public PolygonBoundsEditor(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, assets)
         {
-            this.Camera.Zoom = 2;
+            this.Camera.Zoom = DefaultZoom;
         }
 
         public SpriteTemplate Current
@@ -55,7 +59,14 @@ namespace StopTheBoats
                 return sprite;
             });
 
-            this.Current = this.Assets.Sprites["rock1"];
+            this.sprites.AddRange(new[]
+            {
+                this.Assets.Sprites["rock1"],
+                this.Assets.Sprites["patrol_boat"],
+                this.Assets.Sprites["small_boat"],
+            });
+
+            this.Current = this.sprites[this.currentSpriteIndex];
         }
 
         public bool FindPointAt(Vector2 relative, out int closest)
@@ -99,6 +110,29 @@ namespace StopTheBoats
             {
                 this.Current.Shape = new PolygonShape(new Vertices(this.points), 1f);
             }
+            if (keyboard.IsKeyDown(Keys.PageUp))
+            {
+                this.Camera.ZoomIn(gameTime.GetElapsedSeconds());
+            }
+            if (keyboard.IsKeyDown(Keys.PageDown))
+            {
+                this.Camera.ZoomOut(gameTime.GetElapsedSeconds());
+            }
+            if (keyboard.IsKeyDown(Keys.Home))
+            {
+                this.Camera.Zoom = DefaultZoom;
+            }
+            if (KeyboardHelper.KeyPressed(Keys.Left))
+            {
+                this.currentSpriteIndex--;
+                if (this.currentSpriteIndex < 0) this.currentSpriteIndex = this.sprites.Count - 1;
+                this.Current = this.sprites[this.currentSpriteIndex];
+            }
+            if (KeyboardHelper.KeyPressed(Keys.Right))
+            {
+                this.currentSpriteIndex = (this.currentSpriteIndex + 1) % this.sprites.Count;
+                this.Current = this.sprites[this.currentSpriteIndex];
+            }
             if (mouse.LeftButton == ButtonState.Pressed)
             {
                 var relative = mouseWorld - this.position;
@@ -111,7 +145,7 @@ namespace StopTheBoats
                     }
                     else
                     {
-                        if (closestIndex > -1)
+                        if (closestIndex > -1 && this.points.Count < FarseerPhysics.Settings.MaxPolygonVertices)
                         {
                             this.currentPoint = closestIndex + 1;
                             this.points.Insert(this.currentPoint, relative);
