@@ -10,8 +10,7 @@ using StopTheBoats.Graphics;
 using StopTheBoats.Scenes;
 using StopTheBoats.Templates;
 using CommonLibrary;
-using PhysicsEngine;
-using PhysicsEngine.Farseer;
+using FarseerPhysics.Dynamics;
 
 namespace StopTheBoats
 {
@@ -25,10 +24,11 @@ namespace StopTheBoats
         private bool spacePressed = false;
         private int lastScroll = 0;
         private Vector2 mouse;
+        private World physics;
 
-        public StopTheBoatsScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, new GameContext(assets, new FarseerEngine()))
+        public StopTheBoatsScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, new GameContext(assets))
         {
-            this.Context.Physics.WorldDamping = 1f;
+            this.physics = new World(Vector2.Zero);
             this.Camera.Rotation = 0;
             this.Camera.Zoom = 1;
             this.zoomTarget = this.zoomSource = this.Camera.Zoom;
@@ -38,10 +38,12 @@ namespace StopTheBoats
         {
             base.SetUp();
 
+            this.physics.Clear();
+
             StopTheBoatsHelper.LoadGameAssets(this.Assets);
 
             // set up and add player
-            this.player = new Boat(this.Context.Physics, this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
+            this.player = new Boat(this.physics, this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
             this.Context.AddObject(this.player);
 
             this.player.Position = Vector2.Zero;
@@ -50,11 +52,13 @@ namespace StopTheBoats
 
             // set up and add a random rock
             var random = new Random();
-            this.Context.AddObject(new Sprite(this.Context.Physics, this.Context.Assets.Sprites["rock1"])
+            var rock = new SpriteObject(this.physics, this.Context.Assets.Sprites["rock1"])
             {
                 Position = new Vector2(200, 200),
                 Rotation = MathHelper.ToRadians(random.Next(0, 360)),
-            });
+            };
+            rock.Body.BodyType = BodyType.Static;
+            this.Context.AddObject(rock);
 
             this.Assets.Audio["Audio/ambient2"].Audio.Play(0.1f, 0, 0);
             this.Assets.Audio["Audio/ambient1"].Audio.Play(0.02f, 0, -0.8f);
@@ -62,6 +66,8 @@ namespace StopTheBoats
 
         public override void Update(GameTime gameTime)
         {
+            this.physics.Step((float)Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 1f / 30f));
+
             var mouse = Mouse.GetState();
             var keyboard = Keyboard.GetState();
 
@@ -96,7 +102,7 @@ namespace StopTheBoats
             if (keyboard.IsKeyDown(Keys.Space) && !this.spacePressed)
             {
                 var random = new Random();
-                var enemy = new Boat(this.Context.Physics, this.Assets.Objects.Get<BoatTemplate>("boat.small"));
+                var enemy = new Boat(this.physics, this.Assets.Objects.Get<BoatTemplate>("boat.small"));
                 var topLeft = this.Camera.ScreenToWorld(0, -100);
                 var topRight = this.Camera.ScreenToWorld(this.Camera.Viewport.Width, -100);
                 enemy.Position = Vector2.Lerp(topLeft, topRight, (float)random.NextDouble());
@@ -112,16 +118,14 @@ namespace StopTheBoats
             }
             if (mouse.LeftButton == ButtonState.Pressed)
             {
-                /*
                 foreach (var weapon in this.player.Weapons)
                 {
-                    var projectile = weapon.Fire(gameTime);
+                    var projectile = weapon.Fire(this.physics, gameTime);
                     if (projectile != null)
                     {
                         this.Context.AddObject(projectile);
                     }
                 }
-                */
             }
             if (mouse.ScrollWheelValue != this.lastScroll)
             {
@@ -133,13 +137,10 @@ namespace StopTheBoats
             }
             this.mouse = this.Camera.ScreenToWorld(mouse.X, mouse.Y);
 
-            /*
             foreach (var weapon in this.player.Weapons)
             {
-                var world = weapon.World;
-                weapon.WorldRotation = (float)Math.Atan2(this.mouse.Y - world.Position.Y, this.mouse.X - world.Position.X);
+                weapon.Rotation = (float)Math.Atan2(this.mouse.Y - weapon.Position.Y, this.mouse.X - weapon.Position.X);
             }
-            */
 
             base.Update(gameTime);
 
@@ -165,20 +166,18 @@ namespace StopTheBoats
 
             base.Draw(renderer);
 
-            /*
             foreach (var weapon in this.player.Weapons)
             {
-                var lastPos = weapon.World.Position;
+                var lastPos = weapon.Position;
                 var colour = Color.Black;
                 for (var i = 0; i < 4; i++)
                 {
-                    var pos = lastPos.AtBearing(weapon.World.Rotation, 128);
+                    var pos = lastPos.AtBearing(weapon.Rotation, 128);
                     renderer.Render.DrawLine(lastPos, pos, colour);
                     colour.A -= 256 / 4;
                     lastPos = pos;
                 }
             }
-            */
             //this.sprites["patrol_boat"].Draw(this.spriteBatch, this.player.Position, this.player.Bearing);
             //this.sprites["gun_single_barrel"].Draw(this.spriteBatch, this.player.Weapon.Position, this.player.Weapon.Bearing);
             //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);
@@ -187,6 +186,11 @@ namespace StopTheBoats
             renderer.DrawString(envy12, string.Format("#objects: {0}", this.Context.NumObjects), this.Camera.ScreenToWorld(10, 10), Color.White);
             renderer.DrawString(envy12, string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), this.Camera.ScreenToWorld(10, 24), Color.White);
             renderer.DrawString(envy12, string.Format("zoom: {0}", this.Camera.Zoom), this.Camera.ScreenToWorld(10, 36), Color.White);
+
+            if (AbstractObject.DebugInfo)
+            {
+                this.physics.Draw(renderer);
+            }
 
             renderer.Render.DrawCircle(new CircleF(this.mouse, 8), 16, Color.IndianRed);
         }

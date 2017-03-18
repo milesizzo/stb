@@ -3,7 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 using StopTheBoats.Graphics;
-using PhysicsEngine;
+using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common;
 
 namespace StopTheBoats.Templates
 {
@@ -11,7 +12,7 @@ namespace StopTheBoats.Templates
     {
         public Vector2 Origin;
         public int FPS = 5;
-        private PhysicsShape shape;
+        private Shape shape;
 
         public abstract Texture2D Texture { get; set; }
 
@@ -21,25 +22,25 @@ namespace StopTheBoats.Templates
 
         public virtual int Height { get { return this.Texture.Height; } }
 
-        public PhysicsShape DefaultShape
+        public Shape DefaultShape
         {
             get
             {
-                return new PhysicsPolygon(new[]
+                return new PolygonShape(new Vertices(new[]
                 {
                     -this.Origin,
                     new Vector2(this.Width - this.Origin.X, -this.Origin.Y),
                     new Vector2(this.Width - this.Origin.X, this.Height - this.Origin.Y),
                     new Vector2(-this.Origin.X, this.Height - this.Origin.Y)
-                }, 1f);
+                }), 1f);
             }
         }
 
-        public PhysicsShape Shape
+        public Shape Shape
         {
             get
             {
-                return this.shape?? this.DefaultShape;
+                return this.shape ?? this.DefaultShape;
             }
             set
             {

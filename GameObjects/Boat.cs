@@ -2,27 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.Shapes;
 using StopTheBoats.Templates;
 using StopTheBoats.Graphics;
-using PhysicsEngine;
-using CommonLibrary;
 using MonoGame.Extended;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Contacts;
+using CommonLibrary;
 
 namespace StopTheBoats.GameObjects
 {
-    public class Boat : Sprite
+    public class Boat : SpriteObject
     {
         public readonly BoatTemplate BoatTemplate;
         private readonly Weapon[] weapons;
         private float health;
 
-        public Boat(IPhysicsEngine physics, BoatTemplate template) : base(physics, template.SpriteTemplate)
+        public Boat(World world, BoatTemplate template) : base(world, template.SpriteTemplate)
         {
             this.BoatTemplate = template;
             this.Mass = template.Mass;
             this.health = this.BoatTemplate.MaxHealth;
             this.weapons = new Weapon[this.BoatTemplate.WeaponLocations.Count];
+            this.Body.AngularDamping = this.Body.LinearDamping = PhysicalObject.WaterFriction;
         }
 
         public int WeaponSlots
@@ -41,7 +42,7 @@ namespace StopTheBoats.GameObjects
             {
                 if (this.weapons[slot] == null)
                 {
-                    this.SetWeapon(slot, new Weapon(this.Physics, weapon));
+                    this.SetWeapon(slot, new Weapon(this, weapon));
                     return slot;
                 }
                 slot++;
@@ -61,7 +62,7 @@ namespace StopTheBoats.GameObjects
                 this.RemoveChild(existing);
                 this.weapons[slot] = null;
             }
-            weapon.Position = this.BoatTemplate.WeaponLocations[slot];
+            weapon.LocalPosition = this.BoatTemplate.WeaponLocations[slot];
             this.weapons[slot] = weapon;
             this.AddChild(weapon);
         }
@@ -76,8 +77,8 @@ namespace StopTheBoats.GameObjects
             //var angle = this.rudderAngle * this.LinearVelocity.Length() / 10;
             //this.acceleration = amount * new Vector2((float)Math.Cos(this.Angle) * this.BoatTemplate.Acceleration, (float)Math.Sin(this.Angle) * this.BoatTemplate.Acceleration);
             //var accel = amount * this.BoatTemplate.Acceleration * new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
-            var force = this.Body.RotateLocal(new Vector2(amount * this.BoatTemplate.Acceleration, 0) * this.Mass);
-            this.Body.ApplyForce(force, this.Body.LocalToWorld(this.BoatTemplate.EnginePosition));
+            var force = this.Body.GetWorldVector(new Vector2(amount * this.BoatTemplate.Acceleration, 0) * this.Mass);
+            this.Body.ApplyForce(force, this.Body.GetWorldPoint(this.BoatTemplate.EnginePosition));
             //this.Body.ApplyImpulse(impulse, this.Body.LocalToWorld(this.BoatTemplate.EnginePosition));
         }
 
@@ -128,35 +129,35 @@ namespace StopTheBoats.GameObjects
             */
         }
 
-        /*
-        public override void OnCollision(IActor<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
+        public override bool HandleCollision(PhysicalObject other, Contact contact)
         {
-            base.OnCollision(entity, collision);
-            var asProjectile = entity as Projectile;
-            if (asProjectile != null && asProjectile.Owner != this && collision.Intersecting)
+            var asProjectile = other as Projectile;
+            if (asProjectile != null)
             {
                 // we were hit
                 this.health = this.health - asProjectile.Damage;
                 if (this.health <= 0f)
                 {
                     this.health = 0;
-                    this.AwaitingDeletion = true;
+                    this.IsAwaitingDeletion = true;
 
                     this.Context.Assets.Audio["Audio/explosion2"].Audio.Play();
 
                     var random = new Random();
                     var assetName = random.Choice("explosion_sheet2", "explosion_sheet3");
-                    this.Context.AddObject(new GameElement(FrictionMedium.Air)
+                    var explosion = new SpriteObject(this.Physics, this.Context.Assets.Sprites[assetName])
                     {
                         Position = this.Position,
-                        Velocity = this.Velocity,
-                        SpriteTemplate = this.Context.Assets.Sprites[assetName],
-                        Bounds = null,
+                        LinearVelocity = this.LinearVelocity,
                         DeleteAfterAnimation = true,
-                    });
+                    };
+                    explosion.Body.AngularDamping = explosion.Body.LinearDamping = PhysicalObject.AirFriction;
+                    explosion.Body.CollidesWith = Category.None;
+                    this.Context.AddObject(explosion);
                 }
+                return false;
             }
+            return true;
         }
-        */
     }
 }

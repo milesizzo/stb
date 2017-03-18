@@ -8,8 +8,9 @@ using StopTheBoats.GameObjects;
 using StopTheBoats.Graphics;
 using StopTheBoats.Scenes;
 using StopTheBoats.Templates;
-using PhysicsEngine;
 using MonoGame.Extended;
+using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common;
 
 namespace StopTheBoats
 {
@@ -33,7 +34,7 @@ namespace StopTheBoats
             set
             {
                 this.current = value;
-                var shape = this.current.Shape as PhysicsPolygon;
+                var shape = this.current.Shape as PolygonShape;
                 if (shape == null)
                 {
                     throw new InvalidOperationException("Expected a polygon shape");
@@ -96,7 +97,7 @@ namespace StopTheBoats
             }
             if (keyboard.IsKeyDown(Keys.OemTilde))
             {
-                this.Current.Shape = new PhysicsPolygon(this.points, 1f);
+                this.Current.Shape = new PolygonShape(new Vertices(this.points), 1f);
             }
             if (mouse.LeftButton == ButtonState.Pressed)
             {

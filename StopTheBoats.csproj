@@ -57,6 +57,7 @@
     <Compile Include="GameObjects\GameAssetStore.cs" />
     <Compile Include="GameObjects\GameContext.cs" />
     <Compile Include="GameObjects\GameElement.cs" />
+    <Compile Include="GameObjects\PhysicalObject.cs" />
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\Renderer.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Scenes\GameScene.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Content\SpriteStore.cs" />
+    <Compile Include="ShapesExtensions.cs" />
     <Compile Include="StopTheBoats.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="Program.cs" />
@@ -111,9 +113,9 @@
       <Project>{107c5647-a532-45d0-85a5-82bfb075d6c8}</Project>
       <Name>CommonLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="PhysicsEngine\PhysicsEngine.csproj">
-      <Project>{1282ee44-67d9-488f-bafd-f12a477ecefe}</Project>
-      <Name>PhysicsEngine</Name>
+    <ProjectReference Include="FarseerPhysics\Farseer Physics MonoGame.csproj">
+      <Project>{0aad36e3-51a5-4a07-ab60-5c8a66bd38b7}</Project>
+      <Name>Farseer Physics MonoGame</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

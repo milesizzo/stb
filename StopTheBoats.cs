@@ -13,7 +13,6 @@ using StopTheBoats.GameObjects;
 using StopTheBoats.Graphics;
 using StopTheBoats.Content;
 using StopTheBoats.Scenes;
-using PhysicsEngine;
 using CommonLibrary;
 
 namespace StopTheBoats
@@ -165,7 +164,7 @@ namespace StopTheBoats
             }
             else if (this.KeyPressed(Keys.F12))
             {
-                GameObject.DebugInfo = !GameObject.DebugInfo;
+                AbstractObject.DebugInfo = !AbstractObject.DebugInfo;
             }
 
             if (this.currentScene != null)

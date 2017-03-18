@@ -81,15 +81,17 @@ namespace StopTheBoats
                 var boat = new BoatTemplate
                 {
                     //Acceleration = 50.0f,
-                    Acceleration = 10.0f,
+                    Acceleration = 100.0f,
                     SpriteTemplate = patrol_boat,
                     MaxHealth = 1000f,
                     //EnginePosition = new Vector2(19, 31),
                     EnginePosition = new Vector2(-71, 0),
                     Mass = 5800000f,
                 };
-                boat.WeaponLocations.Add(new Vector2(99, 0));
-                boat.WeaponLocations.Add(new Vector2(20, 0));
+                //boat.WeaponLocations.Add(new Vector2(99, 0));
+                //boat.WeaponLocations.Add(new Vector2(20, 0));
+                boat.WeaponLocations.Add(new Vector2(28, 0));
+                boat.WeaponLocations.Add(new Vector2(-52, 0));
                 return boat;
             });
             var smallBoat = assets.Objects.GetOrAdd("boat.small", (key) =>
@@ -99,6 +101,7 @@ namespace StopTheBoats
                     Acceleration = 75.0f,
                     SpriteTemplate = small_boat,
                     MaxHealth = 200f,
+                    Mass = 58000f,
                 };
             });
 
@@ -108,7 +111,8 @@ namespace StopTheBoats
                 return new WeaponTemplate
                 {
                     SpriteTemplate = gun_single_barrel,
-                    ProjectileVelocity = 1000f,
+                    ProjectileVelocity = 5000f,
+                    ProjectileMass = 100f,
                     FireRate = TimeSpan.FromSeconds(1),
                     Damage = 100f,
                 };

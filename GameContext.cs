@@ -2,9 +2,12 @@
 using MonoGame.Extended;
 using StopTheBoats.GameObjects;
 using StopTheBoats.Graphics;
-using PhysicsEngine;
 using System.Collections.Generic;
 using System;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common;
+using System.Linq;
 
 namespace StopTheBoats
 {
@@ -17,19 +20,16 @@ namespace StopTheBoats
         }
 
         private readonly List<IGameObject> objects = new List<IGameObject>();
-        private readonly IPhysicsEngine physics;
         private readonly GameAssetStore assets;
         private readonly List<ScheduledObject> scheduled = new List<ScheduledObject>();
 
-        public GameContext(GameAssetStore assets, IPhysicsEngine physics)
+        public GameContext(GameAssetStore assets)
         {
-            this.physics = physics;
             this.assets = assets;
         }
 
         public void Reset()
         {
-            this.physics.Reset();
             foreach (var obj in this.objects)
             {
                 obj.Context = null;
@@ -37,8 +37,6 @@ namespace StopTheBoats
             this.objects.Clear();
             this.scheduled.Clear();
         }
-
-        public IPhysicsEngine Physics { get { return this.physics; } }
 
         public GameAssetStore Assets { get { return this.assets; } }
 
@@ -82,7 +80,6 @@ namespace StopTheBoats
 
         public void Update(GameTime gameTime)
         {
-            this.physics.Update(gameTime);
             var i = 0;
             while (i < this.scheduled.Count)
             {
@@ -109,6 +106,7 @@ namespace StopTheBoats
                 }
                 else
                 {
+                    obj.Update(gameTime);
                     i++;
                 }
             }
@@ -120,9 +118,41 @@ namespace StopTheBoats
             {
                 obj.Draw(renderer);
             }
-            if (GameObject.DebugInfo)
+        }
+    }
+
+    public static class WorldExtensions
+    {
+        private static void DrawShape(Renderer renderer, Shape shape, Transform transform, Color colour)
+        {
+            switch (shape.ShapeType)
             {
-                this.physics.Draw(renderer.Render);
+                case ShapeType.Circle:
+                    var circle = shape as CircleShape;
+                    var centre = MathUtils.Mul(ref transform, circle.Position);
+                    renderer.Render.DrawCircle(centre, circle.Radius, 16, colour);
+                    break;
+                case ShapeType.Polygon:
+                    var polygon = shape as PolygonShape;
+                    var transformedPoints = polygon.Vertices.Select(v => MathUtils.Mul(ref transform, v));
+                    renderer.Render.DrawPolygon(Vector2.Zero, transformedPoints.ToArray(), colour);
+                    break;
+                default:
+                    throw new NotImplementedException($"Cannot draw shapes of Farseer type {shape.ShapeType}");
+            }
+        }
+
+        public static void Draw(this World world, Renderer renderer)
+        {
+            foreach (var body in world.BodyList)
+            {
+                Transform transform;
+                body.GetTransform(out transform);
+                foreach (var fixture in body.FixtureList)
+                {
+                    DrawShape(renderer, fixture.Shape, transform, Color.White);
+                }
+                renderer.Render.DrawPoint(body.Position, Color.Yellow, size: 3f);
             }
         }
     }

@@ -2,9 +2,11 @@
 using Microsoft.Xna.Framework;
 using System.Linq;
 using StopTheBoats.Graphics;
-using PhysicsEngine;
 using System;
 using MonoGame.Extended;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Dynamics.Contacts;
 
 namespace StopTheBoats.GameObjects
 {
@@ -14,11 +16,13 @@ namespace StopTheBoats.GameObjects
         private readonly IGameObject owner;
         private readonly float maxVelocity;
 
-        public Projectile(IPhysicsEngine physics, IGameObject owner, float damage, float maxVelocity) : base(physics, new PhysicsCircle(5f, 1f))
+        public Projectile(World world, PhysicalObject owner, float damage, float maxVelocity) : base(world, new CircleShape(5f, 1f))
         {
             this.damage = damage;
             this.maxVelocity = maxVelocity;
             this.owner = owner;
+            this.Body.IgnoreCollisionWith(owner.Body);
+            this.Body.AngularDamping = this.Body.LinearDamping = PhysicalObject.AirFriction;
         }
 
         public float Damage
@@ -60,25 +64,20 @@ namespace StopTheBoats.GameObjects
             base.Draw(renderer);
         }
 
-        /*
-        public override void OnCollision(IActor<PolygonBounds> entity, CollisionResult<PolygonBounds> collision)
+        public override bool HandleCollision(PhysicalObject other, Contact contact)
         {
-            //base.OnCollision(entity, collision);
-            var asProjectile = entity as Projectile;
-            if (collision.Intersecting && entity != this.owner && (asProjectile == null || asProjectile.owner != this.owner))
+            var asProjectile = other as Projectile;
+            if (asProjectile == null)
             {
-                // hit?
-                this.AwaitingDeletion = true;
+                this.IsAwaitingDeletion = true;
                 this.Context.Assets.Audio["Audio/explosion1"].Audio.Play(0.1f, 0, 0);
-                this.Context.AddObject(new GameElement(FrictionMedium.Air)
-                {
-                    Position = this.Position,
-                    SpriteTemplate = this.Context.Assets.Sprites["explosion_sheet1"],
-                    Bounds = null,
-                    DeleteAfterAnimation = true,
-                });
+                var explosion = new AttachedObject(this.Context.Assets.Sprites["explosion_sheet1"]);
+                other.AddChild(explosion);
+                explosion.Position = this.Position;
+                explosion.DeleteAfterAnimation = true;
+                return false;
             }
+            return false;
         }
-        */
     }
 }
