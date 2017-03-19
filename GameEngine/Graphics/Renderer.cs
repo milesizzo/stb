@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using GameEngine.Templates;
 
 namespace GameEngine.Graphics
 {
     public class Renderer
     {
         private SpriteBatch render;
+        private SpriteBatch screen;
         public readonly GraphicsDeviceManager Graphics;
 
         public Renderer(Game game)
@@ -21,13 +21,11 @@ namespace GameEngine.Graphics
 
             // NOTE! we can only create the SpriteBatch after the changes have been applied!
             this.render = new SpriteBatch(this.Graphics.GraphicsDevice);
+            this.screen = new SpriteBatch(this.Graphics.GraphicsDevice);
         }
 
         public SpriteBatch Render { get { return this.render; } }
 
-        public void DrawString(FontTemplate font, string text, Vector2 position, Color colour)
-        {
-            this.Render.DrawString(font.Font, text, position, colour);
-        }
+        public SpriteBatch Screen { get { return this.screen; } }
     }
 }

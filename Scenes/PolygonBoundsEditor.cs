@@ -11,6 +11,7 @@ using GameEngine.Scenes;
 using GameEngine.GameObjects;
 using GameEngine.Graphics;
 using GameEngine.Helpers;
+using GameEngine.Extensions;
 
 namespace StopTheBoats.Scenes
 {
@@ -196,8 +197,8 @@ namespace StopTheBoats.Scenes
             //this.cursor.DrawSprite(renderer, this.Camera.WorldToScreen(mouse.X, mouse.Y), Color.White, 0, Vector2.One, SpriteEffects.None);
             var mouseScreen = new Vector2(mouse.X, mouse.Y);
             var mouseWorld = this.Camera.ScreenToWorld(mouseScreen);
-            renderer.DrawString(this.Assets.Fonts["envy16"], string.Format("Mouse (screen): {0}", mouseScreen), this.Camera.ScreenToWorld(new Vector2(8, 8)), Color.White);
-            renderer.DrawString(this.Assets.Fonts["envy16"], string.Format(" Mouse (world): {0}", mouseWorld), this.Camera.ScreenToWorld(new Vector2(8, 64)), Color.White);
+            renderer.Screen.DrawString(this.Assets.Fonts["envy16"], string.Format("Mouse (screen): {0}", mouseScreen), new Vector2(8, 8), Color.White);
+            renderer.Screen.DrawString(this.Assets.Fonts["envy16"], string.Format(" Mouse (world): {0}", mouseWorld), new Vector2(8, 32), Color.White);
 
             this.cursor.DrawSprite(renderer, this.Camera.ScreenToWorld(mouse.X, mouse.Y), Color.White, 0, Vector2.One, SpriteEffects.None);
         }

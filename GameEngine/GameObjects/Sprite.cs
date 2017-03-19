@@ -7,6 +7,7 @@ using FarseerPhysics.Dynamics;
 using CommonLibrary;
 using GameEngine.Templates;
 using GameEngine.Graphics;
+using GameEngine.Extensions;
 
 namespace GameEngine.GameObjects
 {
@@ -92,10 +93,10 @@ namespace GameEngine.GameObjects
                 var loc = this.Position - this.SpriteTemplate.Origin;
                 var font = this.Context.Assets.Fonts["envy12"];
                 //renderer.DrawString(this.Context.Assets.Fonts["envy12"], string.Format("velocity: {0}", this.LinearVelocity), origin + new Vector2(0, -96), Color.White);
-                renderer.DrawString(font, $"rotation: {this.Rotation}", loc + new Vector2(0, -96), Color.White);
-                renderer.DrawString(font, $"velocity: {this.LinearVelocity}", loc + new Vector2(0, -96 + 12), Color.White);
-                renderer.DrawString(font, $"position: {this.Position}", loc + new Vector2(0, -96 + 24), Color.White);
-                renderer.DrawString(font, $"collided: {this.NumCollisions}", loc + new Vector2(0, -96 + 36), Color.White);
+                renderer.Render.DrawString(font, $"rotation: {this.Rotation}", loc + new Vector2(0, -96), Color.White);
+                renderer.Render.DrawString(font, $"velocity: {this.LinearVelocity}", loc + new Vector2(0, -96 + 12), Color.White);
+                renderer.Render.DrawString(font, $"position: {this.Position}", loc + new Vector2(0, -96 + 24), Color.White);
+                renderer.Render.DrawString(font, $"collided: {this.NumCollisions}", loc + new Vector2(0, -96 + 36), Color.White);
             }
             base.Draw(renderer);
         }

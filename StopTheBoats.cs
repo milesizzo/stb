@@ -14,6 +14,8 @@ using GameEngine.Templates;
 using GameEngine.Graphics;
 using StopTheBoats.Scenes;
 using GameEngine.Helpers;
+using GameEngine;
+using GameEngine.Extensions;
 
 namespace StopTheBoats
 {
@@ -66,22 +68,14 @@ namespace StopTheBoats
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class StopTheBoats : Game
+    public class StopTheBoats : SceneGame
     {
-        private IScene currentScene;
-        private TemplateStore<IScene> scenes;
         private GameAssetStore assets;
-        private Renderer renderer;
-        private int frameCounter;
-        private double frameRate;
 
         public StopTheBoats()
         {
             this.Content.RootDirectory = "Content";
-            this.renderer = new Renderer(this);
-
             this.assets = new GameAssetStore(this.Content);
-            this.scenes = new TemplateStore<IScene>();
         }
 
         /// <summary>
@@ -108,11 +102,11 @@ namespace StopTheBoats
             // TODO: use this.Content to load your game content here
             StopTheBoatsHelper.LoadFonts(this.assets);
 
-            this.scenes.GetOrAdd("game", (key) =>
+            this.Scenes.GetOrAdd("game", (key) =>
             {
                 return new StopTheBoatsScene(this.GraphicsDevice, this.assets);
             });
-            this.scenes.GetOrAdd("editor.bounds", (key) =>
+            this.Scenes.GetOrAdd("editor.bounds", (key) =>
             {
                 return new PolygonBoundsEditor(this.GraphicsDevice, this.assets);
             });
@@ -136,65 +130,30 @@ namespace StopTheBoats
         {
             if (KeyboardHelper.KeyPressed(Keys.F1))
             {
-                this.currentScene = this.scenes["game"];
-                this.currentScene.SetUp();
+                this.SetCurrentScene("game");
             }
             else if (KeyboardHelper.KeyPressed(Keys.F2))
             {
-                this.currentScene = this.scenes["editor.bounds"];
-                this.currentScene.SetUp();
+                this.SetCurrentScene("editor.bounds");
             }
             else if (KeyboardHelper.KeyPressed(Keys.F12))
             {
                 AbstractObject.DebugInfo = !AbstractObject.DebugInfo;
             }
 
-            if (this.currentScene != null)
+            if (this.CurrentScene != null && this.CurrentScene.SceneEnded)
             {
-                if (this.IsActive)
-                {
-                    this.currentScene.Update(gameTime);
-                }
-
-                if (this.currentScene.SceneEnded)
-                {
-                    this.Exit();
-                }
+                this.Exit();
             }
-
-            if (gameTime.GetElapsedSeconds() > 0)
-            {
-                this.frameRate = this.frameCounter / gameTime.GetElapsedSeconds();
-            }
-            this.frameCounter = 0;
 
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
+        protected override void Draw(Renderer renderer)
         {
-            if (this.currentScene != null)
-            {
-                this.renderer.Render.Begin(blendState: BlendState.NonPremultiplied, transformMatrix: this.currentScene.Camera.GetViewMatrix());
-                try
-                {
-                    this.currentScene.Draw(this.renderer);
-
-                    var envy16 = this.assets.Fonts["envy16"];
-                    this.renderer.DrawString(envy16, string.Format("FPS: {0:0.0}", this.frameRate), this.currentScene.Camera.ScreenToWorld(1024, 10), Color.White);
-                }
-                finally
-                {
-                    this.renderer.Render.End();
-                }
-            }
-            base.Draw(gameTime);
-
-            this.frameCounter++;
+            var envy16 = this.assets.Fonts["envy16"];
+            renderer.Screen.DrawString(envy16, string.Format("FPS: {0:0.0}", this.FPS), new Vector2(1024, 10), Color.White);
+            base.Draw(renderer);
         }
     }
 }

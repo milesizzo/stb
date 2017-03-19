@@ -185,9 +185,9 @@ namespace StopTheBoats.Scenes
             //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);
             var envy12 = this.Context.Assets.Fonts["envy12"];
             var envy16 = this.Context.Assets.Fonts["envy16"];
-            renderer.DrawString(envy12, string.Format("#objects: {0}", this.Context.NumObjects), this.Camera.ScreenToWorld(10, 10), Color.White);
-            renderer.DrawString(envy12, string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), this.Camera.ScreenToWorld(10, 24), Color.White);
-            renderer.DrawString(envy12, string.Format("zoom: {0}", this.Camera.Zoom), this.Camera.ScreenToWorld(10, 36), Color.White);
+            renderer.Screen.DrawString(envy12, string.Format("#objects: {0}", this.Context.NumObjects), new Vector2(10, 10), Color.White);
+            renderer.Screen.DrawString(envy12, string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), new Vector2(10, 24), Color.White);
+            renderer.Screen.DrawString(envy12, string.Format("zoom: {0}", this.Camera.Zoom), new Vector2(10, 36), Color.White);
 
             if (AbstractObject.DebugInfo)
             {
