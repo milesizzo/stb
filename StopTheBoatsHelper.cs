@@ -52,6 +52,12 @@ namespace StopTheBoats
             {
                 return assets.Sprites.Load(key);
             });
+            var shore = assets.Sprites.GetOrAdd("shore", (key) =>
+            {
+                var obj = assets.Sprites.Load(key);
+                obj.Origin = new Vector2(0, 0);
+                return obj;
+            });
             var explosion1 = assets.Sprites.GetOrAdd("explosion_sheet1", (key) =>
             {
                 var obj = assets.Sprites.Load(64, 64, key);

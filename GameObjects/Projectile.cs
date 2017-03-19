@@ -5,6 +5,7 @@ using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics.Contacts;
 using GameEngine.GameObjects;
 using GameEngine.Graphics;
+using GameEngine.Extensions;
 
 namespace StopTheBoats.GameObjects
 {
@@ -35,7 +36,6 @@ namespace StopTheBoats.GameObjects
 
         public override void Update(GameTime gameTime)
         {
-            //base.Update(gameTime);
             var length = this.LinearVelocity.LengthSquared();
             if (length < 1000)
             {
@@ -53,19 +53,20 @@ namespace StopTheBoats.GameObjects
                 colour = new Color(0.5f, 0.5f, 0.5f, (length / (500 * 500)));
             }
             renderer.World.DrawCircle(this.Position, 5f, 12, colour, 1.5f);
-            /*if (GameObject.DebugInfo)
+
+            if (AbstractObject.DebugInfo)
             {
-                var world = this.World;
-                var points = this.Bounds.Points.Select(p => world.TransformVector(p));
-                renderer.Render.DrawPolygon(Vector2.Zero, points.ToArray(), this.physicsColour);
-            }*/
+                var envy = this.Context.Assets.Fonts["envy12"];
+                renderer.World.DrawString(envy, $"damage: {this.Damage}", this.Position - new Vector2(0, -16), Color.White);
+            }
             base.Draw(renderer);
         }
 
         public override bool HandleCollision(PhysicalObject other, Contact contact)
         {
+            base.HandleCollision(other, contact);
             var asProjectile = other as Projectile;
-            if (asProjectile == null)
+            if (asProjectile == null && other != null)
             {
                 this.IsAwaitingDeletion = true;
                 this.Context.Assets.Audio["Audio/explosion1"].Audio.Play(0.1f, 0, 0);

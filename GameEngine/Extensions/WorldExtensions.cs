@@ -25,6 +25,10 @@ namespace GameEngine.Extensions
                     var transformedPoints = polygon.Vertices.Select(v => MathUtils.Mul(ref transform, v));
                     renderer.World.DrawPolygon(Vector2.Zero, transformedPoints.ToArray(), colour);
                     break;
+                case ShapeType.Edge:
+                    var edge = shape as EdgeShape;
+                    renderer.World.DrawLine(MathUtils.Mul(ref transform, edge.Vertex1), MathUtils.Mul(ref transform, edge.Vertex2), colour);
+                    break;
                 default:
                     throw new NotImplementedException($"Cannot draw shapes of Farseer type {shape.ShapeType}");
             }

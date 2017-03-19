@@ -120,10 +120,11 @@ namespace GameEngine.GameObjects
         {
             var firstObj = first.UserData as PhysicalObject;
             var secondObj = second.UserData as PhysicalObject;
-            if (firstObj == null || secondObj == null)
+            /*if (firstObj == null || secondObj == null)
             {
-                throw new InvalidOperationException("Expected fixtures to be attached to a game object!");
-            }
+                //throw new InvalidOperationException("Expected fixtures to be attached to a game object!");
+                return true;
+            }*/
             return firstObj.HandleCollision(secondObj, contact);
         }
     }

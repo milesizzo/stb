@@ -161,6 +161,7 @@ namespace StopTheBoats.GameObjects
 
         public override bool HandleCollision(PhysicalObject other, Contact contact)
         {
+            base.HandleCollision(other, contact);
             var asProjectile = other as Projectile;
             if (asProjectile != null)
             {
@@ -168,8 +169,11 @@ namespace StopTheBoats.GameObjects
                 this.Health -= asProjectile.Damage;
                 return false;
             }
-            this.Health -= (this.LinearVelocity - other.LinearVelocity).Length();
-            this.Health -= Math.Abs(MathHelper.ToDegrees(this.AngularVelocity)) - Math.Abs(MathHelper.ToDegrees(other.AngularVelocity));
+            if (other != null)
+            {
+                this.Health -= (this.LinearVelocity - other.LinearVelocity).Length();
+                this.Health -= Math.Abs(MathHelper.ToDegrees(this.AngularVelocity)) - Math.Abs(MathHelper.ToDegrees(other.AngularVelocity));
+            }
             return true;
         }
     }

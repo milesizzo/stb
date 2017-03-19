@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="GameObjects\Boat.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
+    <Compile Include="GameObjects\StbGameContext.cs" />
     <Compile Include="Json\Json.BoatTemplate.cs" />
     <Compile Include="Json\Json.cs" />
     <Compile Include="Json\Json.Shape.cs" />

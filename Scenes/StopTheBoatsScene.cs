@@ -12,10 +12,12 @@ using GameEngine.Graphics;
 using GameEngine.Extensions;
 using StopTheBoats.GameObjects;
 using StopTheBoats.Templates;
+using FarseerPhysics.Common.TextureTools;
+using FarseerPhysics.Collision.Shapes;
 
 namespace StopTheBoats.Scenes
 {
-    public class StopTheBoatsScene : GameScene<GameContext>
+    public class StopTheBoatsScene : GameScene<StbGameContext>
     {
         private float zoomAmount;
         private float zoomTarget;
@@ -26,13 +28,29 @@ namespace StopTheBoats.Scenes
         private int lastScroll = 0;
         private Vector2 mouse;
         private World physics;
+        private RectangleF boundaries;
 
-        public StopTheBoatsScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, new GameContext(assets))
+        public StopTheBoatsScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, new StbGameContext(assets))
         {
             this.physics = new World(Vector2.Zero);
             this.Camera.Rotation = 0;
             this.Camera.Zoom = 1;
             this.zoomTarget = this.zoomSource = this.Camera.Zoom;
+        }
+
+        private void SetBoundaries(RectangleF rect)
+        {
+            var edges = new List<EdgeShape>();
+            edges.Add(new EdgeShape(new Vector2(rect.Left, rect.Top), new Vector2(rect.Left, rect.Bottom)));
+            edges.Add(new EdgeShape(new Vector2(rect.Right, rect.Top), new Vector2(rect.Right, rect.Bottom)));
+            edges.Add(new EdgeShape(new Vector2(rect.Left, rect.Top), new Vector2(rect.Right, rect.Top)));
+            edges.Add(new EdgeShape(new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Right, rect.Bottom)));
+            foreach (var edge in edges)
+            {
+                var body = new Body(this.physics, bodyType: BodyType.Static);
+                body.CreateFixture(edge);
+            }
+            this.boundaries = rect;
         }
 
         public override void SetUp()
@@ -61,6 +79,16 @@ namespace StopTheBoats.Scenes
             rock.Body.BodyType = BodyType.Static;
             rock.Fixture.Restitution = 0.001f;
             this.Context.AddObject(rock);
+
+            var shore = new SpriteObject(this.physics, this.Context.Assets.Sprites["shore"])
+            {
+                Position = new Vector2(-2048, 800),
+            };
+            shore.Body.BodyType = BodyType.Static;
+            shore.Fixture.Restitution = 0.001f;
+            this.Context.AddObject(shore);
+
+            this.SetBoundaries(new RectangleF(-2048, -1024, 4096, 1024 + 800 + shore.SpriteTemplate.Height));
 
             this.Assets.Audio["Audio/ambient2"].Audio.Play(0.1f, 0, 0);
             this.Assets.Audio["Audio/ambient1"].Audio.Play(0.02f, 0, -0.8f);
@@ -159,6 +187,27 @@ namespace StopTheBoats.Scenes
                 this.Camera.Zoom = this.zoomTarget;
                 this.zoomSource = this.zoomTarget;
                 this.zoomAmount = 0;
+            }
+
+            if (this.Camera.BoundingRectangle.Left < this.boundaries.Left)
+            {
+                var offset = new Vector2(this.boundaries.Left - this.Camera.BoundingRectangle.Left, 0f);
+                this.Camera.Position += offset;
+            }
+            if (this.Camera.BoundingRectangle.Right > this.boundaries.Right)
+            {
+                var offset = new Vector2(this.boundaries.Right - this.Camera.BoundingRectangle.Right, 0f);
+                this.Camera.Position += offset;
+            }
+            if (this.Camera.BoundingRectangle.Top < this.boundaries.Top)
+            {
+                var offset = new Vector2(0f, this.boundaries.Top - this.Camera.BoundingRectangle.Top);
+                this.Camera.Position += offset;
+            }
+            if (this.Camera.BoundingRectangle.Bottom > this.boundaries.Bottom)
+            {
+                var offset = new Vector2(0f, this.boundaries.Bottom - this.Camera.BoundingRectangle.Bottom);
+                this.Camera.Position += offset;
             }
         }
 
