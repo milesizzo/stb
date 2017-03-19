@@ -5,16 +5,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using FarseerPhysics.Dynamics;
-using CommonLibrary;
 using GameEngine.Scenes;
 using GameEngine.GameObjects;
 using GameEngine.Graphics;
 using GameEngine.Extensions;
 using StopTheBoats.GameObjects;
 using StopTheBoats.Templates;
-using FarseerPhysics.Common.TextureTools;
 using FarseerPhysics.Collision.Shapes;
-using System.Linq;
+using StopTheBoats.Controllers;
 
 namespace StopTheBoats.Scenes
 {
@@ -24,8 +22,6 @@ namespace StopTheBoats.Scenes
         private float zoomTarget;
         private float zoomSource;
         private BoatControllerCollection boats;
-        //private Boat player;
-        //private readonly List<Boat> enemies = new List<Boat>();
         private bool spacePressed = false;
         private int lastScroll = 0;
         private World physics;
@@ -66,8 +62,15 @@ namespace StopTheBoats.Scenes
 
             // set up and add player
             var player = new Boat(this.Context, this.physics, this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
-            this.boats.Add(new HumanBoatController(player));
+            this.boats.Add(new HumanBoatController(player, HumanBoatActionMap.Default));
             this.Context.AddObject(player);
+
+            var player2 = new Boat(this.Context, this.physics, this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
+            player2.Position = new Vector2(200, 0);
+            this.boats.Add(new HumanBoatController(player2, HumanBoatActionMap.Alternate));
+            this.Context.AddObject(player2);
+
+            this.boats.FocusOn(player, player2);
 
             // set up and add a random rock
             var random = new Random();
@@ -103,10 +106,12 @@ namespace StopTheBoats.Scenes
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Escape))
             {
+                // quit
                 this.SceneEnded = true;
             }
             if (keyboard.IsKeyDown(Keys.Space) && !this.spacePressed)
             {
+                // spawn a computer-controlled boat
                 var random = new Random();
                 var topLeft = this.Camera.ScreenToWorld(0, -100);
                 var topRight = this.Camera.ScreenToWorld(this.Camera.Viewport.Width, -100);
@@ -125,6 +130,7 @@ namespace StopTheBoats.Scenes
             }
             if (mouse.ScrollWheelValue != this.lastScroll)
             {
+                // scroll the mouse to zoom in/out
                 var change = mouse.ScrollWheelValue - this.lastScroll;
                 this.zoomSource = this.Camera.Zoom;
                 this.zoomTarget = Math.Max(1f, this.Camera.Zoom + change / 200f);
@@ -132,10 +138,13 @@ namespace StopTheBoats.Scenes
                 this.lastScroll = mouse.ScrollWheelValue;
             }
 
+            // update the base scene (eg. game object context)
             base.Update(gameTime);
 
+            // update the boat controllers
             this.boats.Update(gameTime);
 
+            // update the camera zoom
             this.Camera.Zoom = MathHelper.SmoothStep(this.zoomSource, this.zoomTarget, this.zoomAmount);
             this.zoomAmount = this.zoomAmount + gameTime.GetElapsedSeconds() * 4;
             if (this.zoomAmount > 1f)
@@ -145,6 +154,7 @@ namespace StopTheBoats.Scenes
                 this.zoomAmount = 0;
             }
 
+            // ensure the camera doesn't scroll past the boundaries
             if (this.Camera.BoundingRectangle.Left < this.boundaries.Left)
             {
                 var offset = new Vector2(this.boundaries.Left - this.Camera.BoundingRectangle.Left, 0f);
@@ -173,6 +183,7 @@ namespace StopTheBoats.Scenes
 
             base.Draw(renderer);
 
+            // draw any boat controller specific objects (eg. mouse overlay for human player)
             this.boats.Draw(renderer);
 
             //this.sprites["patrol_boat"].Draw(this.spriteBatch, this.player.Position, this.player.Bearing);
