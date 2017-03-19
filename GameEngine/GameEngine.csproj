@@ -53,13 +53,17 @@
     <Compile Include="Content\AudioStore.cs" />
     <Compile Include="Content\FontStore.cs" />
     <Compile Include="Content\SpriteStore.cs" />
+    <Compile Include="Extensions\ShapesExtensions.cs" />
+    <Compile Include="Extensions\WorldExtensions.cs" />
     <Compile Include="GameObjects\GameAssetStore.cs" />
+    <Compile Include="GameObjects\GameContext.cs" />
     <Compile Include="GameObjects\IGameContext.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\PhysicalObject.cs" />
     <Compile Include="GameObjects\Sprite.cs" />
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="Graphics\Renderer.cs" />
+    <Compile Include="Helpers\KeyboardHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\GameScene.cs" />
     <Compile Include="Scenes\Scene.cs" />

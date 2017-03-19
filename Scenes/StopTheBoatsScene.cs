@@ -9,10 +9,11 @@ using CommonLibrary;
 using GameEngine.Scenes;
 using GameEngine.GameObjects;
 using GameEngine.Graphics;
+using GameEngine.Extensions;
 using StopTheBoats.GameObjects;
 using StopTheBoats.Templates;
 
-namespace StopTheBoats
+namespace StopTheBoats.Scenes
 {
     public class StopTheBoatsScene : GameScene<GameContext>
     {

@@ -10,8 +10,9 @@ using GameEngine.Templates;
 using GameEngine.Scenes;
 using GameEngine.GameObjects;
 using GameEngine.Graphics;
+using GameEngine.Helpers;
 
-namespace StopTheBoats
+namespace StopTheBoats.Scenes
 {
     public class PolygonBoundsEditor : GameAssetScene
     {

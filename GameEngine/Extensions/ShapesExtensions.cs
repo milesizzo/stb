@@ -1,13 +1,8 @@
 ﻿using FarseerPhysics.Collision.Shapes;
-using FarseerPhysics.Common;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StopTheBoats
+namespace GameEngine.Extensions
 {
     public static class ShapesExtensions
     {

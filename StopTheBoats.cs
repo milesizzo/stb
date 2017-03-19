@@ -12,6 +12,8 @@ using GameEngine.GameObjects;
 using GameEngine.Scenes;
 using GameEngine.Templates;
 using GameEngine.Graphics;
+using StopTheBoats.Scenes;
+using GameEngine.Helpers;
 
 namespace StopTheBoats
 {

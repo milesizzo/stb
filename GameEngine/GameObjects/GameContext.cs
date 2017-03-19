@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using FarseerPhysics.Dynamics;
-using FarseerPhysics.Collision.Shapes;
-using FarseerPhysics.Common;
-using GameEngine.GameObjects;
 using GameEngine.Graphics;
 
-namespace StopTheBoats
+namespace GameEngine.GameObjects
 {
     public class GameContext : IGameContext
     {
@@ -117,42 +112,6 @@ namespace StopTheBoats
             foreach (var obj in this.objects)
             {
                 obj.Draw(renderer);
-            }
-        }
-    }
-
-    public static class WorldExtensions
-    {
-        private static void DrawShape(Renderer renderer, Shape shape, Transform transform, Color colour)
-        {
-            switch (shape.ShapeType)
-            {
-                case ShapeType.Circle:
-                    var circle = shape as CircleShape;
-                    var centre = MathUtils.Mul(ref transform, circle.Position);
-                    renderer.Render.DrawCircle(centre, circle.Radius, 16, colour);
-                    break;
-                case ShapeType.Polygon:
-                    var polygon = shape as PolygonShape;
-                    var transformedPoints = polygon.Vertices.Select(v => MathUtils.Mul(ref transform, v));
-                    renderer.Render.DrawPolygon(Vector2.Zero, transformedPoints.ToArray(), colour);
-                    break;
-                default:
-                    throw new NotImplementedException($"Cannot draw shapes of Farseer type {shape.ShapeType}");
-            }
-        }
-
-        public static void Draw(this World world, Renderer renderer)
-        {
-            foreach (var body in world.BodyList)
-            {
-                Transform transform;
-                body.GetTransform(out transform);
-                foreach (var fixture in body.FixtureList)
-                {
-                    DrawShape(renderer, fixture.Shape, transform, Color.White);
-                }
-                renderer.Render.DrawPoint(body.Position, Color.Yellow, size: 3f);
             }
         }
     }
