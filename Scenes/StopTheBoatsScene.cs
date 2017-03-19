@@ -175,7 +175,7 @@ namespace StopTheBoats.Scenes
                 for (var i = 0; i < 4; i++)
                 {
                     var pos = lastPos.AtBearing(weapon.Rotation, 128);
-                    renderer.Render.DrawLine(lastPos, pos, colour);
+                    renderer.World.DrawLine(lastPos, pos, colour);
                     colour.A -= 256 / 4;
                     lastPos = pos;
                 }
@@ -194,7 +194,7 @@ namespace StopTheBoats.Scenes
                 this.physics.Draw(renderer);
             }
 
-            renderer.Render.DrawCircle(new CircleF(this.mouse, 8), 16, Color.IndianRed);
+            renderer.World.DrawCircle(new CircleF(this.mouse, 8), 16, Color.IndianRed);
         }
     }
 }

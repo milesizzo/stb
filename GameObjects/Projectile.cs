@@ -52,7 +52,7 @@ namespace StopTheBoats.GameObjects
             {
                 colour = new Color(0.5f, 0.5f, 0.5f, (length / (500 * 500)));
             }
-            renderer.Render.DrawCircle(this.Position, 5f, 12, colour, 1.5f);
+            renderer.World.DrawCircle(this.Position, 5f, 12, colour, 1.5f);
             /*if (GameObject.DebugInfo)
             {
                 var world = this.World;

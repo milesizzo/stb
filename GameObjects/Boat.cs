@@ -104,7 +104,7 @@ namespace StopTheBoats.GameObjects
             base.Draw(renderer);
             //var origin = -this.SpriteTemplate.Origin + this.Position;
             var origin = this.Position;
-            renderer.Render.DrawRectangle(origin + new Vector2(0, -64), new Vector2(this.SpriteTemplate.Texture.Width, 16), Color.Black);
+            renderer.World.DrawRectangle(origin + new Vector2(0, -64), new Vector2(this.SpriteTemplate.Texture.Width, 16), Color.Black);
             var colour = Color.LightGreen;
             if (this.health < this.BoatTemplate.MaxHealth / 3)
             {
@@ -115,7 +115,7 @@ namespace StopTheBoats.GameObjects
                 colour = Color.Yellow;
             }
             var width = (this.SpriteTemplate.Texture.Width - 2) * health / this.BoatTemplate.MaxHealth;
-            renderer.Render.FillRectangle(origin + new Vector2(1, -63), new Vector2(width, 14), colour);
+            renderer.World.FillRectangle(origin + new Vector2(1, -63), new Vector2(width, 14), colour);
 
             /*
             var rudderCentre = this.Body.LocalToWorld(this.BoatTemplate.EnginePosition);

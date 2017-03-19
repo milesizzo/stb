@@ -184,11 +184,11 @@ namespace StopTheBoats.Scenes
             {
                 this.Current.DrawSprite(renderer, this.position, Color.White, 0, Vector2.One, SpriteEffects.None);
 
-                renderer.Render.DrawPoint(this.position, Color.White, size: 3);
-                renderer.Render.DrawPolygon(this.position, this.points.ToArray(), Color.Black);
+                renderer.World.DrawPoint(this.position, Color.White, size: 3);
+                renderer.World.DrawPolygon(this.position, this.points.ToArray(), Color.Black);
                 foreach (var point in this.points)
                 {
-                    renderer.Render.DrawPoint(this.position + point, Color.Yellow);
+                    renderer.World.DrawPoint(this.position + point, Color.Yellow);
                 }
             }
             //renderer.Render.DrawPoint(new Vector2(mouse.X, mouse.Y), Color.White);

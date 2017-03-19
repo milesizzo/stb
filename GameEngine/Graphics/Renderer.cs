@@ -24,7 +24,7 @@ namespace GameEngine.Graphics
             this.screen = new SpriteBatch(this.Graphics.GraphicsDevice);
         }
 
-        public SpriteBatch Render { get { return this.render; } }
+        public SpriteBatch World { get { return this.render; } }
 
         public SpriteBatch Screen { get { return this.screen; } }
     }

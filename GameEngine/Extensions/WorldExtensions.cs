@@ -18,12 +18,12 @@ namespace GameEngine.Extensions
                 case ShapeType.Circle:
                     var circle = shape as CircleShape;
                     var centre = MathUtils.Mul(ref transform, circle.Position);
-                    renderer.Render.DrawCircle(centre, circle.Radius, 16, colour);
+                    renderer.World.DrawCircle(centre, circle.Radius, 16, colour);
                     break;
                 case ShapeType.Polygon:
                     var polygon = shape as PolygonShape;
                     var transformedPoints = polygon.Vertices.Select(v => MathUtils.Mul(ref transform, v));
-                    renderer.Render.DrawPolygon(Vector2.Zero, transformedPoints.ToArray(), colour);
+                    renderer.World.DrawPolygon(Vector2.Zero, transformedPoints.ToArray(), colour);
                     break;
                 default:
                     throw new NotImplementedException($"Cannot draw shapes of Farseer type {shape.ShapeType}");
@@ -40,7 +40,7 @@ namespace GameEngine.Extensions
                 {
                     DrawShape(renderer, fixture.Shape, transform, Color.White);
                 }
-                renderer.Render.DrawPoint(body.Position, Color.Yellow, size: 3f);
+                renderer.World.DrawPoint(body.Position, Color.Yellow, size: 3f);
             }
         }
     }

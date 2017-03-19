@@ -63,7 +63,7 @@ namespace GameEngine
             if (this.currentScene != null)
             {
                 this.renderer.Screen.Begin(blendState: BlendState.NonPremultiplied);
-                this.renderer.Render.Begin(blendState: BlendState.NonPremultiplied, transformMatrix: this.currentScene.Camera.GetViewMatrix());
+                this.renderer.World.Begin(blendState: BlendState.NonPremultiplied, transformMatrix: this.currentScene.Camera.GetViewMatrix());
                 try
                 {
                     this.currentScene.Draw(this.renderer);
@@ -72,7 +72,7 @@ namespace GameEngine
                 finally
                 {
                     // end causes the graphics to be drawn - we want screen to happen last (overlay)
-                    this.renderer.Render.End();
+                    this.renderer.World.End();
                     this.renderer.Screen.End();
                 }
             }
