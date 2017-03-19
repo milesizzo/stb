@@ -6,23 +6,24 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
+using Newtonsoft.Json;
 using GameEngine.Templates;
 using GameEngine.Scenes;
 using GameEngine.GameObjects;
 using GameEngine.Graphics;
 using GameEngine.Helpers;
 using GameEngine.Extensions;
+using System.IO;
 
 namespace StopTheBoats.Scenes
 {
     public class PolygonBoundsEditor : GameAssetScene
     {
         private const float DefaultZoom = 2f;
-        private SpriteTemplate current;
         private List<Vector2> points;
         private Vector2 position;
         private int currentPoint = -1;
-        private List<SpriteTemplate> sprites = new List<SpriteTemplate>();
+        private List<KeyValuePair<string, SpriteTemplate>> sprites = new List<KeyValuePair<string, SpriteTemplate>>();
         private int currentSpriteIndex = 0;
 
         private SpriteTemplate cursor;
@@ -32,10 +33,15 @@ namespace StopTheBoats.Scenes
             this.Camera.Zoom = DefaultZoom;
         }
 
+        public string CurrentName
+        {
+            get { return this.sprites[this.currentSpriteIndex].Key; }
+        }
+
         public SpriteTemplate Current
         {
-            get { return this.current; }
-            set
+            get { return this.sprites[this.currentSpriteIndex].Value; }
+            /*set
             {
                 this.current = value;
                 var shape = this.current.Shape as PolygonShape;
@@ -44,7 +50,20 @@ namespace StopTheBoats.Scenes
                     throw new InvalidOperationException("Expected a polygon shape");
                 }
                 this.points = new List<Vector2>(shape.Vertices);
+            }*/
+        }
+
+        private void SetCurrent(int index)
+        {
+            while (index >= this.sprites.Count) index -= this.sprites.Count;
+            while (index < 0) index += this.sprites.Count;
+            this.currentSpriteIndex = index;
+            var shape = this.Current.Shape as PolygonShape;
+            if (shape == null)
+            {
+                throw new InvalidOperationException("Expected a polygon shape");
             }
+            this.points = new List<Vector2>(shape.Vertices);
         }
 
         public override void SetUp()
@@ -59,14 +78,15 @@ namespace StopTheBoats.Scenes
                 return sprite;
             });
 
-            this.sprites.AddRange(new[]
+            foreach (var kvp in this.Assets.Sprites.All)
             {
-                this.Assets.Sprites["rock1"],
-                this.Assets.Sprites["patrol_boat"],
-                this.Assets.Sprites["small_boat"],
-            });
+                if (kvp.Value.Shape is PolygonShape)
+                {
+                    this.sprites.Add(kvp);
+                }
+            }
 
-            this.Current = this.sprites[this.currentSpriteIndex];
+            this.SetCurrent(0);
         }
 
         public bool FindPointAt(Vector2 relative, out int closest)
@@ -114,6 +134,13 @@ namespace StopTheBoats.Scenes
                 //serializer.Serialize(writer, this.Current);
                 //writer.Close();
                 //JsonTemplateSerializer.Write(this.Current, this.Current.Texture.Name + ".json");
+                var serializer = new JsonSerializer();
+                using (var writer = new StreamWriter(this.CurrentName + ".json"))
+                using (var json = new JsonTextWriter(writer))
+                {
+                    serializer.Formatting = Formatting.Indented;
+                    serializer.Serialize(json, Json.Json.Write(this.Current));
+                }
             }
             if (keyboard.IsKeyDown(Keys.PageUp))
             {
@@ -129,14 +156,11 @@ namespace StopTheBoats.Scenes
             }
             if (KeyboardHelper.KeyPressed(Keys.Left))
             {
-                this.currentSpriteIndex--;
-                if (this.currentSpriteIndex < 0) this.currentSpriteIndex = this.sprites.Count - 1;
-                this.Current = this.sprites[this.currentSpriteIndex];
+                this.SetCurrent(this.currentSpriteIndex - 1);
             }
             if (KeyboardHelper.KeyPressed(Keys.Right))
             {
-                this.currentSpriteIndex = (this.currentSpriteIndex + 1) % this.sprites.Count;
-                this.Current = this.sprites[this.currentSpriteIndex];
+                this.SetCurrent(this.currentSpriteIndex + 1);
             }
             if (mouse.LeftButton == ButtonState.Pressed)
             {

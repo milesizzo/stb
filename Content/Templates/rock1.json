@@ -1,0 +1,31 @@
+{
+  "type": "SingleSpriteTemplate",
+  "origin": {
+    "x": 78.0,
+    "y": 134.0
+  },
+  "fps": 5,
+  "shape": {
+    "type": "PolygonShape",
+    "density": 1.0,
+    "vertices": [
+      {
+        "x": 79.0,
+        "y": -134.0
+      },
+      {
+        "x": 79.0,
+        "y": 134.0
+      },
+      {
+        "x": -78.0,
+        "y": 134.0
+      },
+      {
+        "x": -78.0,
+        "y": -134.0
+      }
+    ]
+  },
+  "texture": "rock1"
+}

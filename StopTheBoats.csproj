@@ -93,6 +93,9 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
     <Compile Include="Json\Json.Vector2.cs" />
+    <None Include="Content\Templates\patrol_boat.json" />
+    <None Include="Content\Templates\rock1.json" />
+    <None Include="Content\Templates\small_boat.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

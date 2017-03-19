@@ -1,0 +1,31 @@
+{
+  "type": "SingleSpriteTemplate",
+  "origin": {
+    "x": 19.0,
+    "y": 31.0
+  },
+  "fps": 5,
+  "shape": {
+    "type": "PolygonShape",
+    "density": 1.0,
+    "vertices": [
+      {
+        "x": 161.0,
+        "y": -31.0
+      },
+      {
+        "x": 161.0,
+        "y": 31.0
+      },
+      {
+        "x": -19.0,
+        "y": 31.0
+      },
+      {
+        "x": -19.0,
+        "y": -31.0
+      }
+    ]
+  },
+  "texture": "patrol_boat"
+}

@@ -65,5 +65,10 @@ namespace GameEngine.Templates
         {
             return this.store.TryGetValue(key, out obj);
         }
+
+        public IEnumerable<KeyValuePair<string, T>> All
+        {
+            get { return this.store; }
+        }
     }
 }
