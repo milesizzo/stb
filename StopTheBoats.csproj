@@ -49,6 +49,7 @@
     <OutputPath>bin\x64\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BoatController.cs" />
     <Compile Include="GameObjects\Boat.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="GameObjects\StbGameContext.cs" />

@@ -15,7 +15,8 @@ namespace StopTheBoats.GameObjects
         private readonly IGameObject owner;
         private readonly float maxVelocity;
 
-        public Projectile(World world, PhysicalObject owner, float damage, float maxVelocity) : base(world, new CircleShape(5f, 1f))
+        public Projectile(IGameContext context, World world, PhysicalObject owner, float damage, float maxVelocity)
+            : base(context, world, new CircleShape(5f, 1f))
         {
             this.damage = damage;
             this.maxVelocity = maxVelocity;
@@ -70,7 +71,7 @@ namespace StopTheBoats.GameObjects
             {
                 this.IsAwaitingDeletion = true;
                 this.Context.Assets.Audio["Audio/explosion1"].Audio.Play(0.1f, 0, 0);
-                var explosion = new AttachedObject(this.Context.Assets.Sprites["explosion_sheet1"]);
+                var explosion = new AttachedObject(this.Context, this.Context.Assets.Sprites["explosion_sheet1"]);
                 other.AddChild(explosion);
                 explosion.Position = this.Position;
                 explosion.DeleteAfterAnimation = true;

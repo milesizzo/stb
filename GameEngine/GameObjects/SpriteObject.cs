@@ -11,7 +11,7 @@ namespace GameEngine.GameObjects
     {
         private Sprite sprite;
 
-        public SpriteObject(World world, SpriteTemplate sprite) : base(world, sprite.Shape)
+        public SpriteObject(IGameContext context, World world, SpriteTemplate sprite) : base(context, world, sprite.Shape)
         {
             this.sprite = new Sprite(sprite);
         }

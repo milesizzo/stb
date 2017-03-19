@@ -82,6 +82,19 @@ namespace StopTheBoats
                 return obj;
             });
 
+            // load weapon templates
+            assets.Objects.GetOrAdd("gun.single_barrel", (key) =>
+            {
+                return new WeaponTemplate
+                {
+                    SpriteTemplate = gun_single_barrel,
+                    ProjectileVelocity = 5000f,
+                    ProjectileMass = 100f,
+                    FireRate = TimeSpan.FromSeconds(1),
+                    Damage = 100f,
+                };
+            });
+
             // load boat templates
             var patrolBoat = assets.Objects.GetOrAdd("boat.patrol", (key) =>
             {
@@ -95,8 +108,8 @@ namespace StopTheBoats
                     EnginePosition = new Vector2(-71, 0),
                     Mass = 5800000f,
                 };
-                boat.WeaponLocations.Add(new Vector2(99, 0));
-                boat.WeaponLocations.Add(new Vector2(20, 0));
+                boat.AddWeapon(assets.Objects.Get<WeaponTemplate>("gun.single_barrel"), new Vector2(99, 0));
+                boat.AddWeapon(assets.Objects.Get<WeaponTemplate>("gun.single_barrel"), new Vector2(20, 0));
                 //boat.WeaponLocations.Add(new Vector2(28, 0));
                 //boat.WeaponLocations.Add(new Vector2(-52, 0));
                 return boat;
@@ -109,19 +122,6 @@ namespace StopTheBoats
                     SpriteTemplate = small_boat,
                     MaxHealth = 200f,
                     Mass = 58000f,
-                };
-            });
-
-            // load weapon templates
-            assets.Objects.GetOrAdd("gun.single_barrel", (key) =>
-            {
-                return new WeaponTemplate
-                {
-                    SpriteTemplate = gun_single_barrel,
-                    ProjectileVelocity = 5000f,
-                    ProjectileMass = 100f,
-                    FireRate = TimeSpan.FromSeconds(1),
-                    Damage = 100f,
                 };
             });
         }

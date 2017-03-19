@@ -13,10 +13,10 @@ namespace GameEngine.GameObjects
         private IGameObject parent;
         private IGameContext context;
 
-        protected AbstractObject()
+        protected AbstractObject(IGameContext context)
         {
             this.parent = null;
-            this.context = null;
+            this.context = context;
             this.IsAwaitingDeletion = false;
             this.DestroyedEvent += (sender, e) =>
             {
@@ -59,7 +59,6 @@ namespace GameEngine.GameObjects
         public virtual void AddChild(IGameObject obj)
         {
             obj.Parent = this;
-            obj.Context = this.Context;
             this.children.Add(obj);
         }
 

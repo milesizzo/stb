@@ -15,7 +15,7 @@ namespace StopTheBoats.GameObjects
         private Vector2 localPosition;
         private float rotation;
 
-        public AttachedObject(SpriteTemplate spriteTemplate)
+        public AttachedObject(IGameContext context, SpriteTemplate spriteTemplate) : base(context)
         {
             this.sprite = new Sprite(spriteTemplate);
         }
@@ -67,7 +67,7 @@ namespace StopTheBoats.GameObjects
         private readonly Boat boat;
         private TimeSpan lastFire;
 
-        public Weapon(Boat boat, WeaponTemplate template) : base(template.SpriteTemplate)
+        public Weapon(IGameContext context, Boat boat, WeaponTemplate template) : base(context, template.SpriteTemplate)
         {
             this.WeaponTemplate = template;
             this.boat = boat;
@@ -84,7 +84,7 @@ namespace StopTheBoats.GameObjects
             this.Context.Assets.Audio["Audio/cannon1"].Audio.Play(0.1f, 0, 0);
             this.lastFire = gameTime.TotalGameTime;
             var velocity = this.WeaponTemplate.ProjectileVelocity;
-            var projectile = new Projectile(physics, this.boat, this.WeaponTemplate.Damage, velocity);
+            var projectile = new Projectile(this.Context, physics, this.boat, this.WeaponTemplate.Damage, velocity);
             projectile.Position = this.Position;
             projectile.LinearVelocity = new Vector2((float)(velocity * Math.Cos(this.Rotation)), (float)(velocity * Math.Sin(this.Rotation)));
             return projectile;

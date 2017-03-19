@@ -6,6 +6,12 @@ namespace StopTheBoats.Templates
 {
     public class BoatTemplate : IGameObjectTemplate
     {
+        public class WeaponPlacement
+        {
+            public WeaponTemplate Weapon;
+            public Vector2 LocalPosition;
+        }
+
         public int Crew;
         public int Passengers;
         public float Acceleration;
@@ -13,7 +19,11 @@ namespace StopTheBoats.Templates
         public float Mass;
         public Vector2 EnginePosition;
         public SingleSpriteTemplate SpriteTemplate;
+        public List<WeaponPlacement> Weapons = new List<WeaponPlacement>();
 
-        public List<Vector2> WeaponLocations = new List<Vector2>();
+        public void AddWeapon(WeaponTemplate weapon, Vector2 localPosition)
+        {
+            this.Weapons.Add(new WeaponPlacement { Weapon = weapon, LocalPosition = localPosition });
+        }
     }
 }

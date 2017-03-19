@@ -20,7 +20,7 @@ namespace GameEngine.GameObjects
         private readonly World world;
         public int NumCollisions;
 
-        protected PhysicalObject(World world, Shape shape)
+        protected PhysicalObject(IGameContext context, World world, Shape shape) : base(context)
         {
             this.world = world;
             var body = new Body(world, bodyType: BodyType.Dynamic);

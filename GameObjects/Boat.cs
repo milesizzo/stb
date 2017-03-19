@@ -18,12 +18,16 @@ namespace StopTheBoats.GameObjects
         private readonly Weapon[] weapons;
         private float health;
 
-        public Boat(World world, BoatTemplate template) : base(world, template.SpriteTemplate)
+        public Boat(IGameContext context, World world, BoatTemplate template) : base(context, world, template.SpriteTemplate)
         {
             this.BoatTemplate = template;
             this.Mass = template.Mass;
             this.health = this.BoatTemplate.MaxHealth;
-            this.weapons = new Weapon[this.BoatTemplate.WeaponLocations.Count];
+            this.weapons = new Weapon[this.BoatTemplate.Weapons.Count];
+            foreach (var placement in this.BoatTemplate.Weapons)
+            {
+                this.AddWeapon(placement.Weapon);
+            }
             this.Body.AngularDamping = this.Body.LinearDamping = PhysicalObject.WaterFriction;
             this.Fixture.Restitution = 0.01f;
         }
@@ -44,7 +48,7 @@ namespace StopTheBoats.GameObjects
             {
                 if (this.weapons[slot] == null)
                 {
-                    this.SetWeapon(slot, new Weapon(this, weapon));
+                    this.SetWeapon(slot, new Weapon(this.Context, this, weapon));
                     return slot;
                 }
                 slot++;
@@ -64,7 +68,7 @@ namespace StopTheBoats.GameObjects
                 this.RemoveChild(existing);
                 this.weapons[slot] = null;
             }
-            weapon.LocalPosition = this.BoatTemplate.WeaponLocations[slot];
+            weapon.LocalPosition = this.BoatTemplate.Weapons[slot].LocalPosition;
             this.weapons[slot] = weapon;
             this.AddChild(weapon);
         }
@@ -146,7 +150,7 @@ namespace StopTheBoats.GameObjects
 
                     var random = new Random();
                     var assetName = random.Choice("explosion_sheet2", "explosion_sheet3");
-                    var explosion = new SpriteObject(this.Physics, this.Context.Assets.Sprites[assetName])
+                    var explosion = new SpriteObject(this.Context, this.Physics, this.Context.Assets.Sprites[assetName])
                     {
                         Position = this.Position,
                         LinearVelocity = this.LinearVelocity,

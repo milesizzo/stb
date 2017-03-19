@@ -20,7 +20,15 @@ namespace StopTheBoats.Json
             result["mass"] = boat.Mass;
             result["engine"] = Write(boat.EnginePosition);
             result["sprite"] = Write(boat.SpriteTemplate);
-            result["weapon_slots"] = new JArray(boat.WeaponLocations.Select(l => Write(l)));
+            result["weapons"] = new JArray(boat.Weapons.Select(l => Write(l)));
+            return result;
+        }
+
+        public static JObject Write(BoatTemplate.WeaponPlacement placement)
+        {
+            var result = new JObject();
+            result["weapon"] = Write(placement.Weapon);
+            result["pos"] = Write(placement.LocalPosition);
             return result;
         }
     }
