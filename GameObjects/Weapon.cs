@@ -1,9 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using StopTheBoats.Templates;
-using FarseerPhysics.Dynamics;
-using StopTheBoats.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using FarseerPhysics.Dynamics;
+using GameEngine.GameObjects;
+using GameEngine.Templates;
+using GameEngine.Graphics;
+using StopTheBoats.Templates;
 
 namespace StopTheBoats.GameObjects
 {

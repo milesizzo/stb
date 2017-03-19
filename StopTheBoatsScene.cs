@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using MonoGame.Extended.Shapes;
-using StopTheBoats.GameObjects;
-using StopTheBoats.Graphics;
-using StopTheBoats.Scenes;
-using StopTheBoats.Templates;
-using CommonLibrary;
 using FarseerPhysics.Dynamics;
+using CommonLibrary;
+using GameEngine.Scenes;
+using GameEngine.GameObjects;
+using GameEngine.Graphics;
+using StopTheBoats.GameObjects;
+using StopTheBoats.Templates;
 
 namespace StopTheBoats
 {

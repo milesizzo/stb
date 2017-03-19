@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using StopTheBoats.Content;
-using StopTheBoats.Graphics;
+using GameEngine.Content;
+using GameEngine.Graphics;
 
-namespace StopTheBoats.GameObjects
+namespace GameEngine.GameObjects
 {
     public interface IGameContext
     {

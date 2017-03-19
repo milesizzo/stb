@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StopTheBoats.Templates
+namespace StopTheBoats.Json
 {
-    public interface ITemplate
+    public static partial class Json
     {
     }
 }

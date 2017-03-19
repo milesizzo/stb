@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StopTheBoats.Content;
-using StopTheBoats.GameObjects;
+﻿using GameEngine.Content;
+using GameEngine.GameObjects;
+using Microsoft.Xna.Framework;
 using StopTheBoats.Templates;
 using System;
 

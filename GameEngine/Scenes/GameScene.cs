@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using StopTheBoats.GameObjects;
-using StopTheBoats.Graphics;
 using Microsoft.Xna.Framework.Graphics;
+using GameEngine.GameObjects;
+using GameEngine.Graphics;
 
-namespace StopTheBoats.Scenes
+namespace GameEngine.Scenes
 {
     // any scene that requires game assets
     public abstract class GameAssetScene : IScene

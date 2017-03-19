@@ -1,12 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using System.Linq;
 using System.Collections.Generic;
-using System.Linq;
-using StopTheBoats.Graphics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
+using GameEngine.Graphics;
 
-namespace StopTheBoats.Templates
+namespace GameEngine.Templates
 {
     public abstract class SpriteTemplate : ITemplate
     {
@@ -183,6 +183,10 @@ namespace StopTheBoats.Templates
     public class SingleSpriteTemplate : SpriteTemplate
     {
         private Texture2D texture;
+
+        public SingleSpriteTemplate()
+        {
+        }
 
         public SingleSpriteTemplate(Texture2D texture)
         {

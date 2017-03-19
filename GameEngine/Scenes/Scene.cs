@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using StopTheBoats.Content;
-using StopTheBoats.Graphics;
-using StopTheBoats.Templates;
+using GameEngine.Content;
+using GameEngine.Graphics;
+using GameEngine.Templates;
 
-namespace StopTheBoats.Scenes
+namespace GameEngine.Scenes
 {
     public interface IScene : ITemplate
     {

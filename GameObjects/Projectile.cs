@@ -1,12 +1,10 @@
-﻿using MonoGame.Extended.Shapes;
-using Microsoft.Xna.Framework;
-using System.Linq;
-using StopTheBoats.Graphics;
-using System;
+﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics.Contacts;
+using GameEngine.GameObjects;
+using GameEngine.Graphics;
 
 namespace StopTheBoats.GameObjects
 {

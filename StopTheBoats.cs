@@ -8,12 +8,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using StopTheBoats.Templates;
-using StopTheBoats.GameObjects;
-using StopTheBoats.Graphics;
-using StopTheBoats.Content;
-using StopTheBoats.Scenes;
-using CommonLibrary;
+using GameEngine.GameObjects;
+using GameEngine.Scenes;
+using GameEngine.Templates;
+using GameEngine.Graphics;
 
 namespace StopTheBoats
 {

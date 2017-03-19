@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using StopTheBoats.Templates;
+using GameEngine.Templates;
 
-namespace StopTheBoats.Content
+namespace GameEngine.Content
 {
     public class FontStore : TemplateStore<FontTemplate>
     {

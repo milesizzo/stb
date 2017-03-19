@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StopTheBoats.GameObjects
+namespace GameEngine.GameObjects
 {
     public abstract class PhysicalObject : AbstractObject
     {

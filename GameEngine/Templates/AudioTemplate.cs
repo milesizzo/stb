@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 
-namespace StopTheBoats.Templates
+namespace GameEngine.Templates
 {
     public class AudioTemplate : ITemplate
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using StopTheBoats.Templates;
+using GameEngine.Templates;
 
-namespace StopTheBoats.Content
+namespace GameEngine.Content
 {
     public class AssetStore
     {

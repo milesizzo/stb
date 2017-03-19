@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Shapes;
-using StopTheBoats.GameObjects;
-using StopTheBoats.Graphics;
-using StopTheBoats.Scenes;
-using StopTheBoats.Templates;
 using MonoGame.Extended;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
-using System.Linq;
+using GameEngine.Templates;
+using GameEngine.Scenes;
+using GameEngine.GameObjects;
+using GameEngine.Graphics;
 
 namespace StopTheBoats
 {
@@ -106,9 +104,14 @@ namespace StopTheBoats
             {
                 this.SceneEnded = true;
             }
-            if (keyboard.IsKeyDown(Keys.OemTilde))
+            if (KeyboardHelper.KeyPressed(Keys.OemTilde))
             {
                 this.Current.Shape = new PolygonShape(new Vertices(this.points), 1f);
+                //var serializer = new XmlSerializer(this.Current.GetType());
+                //var writer = new StreamWriter(this.Current.Texture.Name + ".xml");
+                //serializer.Serialize(writer, this.Current);
+                //writer.Close();
+                //JsonTemplateSerializer.Write(this.Current, this.Current.Texture.Name + ".json");
             }
             if (keyboard.IsKeyDown(Keys.PageUp))
             {

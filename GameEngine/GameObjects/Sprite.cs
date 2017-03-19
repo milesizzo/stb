@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Shapes;
-using System.Linq;
-using StopTheBoats.Templates;
-using StopTheBoats.Graphics;
-using CommonLibrary;
 using FarseerPhysics.Dynamics;
+using CommonLibrary;
+using GameEngine.Templates;
+using GameEngine.Graphics;
 
-namespace StopTheBoats.GameObjects
+namespace GameEngine.GameObjects
 {
     public class Sprite
     {

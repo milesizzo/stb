@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace StopTheBoats.Templates
+namespace GameEngine.Templates
 {
     public class FontTemplate : ITemplate
     {

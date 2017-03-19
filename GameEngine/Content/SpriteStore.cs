@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
-using StopTheBoats.Templates;
+using GameEngine.Templates;
 
-namespace StopTheBoats.Content
+namespace GameEngine.Content
 {
     public class SpriteStore : TemplateStore<SpriteTemplate>
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StopTheBoats.Templates
+namespace GameEngine.Templates
 {
     public class TemplateStore<T> : ITemplate where T : class, ITemplate
     {

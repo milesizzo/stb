@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
-namespace StopTheBoats.Graphics
+namespace GameEngine.Graphics
 {
     public class Camera : Camera2D
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StopTheBoats.Templates
+namespace GameEngine.Templates
 {
     public interface IGameObjectTemplate : ITemplate { }
 

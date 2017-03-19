@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using StopTheBoats.Graphics;
+﻿using System;
 using System.Linq;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using GameEngine.Graphics;
 
-namespace StopTheBoats.GameObjects
+namespace GameEngine.GameObjects
 {
     public interface IGameObject
     {

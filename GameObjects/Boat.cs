@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using StopTheBoats.Templates;
-using StopTheBoats.Graphics;
 using MonoGame.Extended;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using CommonLibrary;
+using GameEngine.GameObjects;
+using GameEngine.Graphics;
+using StopTheBoats.Templates;
 
 namespace StopTheBoats.GameObjects
 {

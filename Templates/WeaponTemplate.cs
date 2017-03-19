@@ -1,4 +1,5 @@
 ﻿using System;
+using GameEngine.Templates;
 
 namespace StopTheBoats.Templates
 {

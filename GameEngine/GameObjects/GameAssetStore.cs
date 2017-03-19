@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Content;
-using StopTheBoats.Content;
-using StopTheBoats.Templates;
+using GameEngine.Content;
+using GameEngine.Templates;
 
-namespace StopTheBoats.GameObjects
+namespace GameEngine.GameObjects
 {
     public class GameAssetStore : AssetStore
     {
