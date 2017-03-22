@@ -18,12 +18,22 @@ namespace StopTheBoats.Templates
         public float MaxHealth;
         public float Mass;
         public Vector2 EnginePosition;
-        public SingleSpriteTemplate SpriteTemplate;
+        public SpriteTemplate SpriteTemplate;
         public List<WeaponPlacement> Weapons = new List<WeaponPlacement>();
 
         public void AddWeapon(WeaponTemplate weapon, Vector2 localPosition)
         {
             this.Weapons.Add(new WeaponPlacement { Weapon = weapon, LocalPosition = localPosition });
+        }
+
+        public void AddWeapon(WeaponPlacement placement)
+        {
+            this.Weapons.Add(placement);
+        }
+
+        public void AddWeapons(IEnumerable<WeaponPlacement> placements)
+        {
+            this.Weapons.AddRange(placements);
         }
     }
 }

@@ -14,6 +14,8 @@ using GameEngine.Graphics;
 using GameEngine.Helpers;
 using GameEngine.Extensions;
 using System.IO;
+using StopTheBoats.Serializing;
+using Microsoft.Xna.Framework.Content;
 
 namespace StopTheBoats.Scenes
 {
@@ -129,18 +131,26 @@ namespace StopTheBoats.Scenes
             if (KeyboardHelper.KeyPressed(Keys.OemTilde))
             {
                 this.Current.Shape = new PolygonShape(new Vertices(this.points), 1f);
-                //var serializer = new XmlSerializer(this.Current.GetType());
-                //var writer = new StreamWriter(this.Current.Texture.Name + ".xml");
-                //serializer.Serialize(writer, this.Current);
-                //writer.Close();
-                //JsonTemplateSerializer.Write(this.Current, this.Current.Texture.Name + ".json");
-                var serializer = new JsonSerializer();
-                using (var writer = new StreamWriter(this.CurrentName + ".json"))
-                using (var json = new JsonTextWriter(writer))
+                var serializer = new MgiJsonSerializer();
+                var context = serializer.Serialize();
+                context.Write("sprite", this.Current, Serialize.Write);
+                serializer.Save(this.CurrentName + ".new", context);
+            }
+            if (KeyboardHelper.KeyPressed(Keys.Tab))
+            {
+                var serializer = new MgiJsonSerializer();
+                var context = serializer.Load(this.CurrentName + ".new");
+                var sprite = context.Read<SpriteTemplate, ContentManager>("sprite", this.Assets.Sprites.Content, Serialize.Read);
+                this.Assets.Sprites.Set(this.CurrentName, sprite);
+                this.sprites.Clear();
+                foreach (var kvp in this.Assets.Sprites.All)
                 {
-                    serializer.Formatting = Formatting.Indented;
-                    serializer.Serialize(json, Json.Json.Write(this.Current));
+                    if (kvp.Value.Shape is PolygonShape)
+                    {
+                        this.sprites.Add(kvp);
+                    }
                 }
+                this.SetCurrent(this.currentSpriteIndex);
             }
             if (keyboard.IsKeyDown(Keys.PageUp))
             {

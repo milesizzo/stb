@@ -37,6 +37,11 @@ namespace GameEngine.Templates
             return cached;
         }
 
+        public void Set(string key, T template)
+        {
+            this.store[key] = template;
+        }
+
         public T this[string key]
         {
             get

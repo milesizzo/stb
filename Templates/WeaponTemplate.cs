@@ -8,7 +8,7 @@ namespace StopTheBoats.Templates
         public float ProjectileVelocity;
         public float ProjectileMass;
         public TimeSpan FireRate;
-        public SingleSpriteTemplate SpriteTemplate;
+        public SpriteTemplate SpriteTemplate;
         public float Damage;
     }
 }

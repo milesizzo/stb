@@ -65,9 +65,9 @@ namespace StopTheBoats.Scenes
             this.boats.Add(new HumanBoatController(player, HumanBoatActionMap.Default));
             this.Context.AddObject(player);
 
-            var player2 = new Boat(this.Context, this.physics, this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
+            var player2 = new Boat(this.Context, this.physics, this.Assets.Objects.Get<BoatTemplate>("boat.small"));
             player2.Position = new Vector2(200, 0);
-            this.boats.Add(new HumanBoatController(player2, HumanBoatActionMap.Alternate));
+            this.boats.Add(new HumanBoatController(player2, HumanBoatActionMap.GamePad));
             this.Context.AddObject(player2);
 
             this.boats.FocusOn(player, player2);

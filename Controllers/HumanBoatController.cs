@@ -74,6 +74,47 @@ namespace StopTheBoats.Controllers
         }
     }
 
+    public class HumanGamepadAction : IHumanAction
+    {
+        private readonly Buttons button;
+        private bool buttonDown;
+
+        public HumanGamepadAction(Buttons button)
+        {
+            this.button = button;
+        }
+
+        public float IsHeld
+        {
+            get
+            {
+                var pad = GamePad.GetState(0);
+                return pad.IsButtonDown(this.button) ? 1f : 0f;
+            }
+        }
+
+        public bool IsTapped
+        {
+            get
+            {
+                var pad = GamePad.GetState(0);
+                if (pad.IsButtonDown(this.button))
+                {
+                    if (!this.buttonDown)
+                    {
+                        this.buttonDown = true;
+                        return true;
+                    }
+                }
+                else
+                {
+                    this.buttonDown = false;
+                }
+                return false;
+            }
+        }
+    }
+
     public class HumanMouseAction : IHumanAction
     {
         public enum Buttons
@@ -208,6 +249,21 @@ namespace StopTheBoats.Controllers
                 result[Actions.Decelerate] = new HumanKeyboardAction(Keys.Down);
                 result[Actions.TurnLeft] = new HumanKeyboardAction(Keys.Left);
                 result[Actions.TurnRight] = new HumanKeyboardAction(Keys.Right);
+                result[Actions.Fire] = new HumanMouseAction(HumanMouseAction.Buttons.Left);
+                return result;
+            }
+        }
+
+        public static HumanBoatActionMap GamePad
+        {
+            get
+            {
+                var result = new HumanBoatActionMap();
+                result.WorldSelect = new HumanMouseWorldSelect();
+                result[Actions.Accelerate] = new HumanGamepadAction(Buttons.DPadUp);
+                result[Actions.Decelerate] = new HumanGamepadAction(Buttons.DPadDown);
+                result[Actions.TurnLeft] = new HumanGamepadAction(Buttons.DPadLeft);
+                result[Actions.TurnRight] = new HumanGamepadAction(Buttons.DPadRight);
                 result[Actions.Fire] = new HumanMouseAction(HumanMouseAction.Buttons.Left);
                 return result;
             }

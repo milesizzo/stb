@@ -8,47 +8,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StopTheBoats.Json
+namespace StopTheBoats.Serializing
 {
-    public static partial class Json
+    public static partial class Serialize
     {
-        public static JObject Write(Shape shape)
+        public static void Write(ISerializer context, Shape shape)
         {
-            var result = new JObject();
-            result["type"] = shape.GetType().Name;
-            result["density"] = shape.Density;
+            context.Write("type", shape.GetType().AssemblyQualifiedName);
+            context.Write("density", shape.Density);
             switch (shape.ShapeType)
             {
                 case ShapeType.Circle:
                     var circle = shape as CircleShape;
-                    result["radius"] = circle.Radius;
-                    result["pos"] = Write(circle.Position);
+                    context.Write("radius", circle.Radius);
+                    context.Write("position", circle.Position, Write);
                     break;
                 case ShapeType.Polygon:
                     var polygon = shape as PolygonShape;
-                    var array = new JArray();
-                    foreach (var vertex in polygon.Vertices)
-                    {
-                        array.Add(Write(vertex));
-                    }
-                    result["vertices"] = array;
+                    context.WriteList("vertices", polygon.Vertices, Write);
                     break;
                 default:
                     throw new InvalidOperationException("Can only serialize circles and polygons");
             }
-            return result;
         }
 
-        public static void Read(JObject json, out Shape shape)
+        public static T ReadValue<T>(IDeserializer context)
         {
-            var type = Type.GetType(json.Value<string>("type"));
-            var density = json.Value<float>("density");
+            return default(T);
+        }
+
+        public static void Read(IDeserializer context, out Shape shape)
+        {
+            var typeName = context.Read<string>("type");
+            var type = Type.GetType(typeName);
+            var density = context.Read<float>("density");
             if (type == typeof(CircleShape))
             {
                 // it's a circle
-                var radius = json.Value<float>("radius");
-                Vector2 pos;
-                Read(json["pos"].Value<JObject>(), out pos);
+                var radius = context.Read<float>("radius");
+                var pos = context.Read<Vector2>("position", Read);
                 shape = new CircleShape(radius, density)
                 {
                     Position = pos,
@@ -58,17 +56,15 @@ namespace StopTheBoats.Json
             {
                 // it's a polygon
                 var vertices = new Vertices();
-                foreach (var vertex in json["vertices"])
+                foreach (var vector in context.ReadList<Vector2>("vertices", Read))
                 {
-                    Vector2 point;
-                    Read(vertex.Value<JObject>(), out point);
-                    vertices.Add(point);
+                    vertices.Add(vector);
                 }
                 shape = new PolygonShape(vertices, density);
             }
             else
             {
-                throw new InvalidOperationException($"Unknown Shape type: {json["type"]}");
+                throw new InvalidOperationException($"Unknown Shape type: {typeName}");
             }
         }
     }

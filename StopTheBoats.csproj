@@ -56,12 +56,11 @@
     <Compile Include="GameObjects\Boat.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="GameObjects\StbGameContext.cs" />
-    <Compile Include="Json\Json.BoatTemplate.cs" />
-    <Compile Include="Json\Json.cs" />
-    <Compile Include="Json\Json.Shape.cs" />
-    <Compile Include="Json\Json.SpriteTemplate.cs" />
-    <Compile Include="Json\Json.WeaponTemplate.cs" />
-    <Compile Include="Json\Vector2JsonConverter.cs" />
+    <Compile Include="Serializing\Serialize.BoatTemplate.cs" />
+    <Compile Include="Serializing\Serialize.Shape.cs" />
+    <Compile Include="Serializing\Serialize.SpriteTemplate.cs" />
+    <Compile Include="Serializing\Serialize.WeaponTemplate.cs" />
+    <Compile Include="Serializing\Serializer.cs" />
     <Compile Include="Scenes\PolygonBoundsEditor.cs" />
     <Compile Include="Scenes\StopTheBoatsScene.cs" />
     <Compile Include="StopTheBoats.cs" />
@@ -70,7 +69,6 @@
     <Compile Include="StopTheBoatsHelper.cs" />
     <Compile Include="Templates\BinSpriteTemplateSerializer.Load.cs" />
     <Compile Include="Templates\BinSpriteTemplateSerializer.Save.cs" />
-    <Compile Include="Json\JsonTemplateSerializer.Save.cs" />
     <Compile Include="Templates\BoatTemplate.cs" />
     <Compile Include="Templates\WeaponTemplate.cs" />
     <Compile Include="GameObjects\Weapon.cs" />
@@ -96,7 +94,7 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
-    <Compile Include="Json\Json.Vector2.cs" />
+    <Compile Include="Serializing\Serialize.Vector2.cs" />
     <None Include="Content\Templates\patrol_boat.json" />
     <None Include="Content\Templates\rock1.json" />
     <None Include="Content\Templates\small_boat.json" />

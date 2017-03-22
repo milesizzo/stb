@@ -9,6 +9,7 @@ namespace GameEngine.Content
     public class SpriteStore : TemplateStore<SpriteTemplate>
     {
         private ContentManager content;
+        public ContentManager Content { get { return this.content; } }
 
         public SpriteStore(ContentManager content)
         {
