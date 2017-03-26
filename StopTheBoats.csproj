@@ -54,6 +54,7 @@
     <Compile Include="Controllers\ComputerBoatController.cs" />
     <Compile Include="Controllers\HumanBoatController.cs" />
     <Compile Include="GameObjects\Boat.cs" />
+    <Compile Include="GameObjects\FixedObstacle.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="GameObjects\StbGameContext.cs" />
     <Compile Include="Scenes\PolygonBoundsEditor.cs" />

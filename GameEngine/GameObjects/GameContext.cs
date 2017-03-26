@@ -115,5 +115,10 @@ namespace GameEngine.GameObjects
                 obj.Draw(renderer);
             }
         }
+
+        public IEnumerable<IGameObject> Objects
+        {
+            get { return this.objects; }
+        }
     }
 }

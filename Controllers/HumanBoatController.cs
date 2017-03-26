@@ -320,6 +320,7 @@ namespace StopTheBoats.Controllers
                     lastPos = pos;
                 }
             }
+            this.boat.Radar.Draw(renderer, new Vector2(24, 24), 0.1f);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace StopTheBoats.Templates
         public float Mass;
         public Vector2 EnginePosition;
         public SpriteTemplate SpriteTemplate;
+        public float RadarRadius;
         public List<WeaponPlacement> Weapons = new List<WeaponPlacement>();
 
         public BoatTemplate(string name) : base(name)
@@ -52,6 +53,7 @@ namespace StopTheBoats.Templates
             context.Write("acceleration", this.Acceleration);
             context.Write("health", this.MaxHealth);
             context.Write("mass", this.Mass);
+            context.Write("radar", this.RadarRadius);
             context.Write("engine", this.EnginePosition, CommonSerialize.Write);
             context.Write("sprite", this.SpriteTemplate.Name);
             context.WriteList("weapons", this.Weapons, (ctx, placement) =>
@@ -69,6 +71,7 @@ namespace StopTheBoats.Templates
             this.Acceleration = context.Read<float>("acceleration");
             this.MaxHealth = context.Read<float>("health");
             this.Mass = context.Read<float>("mass");
+            this.RadarRadius = context.Read<float>("radar");
             this.EnginePosition = context.Read<Vector2>("engine", CommonSerialize.Read);
             var spriteName = context.Read<string>("sprite");
             this.SpriteTemplate = store.Sprites[spriteName];

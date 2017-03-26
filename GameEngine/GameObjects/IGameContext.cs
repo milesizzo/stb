@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using GameEngine.Content;
 using GameEngine.Graphics;
 
@@ -19,5 +20,7 @@ namespace GameEngine.GameObjects
         void Update(GameTime gameTime);
 
         void Draw(Renderer renderer);
+
+        IEnumerable<IGameObject> Objects { get; }
     }
 }

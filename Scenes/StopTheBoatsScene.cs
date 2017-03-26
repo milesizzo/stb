@@ -77,22 +77,21 @@ namespace StopTheBoats.Scenes
             this.boats.Add(new HumanBoatController(player, HumanBoatActionMap.Default));
             this.Context.AddObject(player);
 
-            var player2 = new Boat(this.Context, this.physics, this.StopTheBoatsAssets.Objects.Get<BoatTemplate>("boat.small"));
+            /*var player2 = new Boat(this.Context, this.physics, this.StopTheBoatsAssets.Objects.Get<BoatTemplate>("boat.small"));
             player2.Position = new Vector2(200, 0);
             this.boats.Add(new HumanBoatController(player2, HumanBoatActionMap.GamePad));
             this.Context.AddObject(player2);
 
-            this.boats.FocusOn(player, player2);
+            this.boats.FocusOn(player, player2);*/
+            this.boats.FocusOn(player);
 
             // set up and add a random rock
             var random = new Random();
-            var rock = new SpriteObject(this.Context, this.physics, this.StopTheBoatsAssets.Sprites["rock1"])
+            var rock = new FixedObstacle(this.Context, this.physics, this.StopTheBoatsAssets.Sprites["rock1"])
             {
                 Position = new Vector2(200, 200),
                 Rotation = MathHelper.ToRadians(random.Next(0, 360)),
             };
-            rock.Body.BodyType = BodyType.Static;
-            rock.Fixture.Restitution = 0.001f;
             this.Context.AddObject(rock);
 
             var shore = new SpriteObject(this.Context, this.physics, this.StopTheBoatsAssets.Sprites["shore"])

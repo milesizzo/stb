@@ -411,6 +411,7 @@
       "acceleration": 100.0,
       "health": 1000.0,
       "mass": 5800000.0,
+      "radar": 1024.0,
       "engine": {
         "x": -71.0,
         "y": 0.0
@@ -441,6 +442,7 @@
       "acceleration": 75.0,
       "health": 200.0,
       "mass": 58000.0,
+      "radar": 512.0,
       "engine": {
         "x": 0.0,
         "y": 0.0

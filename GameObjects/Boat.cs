@@ -9,18 +9,67 @@ using CommonLibrary;
 using GameEngine.GameObjects;
 using GameEngine.Graphics;
 using StopTheBoats.Templates;
+using FarseerPhysics.Common;
+using GameEngine.Extensions;
 
 namespace StopTheBoats.GameObjects
 {
+    public class Radar
+    {
+        private readonly Boat owner;
+        private readonly float radiusSquared;
+        private List<PhysicalObject> nearby = new List<PhysicalObject>();
+
+        public Radar(Boat owner)
+        {
+            this.owner = owner;
+            this.radiusSquared = (float)Math.Pow(this.owner.BoatTemplate.RadarRadius, 2);
+        }
+
+        private bool IsVisible(PhysicalObject obj)
+        {
+            return obj != this.owner &&
+                !obj.IsAwaitingDeletion &&
+                (obj is FixedObstacle || obj is Boat || obj is Projectile) &&
+                Vector2.DistanceSquared(obj.Position, this.owner.Position) <= this.radiusSquared;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            this.nearby = this.owner.Context.Objects.OfType<PhysicalObject>().Where(this.IsVisible).ToList();
+        }
+
+        public void Draw(Renderer renderer, Vector2 screenPosition, float scale)
+        {
+            var offset = screenPosition;
+            var radius = this.owner.BoatTemplate.RadarRadius;
+            var radiusVector = new Vector2(radius, radius) * scale;
+            foreach (var obj in this.nearby)
+            {
+                var location = offset + (obj.Position - this.owner.Position) * scale + radiusVector;
+                var objTransform = new Transform();
+                objTransform.Set(location, obj.Rotation);
+                renderer.Screen.DrawShape(obj.Shape, objTransform, Color.Red, scale: scale);
+                //renderer.Screen.DrawPoint(location, Color.Red, 4);
+            }
+            var transform = new Transform();
+            transform.Set(offset + radiusVector, this.owner.Rotation);
+            renderer.Screen.DrawShape(this.owner.Shape, transform, Color.Yellow, scale: scale);
+            renderer.Screen.DrawCircle(offset + radiusVector, radius * scale + 5, 64, Color.Black, 8f);
+        }
+    }
+
     public class Boat : SpriteObject
     {
         public readonly BoatTemplate BoatTemplate;
         private readonly Weapon[] weapons;
         private float health;
+        private readonly Radar radar;
 
         public Boat(IGameContext context, World world, BoatTemplate template) : base(context, world, template.SpriteTemplate)
         {
             this.BoatTemplate = template;
+            this.radar = new Radar(this);
             this.Mass = template.Mass;
             this.health = this.BoatTemplate.MaxHealth;
             this.weapons = new Weapon[this.BoatTemplate.Weapons.Count];
@@ -31,6 +80,8 @@ namespace StopTheBoats.GameObjects
             this.Body.AngularDamping = this.Body.LinearDamping = PhysicalObject.WaterFriction;
             this.Fixture.Restitution = 0.01f;
         }
+
+        public Radar Radar { get { return this.radar; } }
 
         public int WeaponSlots
         {
@@ -87,6 +138,12 @@ namespace StopTheBoats.GameObjects
         public void Turn(float amountDegrees)
         {
             this.Body.AngularVelocity += MathHelper.ToRadians(amountDegrees);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            this.radar.Update(gameTime);
         }
 
         public override void Draw(Renderer renderer)
