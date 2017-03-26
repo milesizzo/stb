@@ -57,7 +57,7 @@ namespace StopTheBoats.GameObjects
 
             if (AbstractObject.DebugInfo)
             {
-                var envy = this.Context.Assets.Fonts["envy12"];
+                var envy = this.Context.Store.Fonts("Base", "envy12");
                 renderer.World.DrawString(envy, $"damage: {this.Damage}", this.Position - new Vector2(0, -16), Color.White);
             }
             base.Draw(renderer);
@@ -70,8 +70,8 @@ namespace StopTheBoats.GameObjects
             if (asProjectile == null && other != null)
             {
                 this.IsAwaitingDeletion = true;
-                this.Context.Assets.Audio["Audio/explosion1"].Audio.Play(0.1f, 0, 0);
-                var explosion = new AttachedObject(this.Context, this.Context.Assets.Sprites["explosion_sheet1"]);
+                this.Context.Store.Audio("StopTheBoats", "explosion1").Audio.Play(0.1f, 0, 0);
+                var explosion = new AttachedObject(this.Context, this.Context.Store.Sprites("StopTheBoats", "explosion_sheet1"));
                 other.AddChild(explosion);
                 explosion.Position = this.Position;
                 explosion.DeleteAfterAnimation = true;

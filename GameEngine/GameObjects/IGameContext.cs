@@ -14,7 +14,7 @@ namespace GameEngine.GameObjects
 
         void Reset();
 
-        GameAssetStore Assets { get; }
+        Store Store { get; }
 
         void Update(GameTime gameTime);
 

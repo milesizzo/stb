@@ -6,10 +6,8 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
-using Newtonsoft.Json;
 using GameEngine.Templates;
 using GameEngine.Scenes;
-using GameEngine.GameObjects;
 using GameEngine.Graphics;
 using GameEngine.Helpers;
 using GameEngine.Extensions;
@@ -41,16 +39,6 @@ namespace StopTheBoats.Scenes
         public SpriteTemplate Current
         {
             get { return this.sprites[this.currentSpriteIndex].Value; }
-            /*set
-            {
-                this.current = value;
-                var shape = this.current.Shape as PolygonShape;
-                if (shape == null)
-                {
-                    throw new InvalidOperationException("Expected a polygon shape");
-                }
-                this.points = new List<Vector2>(shape.Vertices);
-            }*/
         }
 
         private void SetCurrent(int index)
@@ -71,12 +59,6 @@ namespace StopTheBoats.Scenes
             this.Store.LoadFromJson("Content\\StopTheBoats.json");
             this.Store.LoadFromJson("Content\\BoundsEditor.json");
 
-            /*this.cursor = this.Assets.Sprites.GetOrAdd("editor_cursor", (key) =>
-            {
-                var sprite = this.Assets.Sprites.Load("editor_cursor");
-                sprite.Origin = Vector2.Zero;
-                return sprite;
-            });*/
             this.cursor = this.Store.Sprites("BoundsEditor", "editor_cursor");
 
             foreach (var kvp in this.Store["StopTheBoats"].Sprites.All)
@@ -135,22 +117,7 @@ namespace StopTheBoats.Scenes
                     this.Store.SaveToJson(storeName, $"{storeName}.json");
                 }
             }
-            /*if (KeyboardHelper.KeyPressed(Keys.Tab))
-            {
-                var serializer = new MgiJsonSerializer();
-                var context = serializer.Load(this.CurrentName + ".new");
-                var sprite = context.Read<SpriteTemplate, ContentManager>("sprite", this.Assets.Sprites.Content, Serialize.Read);
-                this.Assets.Sprites.Set(this.CurrentName, sprite);
-                this.sprites.Clear();
-                foreach (var kvp in this.Assets.Sprites.All)
-                {
-                    if (kvp.Value.Shape is PolygonShape)
-                    {
-                        this.sprites.Add(kvp);
-                    }
-                }
-                this.SetCurrent(this.currentSpriteIndex);
-            }*/
+
             if (keyboard.IsKeyDown(Keys.PageUp))
             {
                 this.Camera.ZoomIn(gameTime.GetElapsedSeconds());
@@ -224,10 +191,7 @@ namespace StopTheBoats.Scenes
                     renderer.World.DrawPoint(this.position + point, Color.Yellow);
                 }
             }
-            //renderer.Render.DrawPoint(new Vector2(mouse.X, mouse.Y), Color.White);
-            //renderer.Render.DrawCircle(new Vector2(mouse.X, mouse.Y), 9, 16, Color.Gray);
 
-            //this.cursor.DrawSprite(renderer, this.Camera.WorldToScreen(mouse.X, mouse.Y), Color.White, 0, Vector2.One, SpriteEffects.None);
             var font = this.Store.Fonts("Base", "envy16");
             var mouseScreen = new Vector2(mouse.X, mouse.Y);
             var mouseWorld = this.Camera.ScreenToWorld(mouseScreen);

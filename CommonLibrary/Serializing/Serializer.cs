@@ -1,10 +1,5 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace CommonLibrary.Serializing
 {
@@ -52,59 +47,7 @@ namespace CommonLibrary.Serializing
 
     public abstract class SerializerContext : IDeserializer, ISerializer
     {
-        /*private static readonly Dictionary<Type, Converter> Converters = new Dictionary<Type, Converter>();
-
-        private class Converter
-        {
-            private object read;
-            private object write;
-
-            public Converter(GenericWriteAction write)
-            {
-            }
-
-            public void SetWrite<T>(Action<ISerializer, T> convert)
-            {
-                this.write = convert;
-            }
-
-            public void SetRead<T>(ReadAction<T> convert)
-            {
-                this.read = convert;
-            }
-
-            public void Read<T>(IDeserializer context, out T obj)
-            {
-                ((ReadAction<T>)this.read)(context, out obj);
-            }
-            
-            public void Write<T>(ISerializer context, T obj)
-            {
-                ((Action<ISerializer, T>)this.write)(context, obj);
-            }
-        }*/
-
-        public virtual T Read<T>(string key)
-        {
-            /*var type = typeof(T);
-            Converter convert;
-            if (Converters.TryGetValue(type, out convert))
-            {
-                T obj;
-                convert.Read(this, out obj);
-                return obj;
-            }*/
-            return this.ReadImpl<T>(key);
-        }
-
-        protected abstract T ReadImpl<T>(string key);
-
-        /*public static void RegisterType<T>(ReadAction<T> read, Action<ISerializer, T> write)
-        {
-            var converter = new Converter((context, obj) => write(context, (T)obj));
-            converter.SetRead(read);
-            Converters[typeof(T)] = converter;
-        }*/
+        public abstract T Read<T>(string key);
 
         private static void ReadHelper<T>(ReadAction<T> userData, IDeserializer context, out T obj)
         {
@@ -141,19 +84,7 @@ namespace CommonLibrary.Serializing
 
         public abstract IList<T> ReadList<T, TUser>(string key, TUser userData, ReadUserAction<T, TUser> reader);
 
-        public void Write<T>(string key, T value)
-        {
-            /*var type = typeof(T);
-            Converter convert;
-            if (Converters.TryGetValue(type, out convert))
-            {
-                convert.Write(this, value);
-            }
-            else
-            {*/
-                this.WriteImpl<T>(key, value);
-            //}
-        }
+        public abstract void Write<T>(string key, T value);
         
         public static void ReadFuncHelper<T>(Func<IDeserializer, T> userData, IDeserializer context, out T obj)
         {
@@ -164,8 +95,6 @@ namespace CommonLibrary.Serializing
         {
             return this.ReadList<T, Func<IDeserializer, T>>(key, reader, ReadFuncHelper);
         }
-
-        protected abstract void WriteImpl<T>(string key, T value);
 
         public abstract void Write<T>(string key, T value, Action<ISerializer, T> writer);
 

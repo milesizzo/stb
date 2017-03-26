@@ -28,7 +28,7 @@ namespace GameEngine.GameObjects
             if (AbstractObject.DebugInfo)
             {
                 var loc = this.Position - this.SpriteTemplate.Origin;
-                var font = this.Context.Assets.Fonts["envy12"];
+                var font = this.Context.Store.Fonts("Base", "envy12");
                 renderer.World.DrawString(font, $"rotation: {this.Rotation}", loc + new Vector2(0, -96), Color.White);
                 renderer.World.DrawString(font, $"velocity: {this.LinearVelocity}", loc + new Vector2(0, -96 + 12), Color.White);
                 renderer.World.DrawString(font, $"position: {this.Position}", loc + new Vector2(0, -96 + 24), Color.White);

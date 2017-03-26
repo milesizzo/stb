@@ -80,33 +80,18 @@ namespace StopTheBoats.GameObjects
 
         public void Accelerate(float amount)
         {
-            //var angle = this.rudderAngle * this.LinearVelocity.Length() / 10;
-            //this.acceleration = amount * new Vector2((float)Math.Cos(this.Angle) * this.BoatTemplate.Acceleration, (float)Math.Sin(this.Angle) * this.BoatTemplate.Acceleration);
-            //var accel = amount * this.BoatTemplate.Acceleration * new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
             var force = this.Body.GetWorldVector(new Vector2(amount * this.BoatTemplate.Acceleration, 0) * this.Mass);
             this.Body.ApplyForce(force, this.Body.WorldCenter);
-            //this.Body.ApplyImpulse(impulse, this.Body.LocalToWorld(this.BoatTemplate.EnginePosition));
         }
 
         public void Turn(float amountDegrees)
         {
-            //this.Angle += MathHelper.ToRadians(amountDegrees);
             this.Body.AngularVelocity += MathHelper.ToRadians(amountDegrees);
-            //this.rudderAngle = MathHelper.WrapAngle(this.rudderAngle + MathHelper.ToRadians(amountDegrees));
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            //this.LinearVelocity += this.acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            base.Update(gameTime);
-
-            //this.acceleration = Vector2.Zero;
         }
 
         public override void Draw(Renderer renderer)
         {
             base.Draw(renderer);
-            //var origin = -this.SpriteTemplate.Origin + this.Position;
             var origin = this.Position;
             renderer.World.DrawRectangle(origin + new Vector2(0, -64), new Vector2(this.SpriteTemplate.Texture.Width, 16), Color.Black);
             var colour = Color.LightGreen;
@@ -120,19 +105,6 @@ namespace StopTheBoats.GameObjects
             }
             var width = (this.SpriteTemplate.Texture.Width - 2) * health / this.BoatTemplate.MaxHealth;
             renderer.World.FillRectangle(origin + new Vector2(1, -63), new Vector2(width, 14), colour);
-
-            /*
-            var rudderCentre = this.Body.LocalToWorld(this.BoatTemplate.EnginePosition);
-            var rudderTarget = this.Body.LocalToWorld(this.BoatTemplate.EnginePosition - 64 * (new Vector2((float)Math.Cos(this.rudderAngle), (float)Math.Sin(this.rudderAngle))));
-            renderer.Render.DrawLine(rudderCentre, rudderTarget, Color.Yellow);
-            if (GameObject.DebugInfo)
-            {
-                var font = this.Context.Assets.Fonts["envy12"];
-                var loc = this.Position - this.SpriteTemplate.Origin;
-                //renderer.DrawString(this.Context.Assets.Fonts["envy12"], string.Format("velocity: {0}", this.LinearVelocity), origin + new Vector2(0, -96), Color.White);
-                renderer.DrawString(font, $"rudder: {MathHelper.ToDegrees(this.rudderAngle)}", loc + new Vector2(0, -96 - 12), Color.White);
-            }
-            */
         }
 
         public float Health
@@ -146,11 +118,11 @@ namespace StopTheBoats.GameObjects
                     this.health = 0;
                     this.IsAwaitingDeletion = true;
 
-                    this.Context.Assets.Audio["explosion2"].Audio.Play();
+                    this.Context.Store.Audio("StopTheBoats", "explosion2").Audio.Play();
 
                     var random = new Random();
                     var assetName = random.Choice("explosion_sheet2", "explosion_sheet3");
-                    var explosion = new SpriteObject(this.Context, this.Physics, this.Context.Assets.Sprites[assetName])
+                    var explosion = new SpriteObject(this.Context, this.Physics, this.Context.Store.Sprites("StopTheBoats", assetName))
                     {
                         Position = this.Position,
                         LinearVelocity = this.LinearVelocity,

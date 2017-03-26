@@ -22,14 +22,10 @@ namespace GameEngine.GameObjects
         internal override void Write(ISerializer context)
         {
             base.Write(context);
-            context.Write("objects", this.Objects, (child, objects) =>
+            context.WriteList("objects", this.Objects.Templates.ToList(), (child, obj) =>
             {
-                var items = objects.All.Select(kvp => kvp.Value).ToList();
-                child.WriteList("store", items, (grandchild, obj) =>
-                {
-                    grandchild.Write("type", obj.GetType().AssemblyQualifiedName);
-                    obj.Write(grandchild);
-                });
+                child.Write("type", obj.GetType().AssemblyQualifiedName);
+                obj.Write(child);
             });
         }
 

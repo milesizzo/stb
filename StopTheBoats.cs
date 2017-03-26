@@ -1,74 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
-using MonoGame.Extended.Shapes;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using GameEngine.GameObjects;
-using GameEngine.Scenes;
-using GameEngine.Templates;
-using GameEngine.Graphics;
-using StopTheBoats.Scenes;
-using GameEngine.Helpers;
 using GameEngine;
+using GameEngine.GameObjects;
+using GameEngine.Graphics;
+using GameEngine.Helpers;
 using GameEngine.Extensions;
-using GameEngine.Content;
+using StopTheBoats.Scenes;
 
 namespace StopTheBoats
 {
-    /*public class ObjectEditorScene : GameAssetScene
-    {
-        private IGameObjectTemplate current;
-        private SpriteTemplate cursor;
-
-        public ObjectEditorScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, assets)
-        {
-            //
-        }
-
-        public IGameObjectTemplate Current
-        {
-            get { return this.current; }
-            set { this.current = value; }
-        }
-
-        public override void SetUp()
-        {
-            StopTheBoatsHelper.LoadGameAssets(this.Assets);
-            this.cursor = this.Assets.Sprites.GetOrAdd("editor_cursor", (key) =>
-            {
-                var sprite = this.Assets.Sprites.Load("editor_cursor");
-                sprite.Origin = Vector2.Zero;
-                return sprite;
-            });
-
-            this.Current = this.Assets.Objects["boat.patrol"];
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-        }
-
-        public override void Draw(Renderer renderer)
-        {
-            this.Camera.Clear(Color.DarkSlateBlue);
-            var mouse = Mouse.GetState().Position;
-            this.cursor.DrawSprite(renderer, new Vector2(mouse.X, mouse.Y), Color.White, 0, Vector2.One, SpriteEffects.None);
-            if (this.Current != null)
-            {
-            }
-            //renderer.Render.DrawPoint(new Vector2(mouse.X, mouse.Y), Color.White);
-            //renderer.Render.DrawCircle(new Vector2(mouse.X, mouse.Y), 9, 16, Color.Gray);
-        }
-    }*/
-
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class StopTheBoats : SceneGame
     {
         public StopTheBoats()
@@ -93,10 +33,6 @@ namespace StopTheBoats
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            //this.renderer.LoadContent();
-
-            // TODO: use this.Content to load your game content here
             this.Store.LoadFromJson("Content\\Base.json");
 
             this.Scenes.GetOrAdd("StopTheBoats", (key) =>
@@ -115,15 +51,9 @@ namespace StopTheBoats
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
             this.Store.SaveAllToJson("Content");
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
             if (KeyboardHelper.KeyPressed(Keys.F1))

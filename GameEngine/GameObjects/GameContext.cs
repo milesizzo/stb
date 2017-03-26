@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using GameEngine.Graphics;
+using GameEngine.Content;
 
 namespace GameEngine.GameObjects
 {
@@ -15,12 +16,12 @@ namespace GameEngine.GameObjects
         }
 
         private readonly List<IGameObject> objects = new List<IGameObject>();
-        private readonly GameAssetStore assets;
+        private readonly Store store;
         private readonly List<ScheduledObject> scheduled = new List<ScheduledObject>();
 
-        public GameContext(GameAssetStore assets)
+        public GameContext(Store store)
         {
-            this.assets = assets;
+            this.store = store;
         }
 
         public void Reset()
@@ -33,7 +34,7 @@ namespace GameEngine.GameObjects
             this.scheduled.Clear();
         }
 
-        public GameAssetStore Assets { get { return this.assets; } }
+        public Store Store { get { return this.store; } }
 
         public int NumObjects { get { return this.objects.Count; } }
 

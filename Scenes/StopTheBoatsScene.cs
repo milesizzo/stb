@@ -52,20 +52,19 @@ namespace StopTheBoats.Scenes
             this.boundaries = rect;
         }
 
-        private GameAssetStore Assets
+        private GameAssetStore StopTheBoatsAssets
         {
             get { return this.Store.Get<GameAssetStore>("StopTheBoats"); }
         }
 
         protected override StbGameContext CreateContext()
         {
-            return new StbGameContext(this.Assets);
+            return new StbGameContext(this.Store);
         }
 
         public override void SetUp()
         {
             this.Store.LoadFromJson("Content\\StopTheBoats.json");
-            //StopTheBoatsHelper.LoadGameAssets(this.Store.Get<GameAssetStore>("StopTheBoats"));
 
             base.SetUp();
 
@@ -74,11 +73,11 @@ namespace StopTheBoats.Scenes
             this.boats = new BoatControllerCollection(this.Context, this.Camera, this.physics);
 
             // set up and add player
-            var player = new Boat(this.Context, this.physics, this.Assets.Objects.Get<BoatTemplate>("boat.patrol"));
+            var player = new Boat(this.Context, this.physics, this.StopTheBoatsAssets.Objects.Get<BoatTemplate>("boat.patrol"));
             this.boats.Add(new HumanBoatController(player, HumanBoatActionMap.Default));
             this.Context.AddObject(player);
 
-            var player2 = new Boat(this.Context, this.physics, this.Assets.Objects.Get<BoatTemplate>("boat.small"));
+            var player2 = new Boat(this.Context, this.physics, this.StopTheBoatsAssets.Objects.Get<BoatTemplate>("boat.small"));
             player2.Position = new Vector2(200, 0);
             this.boats.Add(new HumanBoatController(player2, HumanBoatActionMap.GamePad));
             this.Context.AddObject(player2);
@@ -87,7 +86,7 @@ namespace StopTheBoats.Scenes
 
             // set up and add a random rock
             var random = new Random();
-            var rock = new SpriteObject(this.Context, this.physics, this.Assets.Sprites["rock1"])
+            var rock = new SpriteObject(this.Context, this.physics, this.StopTheBoatsAssets.Sprites["rock1"])
             {
                 Position = new Vector2(200, 200),
                 Rotation = MathHelper.ToRadians(random.Next(0, 360)),
@@ -96,7 +95,7 @@ namespace StopTheBoats.Scenes
             rock.Fixture.Restitution = 0.001f;
             this.Context.AddObject(rock);
 
-            var shore = new SpriteObject(this.Context, this.physics, this.Assets.Sprites["shore"])
+            var shore = new SpriteObject(this.Context, this.physics, this.StopTheBoatsAssets.Sprites["shore"])
             {
                 Position = new Vector2(-2048, 800),
             };
@@ -106,8 +105,8 @@ namespace StopTheBoats.Scenes
 
             this.SetBoundaries(new RectangleF(-2048, -1024, 4096, 1024 + 800 + shore.SpriteTemplate.Height));
 
-            this.Assets.Audio["ambient2"].Audio.Play(0.1f, 0, 0);
-            this.Assets.Audio["ambient1"].Audio.Play(0.02f, 0, -0.8f);
+            this.StopTheBoatsAssets.Audio["ambient2"].Audio.Play(0.1f, 0, 0);
+            this.StopTheBoatsAssets.Audio["ambient1"].Audio.Play(0.02f, 0, -0.8f);
         }
 
         public override void Update(GameTime gameTime)
@@ -128,7 +127,7 @@ namespace StopTheBoats.Scenes
                 var random = new Random();
                 var topLeft = this.Camera.ScreenToWorld(0, -100);
                 var topRight = this.Camera.ScreenToWorld(this.Camera.Viewport.Width, -100);
-                var enemy = new Boat(this.Context, this.physics, this.Assets.Objects.Get<BoatTemplate>("boat.small"))
+                var enemy = new Boat(this.Context, this.physics, this.StopTheBoatsAssets.Objects.Get<BoatTemplate>("boat.small"))
                 {
                     Position = Vector2.Lerp(topLeft, topRight, (float)random.NextDouble()),
                     Rotation = MathHelper.ToRadians(90 + random.Next(-30, 30)),
@@ -199,9 +198,6 @@ namespace StopTheBoats.Scenes
             // draw any boat controller specific objects (eg. mouse overlay for human player)
             this.boats.Draw(renderer);
 
-            //this.sprites["patrol_boat"].Draw(this.spriteBatch, this.player.Position, this.player.Bearing);
-            //this.sprites["gun_single_barrel"].Draw(this.spriteBatch, this.player.Weapon.Position, this.player.Weapon.Bearing);
-            //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);
             var envy12 = this.Store["Base"].Fonts["envy12"];
             var envy16 = this.Store["Base"].Fonts["envy16"];
             renderer.Screen.DrawString(envy12, string.Format("#objects: {0}", this.Context.NumObjects), new Vector2(10, 10), Color.White);

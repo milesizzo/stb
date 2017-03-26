@@ -33,8 +33,6 @@ namespace GameEngine.Scenes
 
         public Camera Camera { get { return this.camera; } }
 
-        //protected GameAssetStore Assets { get { return this.assets; } }
-
         public bool SceneEnded
         {
             get { return this.sceneEnded; }

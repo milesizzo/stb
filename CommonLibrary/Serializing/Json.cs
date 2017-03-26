@@ -1,11 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CommonLibrary.Serializing
 {
@@ -22,7 +19,7 @@ namespace CommonLibrary.Serializing
             this.Current = current;
         }
 
-        protected override T ReadImpl<T>(string key)
+        public override T Read<T>(string key)
         {
             return this.Current[key].Value<T>();
         }
@@ -58,7 +55,7 @@ namespace CommonLibrary.Serializing
             return result;
         }
 
-        protected override void WriteImpl<T>(string key, T value)
+        public override void Write<T>(string key, T value)
         {
             this.Current[key] = JToken.FromObject(value);
         }

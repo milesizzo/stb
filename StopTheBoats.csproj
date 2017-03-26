@@ -61,7 +61,6 @@
     <Compile Include="StopTheBoats.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StopTheBoatsHelper.cs" />
     <Compile Include="Templates\BoatTemplate.cs" />
     <Compile Include="Templates\WeaponTemplate.cs" />
     <Compile Include="GameObjects\Weapon.cs" />
