@@ -13,9 +13,9 @@ namespace GameEngine.Content
             this.content = content;
         }
 
-        public FontTemplate Load(string assetName)
+        public FontTemplate Load(string name, string assetName)
         {
-            return new FontTemplate(this.content.Load<SpriteFont>(assetName));
+            return new FontTemplate(name, assetName, this.content.Load<SpriteFont>(assetName));
         }
     }
 }

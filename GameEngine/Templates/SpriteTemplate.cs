@@ -13,6 +13,14 @@ namespace GameEngine.Templates
         public Vector2 Origin;
         public int FPS = 5;
         private Shape shape;
+        private readonly string name;
+
+        protected SpriteTemplate(string name)
+        {
+            this.name = name;
+        }
+
+        public string Name { get { return this.name; } }
 
         public abstract Texture2D Texture { get; set; }
 
@@ -60,7 +68,7 @@ namespace GameEngine.Templates
     {
         private readonly List<Texture2D> textures = new List<Texture2D>();
 
-        public AnimatedSpriteTemplate(IEnumerable<Texture2D> textures)
+        public AnimatedSpriteTemplate(string name, IEnumerable<Texture2D> textures) : base(name)
         {
             float averageWidth = 0, averageHeight = 0;
             foreach (var texture in textures)
@@ -115,7 +123,7 @@ namespace GameEngine.Templates
         private readonly int border;
         private readonly int numFrames;
 
-        public AnimatedSpriteSheetTemplate(Texture2D texture, int width, int height, int border = -1, int numFrames = -1)
+        public AnimatedSpriteSheetTemplate(string name, Texture2D texture, int width, int height, int border = -1, int numFrames = -1) : base(name)
         {
             this.width = width;
             this.height = height;
@@ -184,11 +192,7 @@ namespace GameEngine.Templates
     {
         private Texture2D texture;
 
-        public SingleSpriteTemplate()
-        {
-        }
-
-        public SingleSpriteTemplate(Texture2D texture)
+        public SingleSpriteTemplate(string name, Texture2D texture) : base(name)
         {
             this.Origin = new Vector2(texture.Width / 2, texture.Height / 2);
             this.texture = texture;

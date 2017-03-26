@@ -56,33 +56,26 @@
     <Compile Include="GameObjects\Boat.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="GameObjects\StbGameContext.cs" />
-    <Compile Include="Serializing\Serialize.BoatTemplate.cs" />
-    <Compile Include="Serializing\Serialize.Shape.cs" />
-    <Compile Include="Serializing\Serialize.SpriteTemplate.cs" />
-    <Compile Include="Serializing\Serialize.WeaponTemplate.cs" />
-    <Compile Include="Serializing\Serializer.cs" />
     <Compile Include="Scenes\PolygonBoundsEditor.cs" />
     <Compile Include="Scenes\StopTheBoatsScene.cs" />
     <Compile Include="StopTheBoats.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StopTheBoatsHelper.cs" />
-    <Compile Include="Templates\BinSpriteTemplateSerializer.Load.cs" />
-    <Compile Include="Templates\BinSpriteTemplateSerializer.Save.cs" />
     <Compile Include="Templates\BoatTemplate.cs" />
     <Compile Include="Templates\WeaponTemplate.cs" />
     <Compile Include="GameObjects\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Extended, Version=0.6.359.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\MonoGame.Extended.0.6.359\lib\MonoGame.Extended.dll</HintPath>
+    <Reference Include="MonoGame.Extended, Version=0.6.377.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MonoGame.Extended.0.6.377\lib\MonoGame.Extended.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -93,11 +86,17 @@
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
+    <None Include="app.config" />
     <None Include="app.manifest" />
-    <Compile Include="Serializing\Serialize.Vector2.cs" />
-    <None Include="Content\Templates\patrol_boat.json" />
-    <None Include="Content\Templates\rock1.json" />
-    <None Include="Content\Templates\small_boat.json" />
+    <Content Include="Content\StopTheBoats.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\BoundsEditor.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Base.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

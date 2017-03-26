@@ -8,5 +8,6 @@ namespace GameEngine.Templates
 {
     public interface ITemplate
     {
+        string Name { get; }
     }
 }

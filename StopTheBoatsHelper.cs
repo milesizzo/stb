@@ -1,93 +1,47 @@
-﻿using GameEngine.Content;
+﻿using CommonLibrary.Serializing;
+using GameEngine.Content;
 using GameEngine.GameObjects;
+using GameEngine.Serializing;
+using GameEngine.Templates;
 using Microsoft.Xna.Framework;
 using StopTheBoats.Templates;
 using System;
+using System.IO;
 
 namespace StopTheBoats
 {
     public static class StopTheBoatsHelper
     {
+        /*
         public static void LoadFonts(AssetStore assets)
         {
             assets.Fonts.GetOrAdd("envy12", (key) =>
             {
-                return assets.Fonts.Load("Envy12");
+                return assets.Fonts.Load(key, "Envy12");
             });
             assets.Fonts.GetOrAdd("envy16", (key) =>
             {
-                return assets.Fonts.Load("Envy16");
+                return assets.Fonts.Load(key, "Envy16");
             });
         }
 
         public static void LoadGameAssets(GameAssetStore assets)
         {
             // load audio
-            assets.Audio.GetOrAdd("Audio/explosion1", assets.Audio.Load);
-            assets.Audio.GetOrAdd("Audio/explosion2", assets.Audio.Load);
-            assets.Audio.GetOrAdd("Audio/cannon1", assets.Audio.Load);
-            assets.Audio.GetOrAdd("Audio/ambient1", assets.Audio.Load);
-            assets.Audio.GetOrAdd("Audio/ambient2", assets.Audio.Load);
+            assets.Audio.GetOrAdd("explosion1", (key) => assets.Audio.Load(key, "Audio/explosion1"));
+            assets.Audio.GetOrAdd("explosion2", (key) => assets.Audio.Load(key, "Audio/explosion2"));
+            assets.Audio.GetOrAdd("cannon1", (key) => assets.Audio.Load(key, "Audio/cannon1"));
+            assets.Audio.GetOrAdd("ambient1", (key) => assets.Audio.Load(key, "Audio/ambient1"));
+            assets.Audio.GetOrAdd("ambient2", (key) => assets.Audio.Load(key, "Audio/ambient2"));
 
-            // load sprite templates
-            var patrol_boat = assets.Sprites.GetOrAdd("patrol_boat", (key) =>
-            {
-                var obj = assets.Sprites.Load(key);
-                obj.Origin = new Vector2(19, 31);
-                return obj;
-            });
-            var small_boat = assets.Sprites.GetOrAdd("small_boat", (key) =>
-            {
-                var obj = assets.Sprites.Load(key);
-                obj.Origin = new Vector2(19, 27);
-                return obj;
-            });
-            var gun_single_barrel = assets.Sprites.GetOrAdd("gun_single_barrel", (key) =>
-            {
-                var obj = assets.Sprites.Load(key);
-                obj.Origin = new Vector2(11, 11);
-                return obj;
-            });
-            var rock1 = assets.Sprites.GetOrAdd("rock1", (key) =>
-            {
-                return assets.Sprites.Load(key);
-            });
-            var shore = assets.Sprites.GetOrAdd("shore", (key) =>
-            {
-                var obj = assets.Sprites.Load(key);
-                obj.Origin = new Vector2(0, 0);
-                return obj;
-            });
-            var explosion1 = assets.Sprites.GetOrAdd("explosion_sheet1", (key) =>
-            {
-                var obj = assets.Sprites.Load(64, 64, key);
-                obj.FPS = 30;
-                return obj;
-            });
-            var explosion2 = assets.Sprites.GetOrAdd("explosion_sheet2", (key) =>
-            {
-                var obj = assets.Sprites.Load(100, 100, key);
-                obj.FPS = 60;
-                return obj;
-            });
-            var explosion3 = assets.Sprites.GetOrAdd("explosion_sheet3", (key) =>
-            {
-                var obj = assets.Sprites.Load(100, 100, key);
-                obj.FPS = 50;
-                return obj;
-            });
-            var whale = assets.Sprites.GetOrAdd("whale-swim", (key) =>
-            {
-                var obj = assets.Sprites.Load(62, 31, key, numFrames: 5);
-                return obj;
-            });
+            //LoadGameAssets(assets, "StopTheBoats.json");
 
             // load weapon templates
             assets.Objects.GetOrAdd("gun.single_barrel", (key) =>
             {
-                return new WeaponTemplate
+                return new WeaponTemplate(key)
                 {
-                    SpriteTemplate = gun_single_barrel,
+                    SpriteTemplate = assets.Sprites["gun_single_barrel"],
                     ProjectileVelocity = 5000f,
                     ProjectileMass = 100f,
                     FireRate = TimeSpan.FromSeconds(1),
@@ -98,11 +52,11 @@ namespace StopTheBoats
             // load boat templates
             var patrolBoat = assets.Objects.GetOrAdd("boat.patrol", (key) =>
             {
-                var boat = new BoatTemplate
+                var boat = new BoatTemplate(key)
                 {
                     //Acceleration = 50.0f,
                     Acceleration = 100.0f,
-                    SpriteTemplate = patrol_boat,
+                    SpriteTemplate = assets.Sprites["patrol_boat"],
                     MaxHealth = 1000f,
                     //EnginePosition = new Vector2(19, 31),
                     EnginePosition = new Vector2(-71, 0),
@@ -116,14 +70,15 @@ namespace StopTheBoats
             });
             var smallBoat = assets.Objects.GetOrAdd("boat.small", (key) =>
             {
-                return new BoatTemplate
+                return new BoatTemplate(key)
                 {
                     Acceleration = 75.0f,
-                    SpriteTemplate = small_boat,
+                    SpriteTemplate = assets.Sprites["small_boat"],
                     MaxHealth = 200f,
                     Mass = 58000f,
                 };
             });
         }
+        */
     }
 }

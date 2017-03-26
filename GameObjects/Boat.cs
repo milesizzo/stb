@@ -146,7 +146,7 @@ namespace StopTheBoats.GameObjects
                     this.health = 0;
                     this.IsAwaitingDeletion = true;
 
-                    this.Context.Assets.Audio["Audio/explosion2"].Audio.Play();
+                    this.Context.Assets.Audio["explosion2"].Audio.Play();
 
                     var random = new Random();
                     var assetName = random.Choice("explosion_sheet2", "explosion_sheet3");

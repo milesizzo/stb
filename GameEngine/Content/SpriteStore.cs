@@ -16,23 +16,23 @@ namespace GameEngine.Content
             this.content = content;
         }
 
-        public SingleSpriteTemplate Load(string assetName)
+        public SingleSpriteTemplate Load(string name, string assetName)
         {
             var texture = this.content.Load<Texture2D>(assetName);
-            var obj = new SingleSpriteTemplate(texture);
+            var obj = new SingleSpriteTemplate(name, texture);
             return obj;
         }
 
         public AnimatedSpriteTemplate Load(string name, params string[] assetNames)
         {
-            var obj = new AnimatedSpriteTemplate(assetNames.Select(a => this.content.Load<Texture2D>(a)));
+            var obj = new AnimatedSpriteTemplate(name, assetNames.Select(a => this.content.Load<Texture2D>(a)));
             return obj;
         }
 
-        public AnimatedSpriteSheetTemplate Load(int width, int height, string assetName, int border = -1, int numFrames = -1)
+        public AnimatedSpriteSheetTemplate Load(string name, int width, int height, string assetName, int border = -1, int numFrames = -1)
         {
             var texture = this.content.Load<Texture2D>(assetName);
-            var obj = new AnimatedSpriteSheetTemplate(texture, width, height, border, numFrames);
+            var obj = new AnimatedSpriteSheetTemplate(name, texture, width, height, border, numFrames);
             return obj;
         }
     }

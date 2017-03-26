@@ -4,11 +4,15 @@ namespace GameEngine.Templates
 {
     public class AudioTemplate : ITemplate
     {
-        public SoundEffect Audio;
+        private readonly string name;
+        public readonly SoundEffect Audio;
 
-        public AudioTemplate(SoundEffect audio)
+        public AudioTemplate(string name, SoundEffect audio)
         {
+            this.name = name;
             this.Audio = audio;
         }
+
+        public string Name { get { return this.name; } }
     }
 }

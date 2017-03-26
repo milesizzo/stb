@@ -1,0 +1,452 @@
+{
+  "type": "GameEngine.GameObjects.GameAssetStore, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "name": "StopTheBoats",
+  "sprites": [
+    {
+      "name": "patrol_boat",
+      "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 19.0,
+        "y": 31.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 155.8302,
+            "y": -0.6359863
+          },
+          {
+            "x": 138.445068,
+            "y": 11.8728027
+          },
+          {
+            "x": 117.243652,
+            "y": 19.2932739
+          },
+          {
+            "x": -0.6359863,
+            "y": 19.2932739
+          },
+          {
+            "x": -12.9328613,
+            "y": 10.3887329
+          },
+          {
+            "x": -13.5688477,
+            "y": -8.056519
+          },
+          {
+            "x": -1.27209473,
+            "y": -19.0812378
+          },
+          {
+            "x": 116.81958,
+            "y": -19.7172241
+          },
+          {
+            "x": 139.081055,
+            "y": -11.8727417
+          }
+        ]
+      },
+      "texture": "patrol_boat"
+    },
+    {
+      "name": "small_boat",
+      "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 19.0,
+        "y": 27.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 83.53345,
+            "y": -0.848022461
+          },
+          {
+            "x": 69.54053,
+            "y": 11.4487915
+          },
+          {
+            "x": 50.6713867,
+            "y": 18.02118
+          },
+          {
+            "x": 12.7208252,
+            "y": 23.53357
+          },
+          {
+            "x": -6.99646,
+            "y": 20.3533325
+          },
+          {
+            "x": -16.1130371,
+            "y": 6.10351563E-05
+          },
+          {
+            "x": -9.9646,
+            "y": -19.0812378
+          },
+          {
+            "x": 12.5087891,
+            "y": -23.1094971
+          },
+          {
+            "x": 49.399292,
+            "y": -19.505249
+          },
+          {
+            "x": 68.48047,
+            "y": -13.3568115
+          }
+        ]
+      },
+      "texture": "small_boat"
+    },
+    {
+      "name": "gun_single_barrel",
+      "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 11.0,
+        "y": 11.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 29.0,
+            "y": -11.0
+          },
+          {
+            "x": 29.0,
+            "y": 13.0
+          },
+          {
+            "x": -11.0,
+            "y": 13.0
+          },
+          {
+            "x": -11.0,
+            "y": -11.0
+          }
+        ]
+      },
+      "texture": "gun_single_barrel"
+    },
+    {
+      "name": "rock1",
+      "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 78.0,
+        "y": 134.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 77.5,
+            "y": 77.5
+          },
+          {
+            "x": 53.0,
+            "y": 107.5
+          },
+          {
+            "x": -29.89392,
+            "y": 133.780762
+          },
+          {
+            "x": -60.5,
+            "y": 114.0
+          },
+          {
+            "x": -78.0,
+            "y": 73.5
+          },
+          {
+            "x": -68.0,
+            "y": -80.0
+          },
+          {
+            "x": -9.5,
+            "y": -128.5
+          },
+          {
+            "x": 13.5,
+            "y": -134.5
+          },
+          {
+            "x": 37.0,
+            "y": -126.0
+          },
+          {
+            "x": 75.0,
+            "y": -22.0
+          }
+        ]
+      },
+      "texture": "rock1"
+    },
+    {
+      "name": "shore",
+      "type": "GameEngine.Templates.SingleSpriteTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 4096.0,
+            "y": 0.0
+          },
+          {
+            "x": 4096.0,
+            "y": 64.0
+          },
+          {
+            "x": 0.0,
+            "y": 64.0
+          },
+          {
+            "x": 0.0,
+            "y": 0.0
+          }
+        ]
+      },
+      "texture": "shore"
+    },
+    {
+      "name": "explosion_sheet1",
+      "type": "GameEngine.Templates.AnimatedSpriteSheetTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 32.0,
+        "y": 32.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 32.0,
+            "y": -32.0
+          },
+          {
+            "x": 32.0,
+            "y": 32.0
+          },
+          {
+            "x": -32.0,
+            "y": 32.0
+          },
+          {
+            "x": -32.0,
+            "y": -32.0
+          }
+        ]
+      },
+      "fps": 30,
+      "texture": "explosion_sheet1",
+      "width": 64,
+      "height": 64,
+      "border": 0,
+      "frames": 16
+    },
+    {
+      "name": "explosion_sheet2",
+      "type": "GameEngine.Templates.AnimatedSpriteSheetTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 50.0,
+        "y": 50.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 50.0,
+            "y": -50.0
+          },
+          {
+            "x": 50.0,
+            "y": 50.0
+          },
+          {
+            "x": -50.0,
+            "y": 50.0
+          },
+          {
+            "x": -50.0,
+            "y": -50.0
+          }
+        ]
+      },
+      "fps": 60,
+      "texture": "explosion_sheet2",
+      "width": 100,
+      "height": 100,
+      "border": 0,
+      "frames": 81
+    },
+    {
+      "name": "explosion_sheet3",
+      "type": "GameEngine.Templates.AnimatedSpriteSheetTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 50.0,
+        "y": 50.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 50.0,
+            "y": -50.0
+          },
+          {
+            "x": 50.0,
+            "y": 50.0
+          },
+          {
+            "x": -50.0,
+            "y": 50.0
+          },
+          {
+            "x": -50.0,
+            "y": -50.0
+          }
+        ]
+      },
+      "fps": 50,
+      "texture": "explosion_sheet3",
+      "width": 100,
+      "height": 100,
+      "border": 0,
+      "frames": 42
+    },
+    {
+      "name": "whale-swim",
+      "type": "GameEngine.Templates.AnimatedSpriteSheetTemplate, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "origin": {
+        "x": 31.0,
+        "y": 15.0
+      },
+      "shape": {
+        "type": "FarseerPhysics.Collision.Shapes.PolygonShape, FarseerPhysics MonoGame, Version=3.5.0.9, Culture=neutral, PublicKeyToken=null",
+        "density": 1.0,
+        "vertices": [
+          {
+            "x": 31.0,
+            "y": -15.0
+          },
+          {
+            "x": 31.0,
+            "y": 16.0
+          },
+          {
+            "x": -31.0,
+            "y": 16.0
+          },
+          {
+            "x": -31.0,
+            "y": -15.0
+          }
+        ]
+      },
+      "fps": 5,
+      "texture": "whale-swim",
+      "width": 62,
+      "height": 31,
+      "border": 1,
+      "frames": 5
+    }
+  ],
+  "audio": [
+    {
+      "name": "explosion1",
+      "asset": "Audio/explosion1"
+    },
+    {
+      "name": "explosion2",
+      "asset": "Audio/explosion2"
+    },
+    {
+      "name": "cannon1",
+      "asset": "Audio/cannon1"
+    },
+    {
+      "name": "ambient1",
+      "asset": "Audio/ambient1"
+    },
+    {
+      "name": "ambient2",
+      "asset": "Audio/ambient2"
+    }
+  ],
+  "fonts": [],
+  "objects": [
+    {
+      "type": "StopTheBoats.Templates.WeaponTemplate, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "name": "gun.single_barrel",
+      "projectile_velocity": 5000.0,
+      "projectile_mass": 100.0,
+      "fire_rate": 1.0,
+      "damage": 100.0,
+      "sprite": "gun_single_barrel"
+    },
+    {
+      "type": "StopTheBoats.Templates.BoatTemplate, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "name": "boat.patrol",
+      "crew": 0,
+      "passengers": 0,
+      "acceleration": 100.0,
+      "health": 1000.0,
+      "mass": 5800000.0,
+      "engine": {
+        "x": -71.0,
+        "y": 0.0
+      },
+      "sprite": "patrol_boat",
+      "weapons": [
+        {
+          "weapon": "gun.single_barrel",
+          "pos": {
+            "x": 99.0,
+            "y": 0.0
+          }
+        },
+        {
+          "weapon": "gun.single_barrel",
+          "pos": {
+            "x": 20.0,
+            "y": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "type": "StopTheBoats.Templates.BoatTemplate, Game1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "name": "boat.small",
+      "crew": 0,
+      "passengers": 0,
+      "acceleration": 75.0,
+      "health": 200.0,
+      "mass": 58000.0,
+      "engine": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "sprite": "small_boat",
+      "weapons": []
+    }
+  ]
+}

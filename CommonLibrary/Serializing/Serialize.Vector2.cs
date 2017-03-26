@@ -1,14 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StopTheBoats.Serializing
+namespace CommonLibrary.Serializing
 {
-    public static partial class Serialize
+    public static partial class CommonSerialize
     {
         public static void Write(ISerializer context, Vector2 vector)
         {

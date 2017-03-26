@@ -13,9 +13,7 @@ using GameEngine.GameObjects;
 using GameEngine.Graphics;
 using GameEngine.Helpers;
 using GameEngine.Extensions;
-using System.IO;
-using StopTheBoats.Serializing;
-using Microsoft.Xna.Framework.Content;
+using GameEngine.Content;
 
 namespace StopTheBoats.Scenes
 {
@@ -30,7 +28,7 @@ namespace StopTheBoats.Scenes
 
         private SpriteTemplate cursor;
 
-        public PolygonBoundsEditor(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, assets)
+        public PolygonBoundsEditor(string name, GraphicsDevice graphics, Store store) : base(name, graphics, store)
         {
             this.Camera.Zoom = DefaultZoom;
         }
@@ -70,17 +68,18 @@ namespace StopTheBoats.Scenes
 
         public override void SetUp()
         {
-            StopTheBoatsHelper.LoadGameAssets(this.Assets);
-            StopTheBoatsHelper.LoadFonts(this.Assets);
+            this.Store.LoadFromJson("Content\\StopTheBoats.json");
+            this.Store.LoadFromJson("Content\\BoundsEditor.json");
 
-            this.cursor = this.Assets.Sprites.GetOrAdd("editor_cursor", (key) =>
+            /*this.cursor = this.Assets.Sprites.GetOrAdd("editor_cursor", (key) =>
             {
                 var sprite = this.Assets.Sprites.Load("editor_cursor");
                 sprite.Origin = Vector2.Zero;
                 return sprite;
-            });
+            });*/
+            this.cursor = this.Store.Sprites("BoundsEditor", "editor_cursor");
 
-            foreach (var kvp in this.Assets.Sprites.All)
+            foreach (var kvp in this.Store["StopTheBoats"].Sprites.All)
             {
                 if (kvp.Value.Shape is PolygonShape)
                 {
@@ -131,12 +130,12 @@ namespace StopTheBoats.Scenes
             if (KeyboardHelper.KeyPressed(Keys.OemTilde))
             {
                 this.Current.Shape = new PolygonShape(new Vertices(this.points), 1f);
-                var serializer = new MgiJsonSerializer();
-                var context = serializer.Serialize();
-                context.Write("sprite", this.Current, Serialize.Write);
-                serializer.Save(this.CurrentName + ".new", context);
+                foreach (var storeName in this.Store.Keys)
+                {
+                    this.Store.SaveToJson(storeName, $"{storeName}.json");
+                }
             }
-            if (KeyboardHelper.KeyPressed(Keys.Tab))
+            /*if (KeyboardHelper.KeyPressed(Keys.Tab))
             {
                 var serializer = new MgiJsonSerializer();
                 var context = serializer.Load(this.CurrentName + ".new");
@@ -151,7 +150,7 @@ namespace StopTheBoats.Scenes
                     }
                 }
                 this.SetCurrent(this.currentSpriteIndex);
-            }
+            }*/
             if (keyboard.IsKeyDown(Keys.PageUp))
             {
                 this.Camera.ZoomIn(gameTime.GetElapsedSeconds());
@@ -229,10 +228,11 @@ namespace StopTheBoats.Scenes
             //renderer.Render.DrawCircle(new Vector2(mouse.X, mouse.Y), 9, 16, Color.Gray);
 
             //this.cursor.DrawSprite(renderer, this.Camera.WorldToScreen(mouse.X, mouse.Y), Color.White, 0, Vector2.One, SpriteEffects.None);
+            var font = this.Store.Fonts("Base", "envy16");
             var mouseScreen = new Vector2(mouse.X, mouse.Y);
             var mouseWorld = this.Camera.ScreenToWorld(mouseScreen);
-            renderer.Screen.DrawString(this.Assets.Fonts["envy16"], string.Format("Mouse (screen): {0}", mouseScreen), new Vector2(8, 8), Color.White);
-            renderer.Screen.DrawString(this.Assets.Fonts["envy16"], string.Format(" Mouse (world): {0}", mouseWorld), new Vector2(8, 32), Color.White);
+            renderer.Screen.DrawString(font, string.Format("Mouse (screen): {0}", mouseScreen), new Vector2(8, 8), Color.White);
+            renderer.Screen.DrawString(font, string.Format(" Mouse (world): {0}", mouseWorld), new Vector2(8, 32), Color.White);
 
             this.cursor.DrawSprite(renderer, this.Camera.ScreenToWorld(mouse.X, mouse.Y), Color.White, 0, Vector2.One, SpriteEffects.None);
         }

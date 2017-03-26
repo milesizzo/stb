@@ -16,6 +16,7 @@ using StopTheBoats.Scenes;
 using GameEngine.Helpers;
 using GameEngine;
 using GameEngine.Extensions;
+using GameEngine.Content;
 
 namespace StopTheBoats
 {
@@ -70,12 +71,8 @@ namespace StopTheBoats
     /// </summary>
     public class StopTheBoats : SceneGame
     {
-        private GameAssetStore assets;
-
         public StopTheBoats()
         {
-            this.Content.RootDirectory = "Content";
-            this.assets = new GameAssetStore(this.Content);
         }
 
         /// <summary>
@@ -100,15 +97,15 @@ namespace StopTheBoats
             //this.renderer.LoadContent();
 
             // TODO: use this.Content to load your game content here
-            StopTheBoatsHelper.LoadFonts(this.assets);
+            this.Store.LoadFromJson("Content\\Base.json");
 
-            this.Scenes.GetOrAdd("game", (key) =>
+            this.Scenes.GetOrAdd("StopTheBoats", (key) =>
             {
-                return new StopTheBoatsScene(this.GraphicsDevice, this.assets);
+                return new StopTheBoatsScene(key, this.GraphicsDevice, this.Store);
             });
-            this.Scenes.GetOrAdd("editor.bounds", (key) =>
+            this.Scenes.GetOrAdd("BoundsEditor", (key) =>
             {
-                return new PolygonBoundsEditor(this.GraphicsDevice, this.assets);
+                return new PolygonBoundsEditor(key, this.GraphicsDevice, this.Store);
             });
         }
 
@@ -119,6 +116,7 @@ namespace StopTheBoats
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            this.Store.SaveAllToJson("Content");
         }
 
         /// <summary>
@@ -130,11 +128,11 @@ namespace StopTheBoats
         {
             if (KeyboardHelper.KeyPressed(Keys.F1))
             {
-                this.SetCurrentScene("game");
+                this.SetCurrentScene("StopTheBoats");
             }
             else if (KeyboardHelper.KeyPressed(Keys.F2))
             {
-                this.SetCurrentScene("editor.bounds");
+                this.SetCurrentScene("BoundsEditor");
             }
             else if (KeyboardHelper.KeyPressed(Keys.F12))
             {
@@ -151,7 +149,7 @@ namespace StopTheBoats
 
         protected override void Draw(Renderer renderer)
         {
-            var envy16 = this.assets.Fonts["envy16"];
+            var envy16 = this.Store["Base"].Fonts["envy16"];
             renderer.Screen.DrawString(envy16, string.Format("FPS: {0:0.0}", this.FPS), new Vector2(1024, 10), Color.White);
             base.Draw(renderer);
         }

@@ -1,4 +1,5 @@
-﻿using GameEngine.Graphics;
+﻿using GameEngine.Content;
+using GameEngine.Graphics;
 using GameEngine.Scenes;
 using GameEngine.Templates;
 using Microsoft.Xna.Framework;
@@ -13,11 +14,15 @@ namespace GameEngine
         private TemplateStore<IScene> scenes;
         private Renderer renderer;
         private double frameRate;
+        private readonly Store store;
 
         public SceneGame()
         {
             this.renderer = new Renderer(this);
             this.scenes = new TemplateStore<IScene>();
+
+            this.Content.RootDirectory = "Content";
+            this.store = new Store(this.Content);
         }
         
         protected IScene CurrentScene
@@ -33,6 +38,11 @@ namespace GameEngine
         protected double FPS
         {
             get { return this.frameRate; }
+        }
+
+        protected Store Store
+        {
+            get { return this.store; }
         }
 
         protected void SetCurrentScene(string name)

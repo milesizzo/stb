@@ -13,6 +13,8 @@ using StopTheBoats.GameObjects;
 using StopTheBoats.Templates;
 using FarseerPhysics.Collision.Shapes;
 using StopTheBoats.Controllers;
+using Microsoft.Xna.Framework.Content;
+using GameEngine.Content;
 
 namespace StopTheBoats.Scenes
 {
@@ -27,7 +29,7 @@ namespace StopTheBoats.Scenes
         private World physics;
         private RectangleF boundaries;
 
-        public StopTheBoatsScene(GraphicsDevice graphics, GameAssetStore assets) : base(graphics, new StbGameContext(assets))
+        public StopTheBoatsScene(string name, GraphicsDevice graphics, Store store) : base(name, graphics, store)
         {
             this.physics = new World(Vector2.Zero);
             this.Camera.Rotation = 0;
@@ -50,13 +52,24 @@ namespace StopTheBoats.Scenes
             this.boundaries = rect;
         }
 
+        private GameAssetStore Assets
+        {
+            get { return this.Store.Get<GameAssetStore>("StopTheBoats"); }
+        }
+
+        protected override StbGameContext CreateContext()
+        {
+            return new StbGameContext(this.Assets);
+        }
+
         public override void SetUp()
         {
+            this.Store.LoadFromJson("Content\\StopTheBoats.json");
+            //StopTheBoatsHelper.LoadGameAssets(this.Store.Get<GameAssetStore>("StopTheBoats"));
+
             base.SetUp();
 
             this.physics.Clear();
-
-            StopTheBoatsHelper.LoadGameAssets(this.Assets);
 
             this.boats = new BoatControllerCollection(this.Context, this.Camera, this.physics);
 
@@ -74,7 +87,7 @@ namespace StopTheBoats.Scenes
 
             // set up and add a random rock
             var random = new Random();
-            var rock = new SpriteObject(this.Context, this.physics, this.Context.Assets.Sprites["rock1"])
+            var rock = new SpriteObject(this.Context, this.physics, this.Assets.Sprites["rock1"])
             {
                 Position = new Vector2(200, 200),
                 Rotation = MathHelper.ToRadians(random.Next(0, 360)),
@@ -83,7 +96,7 @@ namespace StopTheBoats.Scenes
             rock.Fixture.Restitution = 0.001f;
             this.Context.AddObject(rock);
 
-            var shore = new SpriteObject(this.Context, this.physics, this.Context.Assets.Sprites["shore"])
+            var shore = new SpriteObject(this.Context, this.physics, this.Assets.Sprites["shore"])
             {
                 Position = new Vector2(-2048, 800),
             };
@@ -93,8 +106,8 @@ namespace StopTheBoats.Scenes
 
             this.SetBoundaries(new RectangleF(-2048, -1024, 4096, 1024 + 800 + shore.SpriteTemplate.Height));
 
-            this.Assets.Audio["Audio/ambient2"].Audio.Play(0.1f, 0, 0);
-            this.Assets.Audio["Audio/ambient1"].Audio.Play(0.02f, 0, -0.8f);
+            this.Assets.Audio["ambient2"].Audio.Play(0.1f, 0, 0);
+            this.Assets.Audio["ambient1"].Audio.Play(0.02f, 0, -0.8f);
         }
 
         public override void Update(GameTime gameTime)
@@ -189,8 +202,8 @@ namespace StopTheBoats.Scenes
             //this.sprites["patrol_boat"].Draw(this.spriteBatch, this.player.Position, this.player.Bearing);
             //this.sprites["gun_single_barrel"].Draw(this.spriteBatch, this.player.Weapon.Position, this.player.Weapon.Bearing);
             //this.spriteBatch.DrawLine(this.player.Position, this.player.Position + new Vector2((float)Math.Cos(this.player.Bearing) * 32, (float)Math.Sin(this.player.Bearing) * 32), Color.Black);
-            var envy12 = this.Context.Assets.Fonts["envy12"];
-            var envy16 = this.Context.Assets.Fonts["envy16"];
+            var envy12 = this.Store["Base"].Fonts["envy12"];
+            var envy16 = this.Store["Base"].Fonts["envy16"];
             renderer.Screen.DrawString(envy12, string.Format("#objects: {0}", this.Context.NumObjects), new Vector2(10, 10), Color.White);
             renderer.Screen.DrawString(envy12, string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), new Vector2(10, 24), Color.White);
             renderer.Screen.DrawString(envy12, string.Format("zoom: {0}", this.Camera.Zoom), new Vector2(10, 36), Color.White);

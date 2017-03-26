@@ -81,7 +81,7 @@ namespace StopTheBoats.GameObjects
                 // not enough time has passed - we can't fire our weapon yet
                 return null;
             }
-            this.Context.Assets.Audio["Audio/cannon1"].Audio.Play(0.1f, 0, 0);
+            this.Context.Assets.Audio["cannon1"].Audio.Play(0.1f, 0, 0);
             this.lastFire = gameTime.TotalGameTime;
             var velocity = this.WeaponTemplate.ProjectileVelocity;
             var projectile = new Projectile(this.Context, physics, this.boat, this.WeaponTemplate.Damage, velocity);

@@ -1,0 +1,16 @@
+{
+  "type": "GameEngine.Content.AssetStore, GameEngine, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "name": "Base",
+  "sprites": [],
+  "audio": [],
+  "fonts": [
+    {
+      "name": "envy12",
+      "asset": "Envy12"
+    },
+    {
+      "name": "envy16",
+      "asset": "Envy16"
+    }
+  ]
+}
