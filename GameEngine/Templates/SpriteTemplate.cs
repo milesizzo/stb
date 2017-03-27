@@ -56,12 +56,12 @@ namespace GameEngine.Templates
             }
         }
 
-        public virtual void DrawSprite(Renderer render, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
+        public virtual void DrawSprite(SpriteBatch sb, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
-            render.World.Draw(this.Texture, position, null, colour, rotation, this.Origin, scale, effects, 0f);
+            sb.Draw(this.Texture, position, null, colour, rotation, this.Origin, scale, effects, 0f);
         }
 
-        public abstract void DrawSprite(Renderer render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects);
+        public abstract void DrawSprite(SpriteBatch sb, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects);
     }
 
     public class AnimatedSpriteTemplate : SpriteTemplate
@@ -107,9 +107,9 @@ namespace GameEngine.Templates
             this.textures.Add(texture);
         }
 
-        public override void DrawSprite(Renderer render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
+        public override void DrawSprite(SpriteBatch sb, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
-            render.World.Draw(this.textures[frame], position, null, colour, rotation, this.Origin, scale, effects, 0f);
+            sb.Draw(this.textures[frame], position, null, colour, rotation, this.Origin, scale, effects, 0f);
         }
     }
 
@@ -179,12 +179,12 @@ namespace GameEngine.Templates
             }
         }
 
-        public override void DrawSprite(Renderer render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
+        public override void DrawSprite(SpriteBatch sb, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
             var x = (frame % this.gridWidth) * (this.width + this.border) + this.border;
             var y = (frame / this.gridWidth) * (this.height + this.border) + this.border;
             var rect = new Rectangle(x, y, this.width, this.height);
-            render.World.Draw(this.texture, position, rect, colour, rotation, this.Origin, scale, effects, 0f);
+            sb.Draw(this.texture, position, rect, colour, rotation, this.Origin, scale, effects, 0f);
         }
     }
 
@@ -212,9 +212,9 @@ namespace GameEngine.Templates
             }
         }
 
-        public override void DrawSprite(Renderer render, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
+        public override void DrawSprite(SpriteBatch sb, int frame, Vector2 position, Color colour, float rotation, Vector2 scale, SpriteEffects effects)
         {
-            this.DrawSprite(render, position, colour, rotation, scale, effects);
+            this.DrawSprite(sb, position, colour, rotation, scale, effects);
         }
     }
 }

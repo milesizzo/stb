@@ -25,7 +25,7 @@ namespace GameEngine.Graphics
         {
             if (!this.IsComplete)
             {
-                this.template.DrawSprite(renderer, (int)Math.Floor(this.animFrame), position, colour, rotation, scale, effects);
+                this.template.DrawSprite(renderer.World, (int)Math.Floor(this.animFrame), position, colour, rotation, scale, effects);
             }
         }
 

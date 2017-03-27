@@ -11,6 +11,7 @@ using GameEngine.Graphics;
 using StopTheBoats.Templates;
 using FarseerPhysics.Common;
 using GameEngine.Extensions;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StopTheBoats.GameObjects
 {
@@ -39,6 +40,22 @@ namespace StopTheBoats.GameObjects
             this.nearby = this.owner.Context.Objects.OfType<PhysicalObject>().Where(this.IsVisible).ToList();
         }
 
+        private void DrawRadarObject(Renderer renderer, PhysicalObject obj, ref Vector2 screenPosition, ref Vector2 radiusVector, float scale)
+        {
+            var location = screenPosition + (obj.Position - this.owner.Position) * scale + radiusVector;
+            var objTransform = new Transform();
+            objTransform.Set(location, obj.Rotation);
+            var asSpriteObject = obj as SpriteObject;
+            if (asSpriteObject == null)
+            {
+                renderer.Screen.DrawShape(obj.Shape, objTransform, Color.Red, scale: scale);
+            }
+            else
+            {
+                asSpriteObject.SpriteTemplate.DrawSprite(renderer.Screen, location, Color.Red, obj.Rotation, new Vector2(scale, scale), SpriteEffects.None);
+            }
+        }
+
         public void Draw(Renderer renderer, Vector2 screenPosition, float scale)
         {
             var offset = screenPosition;
@@ -46,17 +63,13 @@ namespace StopTheBoats.GameObjects
             var radiusVector = new Vector2(radius, radius) * scale;
             foreach (var obj in this.nearby)
             {
-                var location = offset + (obj.Position - this.owner.Position) * scale + radiusVector;
-                var objTransform = new Transform();
-                objTransform.Set(location, obj.Rotation);
-                renderer.Screen.DrawShape(obj.Shape, objTransform, Color.Red, scale: scale);
-                //renderer.Screen.DrawPoint(location, Color.Red, 4);
+                this.DrawRadarObject(renderer, obj, ref screenPosition, ref radiusVector, scale);
             }
-            var transform = new Transform();
-            transform.Set(offset + radiusVector, this.owner.Rotation);
-            renderer.Screen.DrawShape(this.owner.Shape, transform, Color.Yellow, scale: scale);
+            this.DrawRadarObject(renderer, this.owner, ref screenPosition, ref radiusVector, scale);
             renderer.Screen.DrawCircle(offset + radiusVector, radius * scale + 5, 64, Color.Black, 8f);
         }
+
+        public IReadOnlyList<PhysicalObject> Nearby { get { return this.nearby; } }
     }
 
     public class Boat : SpriteObject
@@ -82,6 +95,11 @@ namespace StopTheBoats.GameObjects
         }
 
         public Radar Radar { get { return this.radar; } }
+
+        public int ActiveWeapons
+        {
+            get { return this.weapons.Count(w => w != null); }
+        }
 
         public int WeaponSlots
         {
@@ -135,9 +153,9 @@ namespace StopTheBoats.GameObjects
             this.Body.ApplyForce(force, this.Body.WorldCenter);
         }
 
-        public void Turn(float amountDegrees)
+        public void Turn(GameTime gameTime, float scale)
         {
-            this.Body.AngularVelocity += MathHelper.ToRadians(amountDegrees);
+            this.Body.AngularVelocity += MathHelper.ToRadians(this.BoatTemplate.TurnSpeed * gameTime.GetElapsedSeconds() * scale);
         }
 
         public override void Update(GameTime gameTime)
@@ -175,7 +193,7 @@ namespace StopTheBoats.GameObjects
                     this.health = 0;
                     this.IsAwaitingDeletion = true;
 
-                    this.Context.Store.Audio("StopTheBoats", "explosion2").Audio.Play();
+                    //this.Context.Store.Audio("StopTheBoats", "explosion2").Audio.Play();
 
                     var random = new Random();
                     var assetName = random.Choice("explosion_sheet2", "explosion_sheet3");

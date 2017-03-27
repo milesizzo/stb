@@ -70,7 +70,7 @@ namespace StopTheBoats.GameObjects
             if (asProjectile == null && other != null)
             {
                 this.IsAwaitingDeletion = true;
-                this.Context.Store.Audio("StopTheBoats", "explosion1").Audio.Play(0.1f, 0, 0);
+                //this.Context.Store.Audio("StopTheBoats", "explosion1").Audio.Play(0.1f, 0, 0);
                 var explosion = new AttachedObject(this.Context, this.Context.Store.Sprites("StopTheBoats", "explosion_sheet1"));
                 other.AddChild(explosion);
                 explosion.Position = this.Position;

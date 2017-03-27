@@ -104,8 +104,8 @@ namespace StopTheBoats.Scenes
 
             this.SetBoundaries(new RectangleF(-2048, -1024, 4096, 1024 + 800 + shore.SpriteTemplate.Height));
 
-            this.StopTheBoatsAssets.Audio["ambient2"].Audio.Play(0.1f, 0, 0);
-            this.StopTheBoatsAssets.Audio["ambient1"].Audio.Play(0.02f, 0, -0.8f);
+            //this.StopTheBoatsAssets.Audio["ambient2"].Audio.Play(0.1f, 0, 0);
+            //this.StopTheBoatsAssets.Audio["ambient1"].Audio.Play(0.02f, 0, -0.8f);
         }
 
         public override void Update(GameTime gameTime)

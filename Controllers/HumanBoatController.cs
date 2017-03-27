@@ -286,8 +286,8 @@ namespace StopTheBoats.Controllers
 
             this.boat.Accelerate(+this.mapping.IsHeld(HumanBoatActionMap.Actions.Accelerate));
             this.boat.Accelerate(-this.mapping.IsHeld(HumanBoatActionMap.Actions.Decelerate));
-            this.boat.Turn(-20f * (float)gameTime.ElapsedGameTime.TotalSeconds * this.mapping.IsHeld(HumanBoatActionMap.Actions.TurnLeft));
-            this.boat.Turn(+20f * (float)gameTime.ElapsedGameTime.TotalSeconds * this.mapping.IsHeld(HumanBoatActionMap.Actions.TurnRight));
+            this.boat.Turn(gameTime, -this.mapping.IsHeld(HumanBoatActionMap.Actions.TurnLeft));
+            this.boat.Turn(gameTime, +this.mapping.IsHeld(HumanBoatActionMap.Actions.TurnRight));
             if (this.mapping.IsTapped(HumanBoatActionMap.Actions.Fire))
             {
                 foreach (var weapon in this.boat.Weapons)

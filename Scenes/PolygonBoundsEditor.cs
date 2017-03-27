@@ -182,7 +182,7 @@ namespace StopTheBoats.Scenes
             var mouse = Mouse.GetState().Position;
             if (this.Current != null)
             {
-                this.Current.DrawSprite(renderer, this.position, Color.White, 0, Vector2.One, SpriteEffects.None);
+                this.Current.DrawSprite(renderer.World, this.position, Color.White, 0, Vector2.One, SpriteEffects.None);
 
                 renderer.World.DrawPoint(this.position, Color.White, size: 3);
                 renderer.World.DrawPolygon(this.position, this.points.ToArray(), Color.Black);
@@ -198,7 +198,7 @@ namespace StopTheBoats.Scenes
             renderer.Screen.DrawString(font, string.Format("Mouse (screen): {0}", mouseScreen), new Vector2(8, 8), Color.White);
             renderer.Screen.DrawString(font, string.Format(" Mouse (world): {0}", mouseWorld), new Vector2(8, 32), Color.White);
 
-            this.cursor.DrawSprite(renderer, this.Camera.ScreenToWorld(mouse.X, mouse.Y), Color.White, 0, Vector2.One, SpriteEffects.None);
+            this.cursor.DrawSprite(renderer.World, this.Camera.ScreenToWorld(mouse.X, mouse.Y), Color.White, 0, Vector2.One, SpriteEffects.None);
         }
     }
 }

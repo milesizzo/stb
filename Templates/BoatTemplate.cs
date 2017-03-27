@@ -17,6 +17,7 @@ namespace StopTheBoats.Templates
         public int Crew;
         public int Passengers;
         public float Acceleration;
+        public float TurnSpeed; // degrees per second
         public float MaxHealth;
         public float Mass;
         public Vector2 EnginePosition;
@@ -51,6 +52,7 @@ namespace StopTheBoats.Templates
             context.Write("crew", this.Crew);
             context.Write("passengers", this.Passengers);
             context.Write("acceleration", this.Acceleration);
+            context.Write("turn_speed", this.TurnSpeed);
             context.Write("health", this.MaxHealth);
             context.Write("mass", this.Mass);
             context.Write("radar", this.RadarRadius);
@@ -69,6 +71,7 @@ namespace StopTheBoats.Templates
             this.Crew = context.Read<int>("crew");
             this.Passengers = context.Read<int>("passengers");
             this.Acceleration = context.Read<float>("acceleration");
+            this.TurnSpeed = context.Read<float>("turn_speed");
             this.MaxHealth = context.Read<float>("health");
             this.Mass = context.Read<float>("mass");
             this.RadarRadius = context.Read<float>("radar");
