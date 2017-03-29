@@ -100,20 +100,19 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="CommonLibrary\CommonLibrary.csproj">
+    <ProjectReference Include="..\engine2d\CommonLibrary\CommonLibrary.csproj">
       <Project>{107c5647-a532-45d0-85a5-82bfb075d6c8}</Project>
       <Name>CommonLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="FarseerPhysics\Farseer Physics MonoGame.csproj">
+    <ProjectReference Include="..\engine2d\FarseerPhysics\Farseer Physics MonoGame.csproj">
       <Project>{0aad36e3-51a5-4a07-ab60-5c8a66bd38b7}</Project>
       <Name>Farseer Physics MonoGame</Name>
     </ProjectReference>
-    <ProjectReference Include="GameEngine\GameEngine.csproj">
+    <ProjectReference Include="..\engine2d\GameEngine\GameEngine.csproj">
       <Project>{8b743043-f686-4b0d-b504-6e3db6278747}</Project>
       <Name>GameEngine</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

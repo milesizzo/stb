@@ -5,15 +5,13 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StopTheBoats", "StopTheBoats.csproj", "{D374749D-B8EB-41FD-8302-8019291C05A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomContentPipeline", "CustomContentPipeline\CustomContentPipeline.csproj", "{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLibrary", "CommonLibrary\CommonLibrary.csproj", "{107C5647-A532-45D0-85A5-82BFB075D6C8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics MonoGame", "FarseerPhysics\Farseer Physics MonoGame.csproj", "{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameEngine", "GameEngine\GameEngine.csproj", "{8B743043-F686-4B0D-B504-6E3DB6278747}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchSpace", "ScratchSpace\ScratchSpace.csproj", "{C637D0A6-B850-4425-B3F9-875AB8CCFB39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLibrary", "..\engine2d\CommonLibrary\CommonLibrary.csproj", "{107C5647-A532-45D0-85A5-82BFB075D6C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer Physics MonoGame", "..\engine2d\FarseerPhysics\Farseer Physics MonoGame.csproj", "{0AAD36E3-51A5-4A07-AB60-5C8A66BD38B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameEngine", "..\engine2d\GameEngine\GameEngine.csproj", "{8B743043-F686-4B0D-B504-6E3DB6278747}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,16 +33,18 @@ Global
 		{D374749D-B8EB-41FD-8302-8019291C05A2}.Release|x64.Build.0 = Release|x64
 		{D374749D-B8EB-41FD-8302-8019291C05A2}.Release|x86.ActiveCfg = Release|x86
 		{D374749D-B8EB-41FD-8302-8019291C05A2}.Release|x86.Build.0 = Release|x86
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Debug|x64.ActiveCfg = Debug|x64
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Debug|x64.Build.0 = Debug|x64
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Debug|x86.ActiveCfg = Debug|x86
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Debug|x86.Build.0 = Debug|x86
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Release|Any CPU.ActiveCfg = Release|x86
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Release|x64.ActiveCfg = Release|x64
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Release|x64.Build.0 = Release|x64
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Release|x86.ActiveCfg = Release|x86
-		{3559BCFA-5F64-4DCD-B0D1-B92DD684D098}.Release|x86.Build.0 = Release|x86
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|x64.Build.0 = Debug|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|x86.Build.0 = Debug|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|x64.ActiveCfg = Release|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|x64.Build.0 = Release|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|x86.ActiveCfg = Release|Any CPU
+		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|x86.Build.0 = Release|Any CPU
 		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|x64.ActiveCfg = Debug|x64
 		{107C5647-A532-45D0-85A5-82BFB075D6C8}.Debug|x64.Build.0 = Debug|x64
@@ -75,18 +75,6 @@ Global
 		{8B743043-F686-4B0D-B504-6E3DB6278747}.Release|x64.Build.0 = Release|x64
 		{8B743043-F686-4B0D-B504-6E3DB6278747}.Release|x86.ActiveCfg = Release|x86
 		{8B743043-F686-4B0D-B504-6E3DB6278747}.Release|x86.Build.0 = Release|x86
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|x64.Build.0 = Debug|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Debug|x86.Build.0 = Debug|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|x64.ActiveCfg = Release|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|x64.Build.0 = Release|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|x86.ActiveCfg = Release|Any CPU
-		{C637D0A6-B850-4425-B3F9-875AB8CCFB39}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
