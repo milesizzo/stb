@@ -43,6 +43,10 @@ namespace StopTheBoats
             {
                 return new PolygonBoundsEditor(key, this.GraphicsDevice, this.Store);
             });
+            this.Scenes.GetOrAdd("MainMenu", (key) =>
+            {
+                return new UIScene(key, this.GraphicsDevice, this.Store);
+            });
         }
 
         /// <summary>
@@ -63,6 +67,10 @@ namespace StopTheBoats
             else if (KeyboardHelper.KeyPressed(Keys.F2))
             {
                 this.SetCurrentScene("BoundsEditor");
+            }
+            else if (KeyboardHelper.KeyPressed(Keys.F3))
+            {
+                this.SetCurrentScene("MainMenu");
             }
             else if (KeyboardHelper.KeyPressed(Keys.F12))
             {
