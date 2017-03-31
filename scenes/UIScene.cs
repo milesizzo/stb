@@ -24,9 +24,11 @@ namespace StopTheBoats.Scenes
 
         public override void SetUp()
         {
+            UIElement.ScreenDimensions = new Size2(this.Camera.Viewport.Width, this.Camera.Viewport.Height);
             this.window = new UIPanel();
-            this.window.Placement.X = 100;
-            this.window.Placement.Y = 100;
+            this.window.Origin = UIOrigin.TopCentre;
+            this.window.Placement.RelativeX = 0.5f;
+            this.window.Placement.RelativeY = 0.2f;
             this.window.Size.X = 400;
             this.window.Size.Y = 400;
 
@@ -39,10 +41,10 @@ namespace StopTheBoats.Scenes
             menu.Origin = UIOrigin.Centre;
             menu.Placement.RelativeX = 0.5f;
             menu.Placement.RelativeY = 0.5f;
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 1", Color.DarkBlue, Color.Yellow);
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 2", Color.DarkBlue, Color.Yellow);
-            //menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 3", Color.DarkBlue, Color.Yellow);
-            //menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 4", Color.DarkBlue, Color.Yellow);
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 1", Color.Yellow);
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 2", Color.Yellow);
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 3", Color.Yellow);
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 4", Color.Yellow);
 
             /*
             var button = new UIButton(this.window);
@@ -60,6 +62,7 @@ namespace StopTheBoats.Scenes
 
         public override void Draw(Renderer renderer)
         {
+            this.Camera.Clear(Color.Black);
             this.window.Draw(renderer.Screen);
         }
 
