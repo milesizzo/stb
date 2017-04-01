@@ -16,35 +16,33 @@ namespace StopTheBoats.Scenes
 {
     public class UIScene : GameAssetScene
     {
-        private UIPanel window;
-
         public UIScene(string name, GraphicsDevice graphics, Store store) : base(name, graphics, store)
         {
         }
 
         public override void SetUp()
         {
-            UIElement.ScreenDimensions = new Size2(this.Camera.Viewport.Width, this.Camera.Viewport.Height);
-            this.window = new UIPanel();
-            this.window.Origin = UIOrigin.TopCentre;
-            this.window.Placement.RelativeX = 0.5f;
-            this.window.Placement.RelativeY = 0.2f;
-            this.window.Size.X = 400;
-            this.window.Size.Y = 400;
+            UIElement.ScreenDimensions = new Size2(this.Graphics.Viewport.Width, this.Graphics.Viewport.Height);
+            var window = new UIPanel();
+            window.Origin = UIOrigin.TopCentre;
+            window.Placement.RelativeX = 0.5f;
+            window.Placement.RelativeY = 0.2f;
+            window.Size.X = 400;
+            window.Size.Y = 400;
+            window.Colour = new Color(0.1f, 0.1f, 0.1f);
 
-            //this.window.ForegroundColour = Color.DarkGray;
-            this.window.Colour = new Color(0.1f, 0.1f, 0.1f);
-
-            var menu = new UIButtonGroup(this.window);
+            var menu = new UIButtonGroup(window);
             menu.Size.RelativeX = 1f;
-            //menu.Size.RelativeY = 0.8f;
-            menu.Origin = UIOrigin.Centre;
+            menu.Size.RelativeY = 0.8f;
+            menu.Origin = UIOrigin.BottomCentre;
             menu.Placement.RelativeX = 0.5f;
-            menu.Placement.RelativeY = 0.5f;
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 1", Color.Yellow);
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 2", Color.Yellow);
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 3", Color.Yellow);
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 4", Color.Yellow);
+            menu.Placement.RelativeY = 1f;
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 1", () => { });
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 2", () => { });
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 3", () => { });
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 4", () => { });
+
+            this.UI.Add(window);
 
             /*
             var button = new UIButton(this.window);
@@ -62,13 +60,13 @@ namespace StopTheBoats.Scenes
 
         public override void Draw(Renderer renderer)
         {
-            this.Camera.Clear(Color.Black);
-            this.window.Draw(renderer.Screen);
+            this.Graphics.Clear(Color.Black);
+            base.Draw(renderer);
         }
 
         public override void Update(GameTime gameTime)
         {
-            this.window.Update(gameTime);
+            base.Update(gameTime);
         }
     }
 }

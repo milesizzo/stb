@@ -6,10 +6,11 @@ using GameEngine.GameObjects;
 using GameEngine.Graphics;
 using StopTheBoats.GameObjects;
 using System.Linq;
+using System.Collections;
 
 namespace StopTheBoats.Controllers
 {
-    public class BoatControllerCollection
+    public class BoatControllerCollection : IEnumerable<BoatController>
     {
         private readonly List<BoatController> controllers = new List<BoatController>();
         private readonly IGameContext context;
@@ -38,12 +39,16 @@ namespace StopTheBoats.Controllers
             }
         }
 
-        public void Update(GameTime gameTime)
+        public void Control(GameTime gameTime, Func<BoatController, bool> pred)
         {
-            foreach (var controller in this.controllers)
+            foreach (var controller in this.controllers.Where(pred))
             {
                 controller.Control(this.context, this.physics, this.camera, gameTime);
             }
+        }
+
+        public void Update(GameTime gameTime)
+        {
             var position = Vector2.Zero;
             if (this.focus.Any())
             {
@@ -71,6 +76,16 @@ namespace StopTheBoats.Controllers
             {
                 controller.Draw(renderer);
             }
+        }
+
+        public IEnumerator<BoatController> GetEnumerator()
+        {
+            return this.controllers.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.controllers.GetEnumerator();
         }
     }
 }

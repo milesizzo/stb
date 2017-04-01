@@ -57,6 +57,7 @@
     <Compile Include="GameObjects\FixedObstacle.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="GameObjects\StbGameContext.cs" />
+    <Compile Include="Scenes\MainMenuScene.cs" />
     <Compile Include="Scenes\PolygonBoundsEditor.cs" />
     <Compile Include="Scenes\StopTheBoatsScene.cs" />
     <Compile Include="Scenes\UIScene.cs" />

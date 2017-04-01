@@ -17,6 +17,7 @@ namespace StopTheBoats.Scenes
 {
     public class PolygonBoundsEditor : GameAssetScene
     {
+        private Camera camera;
         private const float DefaultZoom = 2f;
         private List<Vector2> points;
         private Vector2 position;
@@ -28,7 +29,13 @@ namespace StopTheBoats.Scenes
 
         public PolygonBoundsEditor(string name, GraphicsDevice graphics, Store store) : base(name, graphics, store)
         {
+            this.camera = new Camera(graphics);
             this.Camera.Zoom = DefaultZoom;
+        }
+
+        private Camera Camera
+        {
+            get { return this.camera; }
         }
 
         public string CurrentName
@@ -56,6 +63,8 @@ namespace StopTheBoats.Scenes
 
         public override void SetUp()
         {
+            base.SetUp();
+
             this.Store.LoadFromJson("Content\\StopTheBoats.json");
             this.Store.LoadFromJson("Content\\BoundsEditor.json");
 
@@ -176,6 +185,12 @@ namespace StopTheBoats.Scenes
             }
         }
 
+        public override void PreDraw(Renderer renderer)
+        {
+            base.PreDraw(renderer);
+            renderer.World.Begin(blendState: BlendState.NonPremultiplied, transformMatrix: this.Camera.GetViewMatrix());
+        }
+
         public override void Draw(Renderer renderer)
         {
             this.Camera.Clear(Color.DarkSlateBlue);
@@ -199,6 +214,12 @@ namespace StopTheBoats.Scenes
             renderer.Screen.DrawString(font, string.Format(" Mouse (world): {0}", mouseWorld), new Vector2(8, 32), Color.White);
 
             this.cursor.DrawSprite(renderer.World, this.Camera.ScreenToWorld(mouse.X, mouse.Y), Color.White, 0, Vector2.One, SpriteEffects.None);
+        }
+
+        public override void PostDraw(Renderer renderer)
+        {
+            renderer.World.End();
+            base.PostDraw(renderer);
         }
     }
 }

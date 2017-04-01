@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,6 +16,8 @@ using FarseerPhysics.Collision.Shapes;
 using StopTheBoats.Controllers;
 using Microsoft.Xna.Framework.Content;
 using GameEngine.Content;
+using GameEngine.UI;
+using GameEngine.Helpers;
 
 namespace StopTheBoats.Scenes
 {
@@ -24,7 +27,6 @@ namespace StopTheBoats.Scenes
         private float zoomTarget;
         private float zoomSource;
         private BoatControllerCollection boats;
-        private bool spacePressed = false;
         private int lastScroll = 0;
         private World physics;
         private RectangleF boundaries;
@@ -62,11 +64,49 @@ namespace StopTheBoats.Scenes
             return new StbGameContext(this.Store);
         }
 
+        private void SetupMenu()
+        {
+            this.UI.Clear();
+            this.UI.Enabled = false;
+            this.UI.DrawMouseCursor = (mouse, renderer) =>
+            {
+                this.Store.Sprites("Base", "mouse_cursor").DrawSprite(renderer.Screen, new Vector2(mouse.X, mouse.Y), Color.White, 0, new Vector2(0.5f), SpriteEffects.None);
+            };
+
+            UIElement.ScreenDimensions = new Size2(this.Camera.Viewport.Width, this.Camera.Viewport.Height);
+            var window = new UIPanel();
+            window.Origin = UIOrigin.TopCentre;
+            window.Placement.RelativeX = 0.5f;
+            window.Placement.RelativeY = 0.2f;
+            window.Size.X = 400;
+            window.Size.Y = 400;
+            window.Colour = new Color(0.1f, 0.1f, 0.1f);
+
+            var menu = new UIButtonGroup(window);
+            menu.Size.RelativeX = 1f;
+            menu.Size.RelativeY = 0.8f;
+            menu.Origin = UIOrigin.BottomCentre;
+            menu.Placement.RelativeX = 0.5f;
+            menu.Placement.RelativeY = 1f;
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Resume game", () =>
+            {
+                this.UI.Enabled = false;
+            });
+            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Quit to menu", () =>
+            {
+                this.SceneEnded = true;
+            });
+
+            this.UI.Add(window);
+        }
+
         public override void SetUp()
         {
             this.Store.LoadFromJson("Content\\StopTheBoats.json");
 
             base.SetUp();
+
+            this.SetupMenu();
 
             this.physics.Clear();
 
@@ -115,44 +155,44 @@ namespace StopTheBoats.Scenes
             var mouse = Mouse.GetState();
             var keyboard = Keyboard.GetState();
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Escape))
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Escape))
+            if (KeyboardHelper.KeyPressed(Keys.Escape))
             {
-                // quit
-                this.SceneEnded = true;
+                // show/hide menu
+                this.UI.Enabled = !this.UI.Enabled;
             }
-            if (keyboard.IsKeyDown(Keys.Space) && !this.spacePressed)
+            if (!this.UI.Enabled)
             {
-                // spawn a computer-controlled boat
-                var random = new Random();
-                var topLeft = this.Camera.ScreenToWorld(0, -100);
-                var topRight = this.Camera.ScreenToWorld(this.Camera.Viewport.Width, -100);
-                var enemy = new Boat(this.Context, this.physics, this.StopTheBoatsAssets.Objects.Get<BoatTemplate>("boat.small"))
+                if (KeyboardHelper.KeyPressed(Keys.Space))
                 {
-                    Position = Vector2.Lerp(topLeft, topRight, (float)random.NextDouble()),
-                    Rotation = MathHelper.ToRadians(90 + random.Next(-30, 30)),
-                };
-                this.boats.Add(new ComputerBoatController(enemy));
-                this.Context.AddObject(enemy);
-                this.spacePressed = true;
-            }
-            if (!keyboard.IsKeyDown(Keys.Space))
-            {
-                this.spacePressed = false;
-            }
-            if (mouse.ScrollWheelValue != this.lastScroll)
-            {
-                // scroll the mouse to zoom in/out
-                var change = mouse.ScrollWheelValue - this.lastScroll;
-                this.zoomSource = this.Camera.Zoom;
-                this.zoomTarget = Math.Max(1f, this.Camera.Zoom + change / 200f);
-                this.zoomAmount = 0;
-                this.lastScroll = mouse.ScrollWheelValue;
-            }
+                    // spawn a computer-controlled boat
+                    var random = new Random();
+                    var topLeft = this.Camera.ScreenToWorld(0, -100);
+                    var topRight = this.Camera.ScreenToWorld(this.Camera.Viewport.Width, -100);
+                    var enemy = new Boat(this.Context, this.physics, this.StopTheBoatsAssets.Objects.Get<BoatTemplate>("boat.small"))
+                    {
+                        Position = Vector2.Lerp(topLeft, topRight, (float)random.NextDouble()),
+                        Rotation = MathHelper.ToRadians(90 + random.Next(-30, 30)),
+                    };
+                    this.boats.Add(new ComputerBoatController(enemy));
+                    this.Context.AddObject(enemy);
+                }
+                if (mouse.ScrollWheelValue != this.lastScroll)
+                {
+                    // scroll the mouse to zoom in/out
+                    var change = mouse.ScrollWheelValue - this.lastScroll;
+                    this.zoomSource = this.Camera.Zoom;
+                    this.zoomTarget = Math.Max(1f, this.Camera.Zoom + change / 200f);
+                    this.zoomAmount = 0;
+                    this.lastScroll = mouse.ScrollWheelValue;
+                }
 
-            // update the base scene (eg. game object context)
-            base.Update(gameTime);
+                // update the boat controllers
+                this.boats.Control(gameTime, bc => bc is HumanBoatController);
+            }
 
             // update the boat controllers
+            this.boats.Control(gameTime, bc => !(bc is HumanBoatController));
             this.boats.Update(gameTime);
 
             // update the camera zoom
@@ -186,6 +226,9 @@ namespace StopTheBoats.Scenes
                 var offset = new Vector2(0f, this.boundaries.Bottom - this.Camera.BoundingRectangle.Bottom);
                 this.Camera.Position += offset;
             }
+
+            // update the base scene (eg. game object context)
+            base.Update(gameTime);
         }
 
         public override void Draw(Renderer renderer)
@@ -207,9 +250,6 @@ namespace StopTheBoats.Scenes
             {
                 this.physics.Draw(renderer);
             }
-
-            var mouse = this.Camera.ScreenToWorld(Mouse.GetState().X, Mouse.GetState().Y);
-            renderer.World.DrawCircle(new CircleF(mouse, 8), 16, Color.IndianRed);
         }
     }
 }

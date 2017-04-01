@@ -6,6 +6,7 @@ using GameEngine.Graphics;
 using GameEngine.Helpers;
 using GameEngine.Extensions;
 using StopTheBoats.Scenes;
+using GameEngine.Scenes;
 
 namespace StopTheBoats
 {
@@ -34,19 +35,49 @@ namespace StopTheBoats
         protected override void LoadContent()
         {
             this.Store.LoadFromJson("Content\\Base.json");
-
+            this.Scenes.GetOrAdd("MainMenu", (key) =>
+            {
+                var scene = new MainMenuScene(key, this.GraphicsDevice, this.Store);
+                scene.SceneEnd += this.OnSceneEnd;
+                return scene;
+            });
             this.Scenes.GetOrAdd("StopTheBoats", (key) =>
             {
-                return new StopTheBoatsScene(key, this.GraphicsDevice, this.Store);
+                var scene = new StopTheBoatsScene(key, this.GraphicsDevice, this.Store);
+                scene.SceneEnd += this.OnSceneEnd;
+                return scene;
             });
             this.Scenes.GetOrAdd("BoundsEditor", (key) =>
             {
-                return new PolygonBoundsEditor(key, this.GraphicsDevice, this.Store);
+                var scene = new PolygonBoundsEditor(key, this.GraphicsDevice, this.Store);
+                scene.SceneEnd += this.OnSceneEnd;
+                return scene;
             });
-            this.Scenes.GetOrAdd("MainMenu", (key) =>
+            this.SetCurrentScene("MainMenu");
+        }
+
+        private void OnSceneEnd(IScene scene)
+        {
+            var asMenu = scene as MainMenuScene;
+            if (asMenu != null)
             {
-                return new UIScene(key, this.GraphicsDevice, this.Store);
-            });
+                switch (asMenu.SelectedItem)
+                {
+                    case MenuItem.PlayGame:
+                        this.SetCurrentScene("StopTheBoats");
+                        break;
+                    case MenuItem.Editor:
+                        this.SetCurrentScene("BoundsEditor");
+                        break;
+                    case MenuItem.Quit:
+                        this.Exit();
+                        break;
+                }
+            }
+            else
+            {
+                this.SetCurrentScene("MainMenu");
+            }
         }
 
         /// <summary>

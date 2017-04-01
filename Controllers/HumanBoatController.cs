@@ -273,6 +273,7 @@ namespace StopTheBoats.Controllers
     public class HumanBoatController : BoatController
     {
         private readonly HumanBoatActionMap mapping;
+        private Vector2 worldPosition;
 
         public HumanBoatController(Boat boat, HumanBoatActionMap mapping) : base(boat)
         {
@@ -281,9 +282,6 @@ namespace StopTheBoats.Controllers
 
         public override void Control(IGameContext context, World physics, Camera camera, GameTime gameTime)
         {
-            var keyboard = Keyboard.GetState();
-            var mouse = Mouse.GetState();
-
             this.boat.Accelerate(+this.mapping.IsHeld(HumanBoatActionMap.Actions.Accelerate));
             this.boat.Accelerate(-this.mapping.IsHeld(HumanBoatActionMap.Actions.Decelerate));
             this.boat.Turn(gameTime, -this.mapping.IsHeld(HumanBoatActionMap.Actions.TurnLeft));
@@ -299,10 +297,10 @@ namespace StopTheBoats.Controllers
                     }
                 }
             }
-            var worldPosition = this.mapping.WorldSelect.GetPosition(camera);
+            this.worldPosition = this.mapping.WorldSelect.GetPosition(camera);
             foreach (var weapon in this.boat.Weapons)
             {
-                weapon.Rotation = (float)Math.Atan2(worldPosition.Y - weapon.Position.Y, worldPosition.X - weapon.Position.X);
+                weapon.Rotation = (float)Math.Atan2(this.worldPosition.Y - weapon.Position.Y, this.worldPosition.X - weapon.Position.X);
             }
         }
 
@@ -321,6 +319,8 @@ namespace StopTheBoats.Controllers
                 }
             }
             this.boat.Radar.Draw(renderer, new Vector2(24, 24), 0.1f);
+
+            renderer.World.DrawCircle(new CircleF(this.worldPosition, 8), 16, Color.IndianRed);
         }
     }
 }
