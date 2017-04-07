@@ -68,7 +68,7 @@ namespace StopTheBoats.Scenes
             this.Store.LoadFromJson("Content\\StopTheBoats.json");
             this.Store.LoadFromJson("Content\\BoundsEditor.json");
 
-            this.cursor = this.Store.Sprites("BoundsEditor", "editor_cursor");
+            this.cursor = this.Store.Sprites<SpriteTemplate>("BoundsEditor", "editor_cursor");
 
             foreach (var kvp in this.Store["StopTheBoats"].Sprites.All)
             {
@@ -191,7 +191,7 @@ namespace StopTheBoats.Scenes
             renderer.World.Begin(blendState: BlendState.NonPremultiplied, transformMatrix: this.Camera.GetViewMatrix());
         }
 
-        public override void Draw(Renderer renderer)
+        public override void Draw(Renderer renderer, GameTime gameTime)
         {
             this.Camera.Clear(Color.DarkSlateBlue);
             var mouse = Mouse.GetState().Position;

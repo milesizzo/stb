@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using GameEngine.Graphics;
 using GameEngine.Helpers;
 using Microsoft.Xna.Framework.Input;
+using GameEngine.Templates;
 
 namespace StopTheBoats.Scenes
 {
@@ -36,7 +37,7 @@ namespace StopTheBoats.Scenes
             this.UI.Clear();
             this.UI.DrawMouseCursor = (mouse, renderer) =>
             {
-                this.Store.Sprites("Base", "mouse_cursor").DrawSprite(renderer.Screen, new Vector2(mouse.X, mouse.Y), Color.White, 0, new Vector2(0.5f), SpriteEffects.None);
+                this.Store.Sprites<SpriteTemplate>("Base", "mouse_cursor").DrawSprite(renderer.Screen, new Vector2(mouse.X, mouse.Y), Color.White, 0, new Vector2(0.5f), SpriteEffects.None);
             };
             this.UI.Enabled = true;
 
@@ -121,10 +122,10 @@ namespace StopTheBoats.Scenes
             */
         }
 
-        public override void Draw(Renderer renderer)
+        public override void Draw(Renderer renderer, GameTime gameTime)
         {
             this.Graphics.Clear(Color.Black);
-            base.Draw(renderer);
+            base.Draw(renderer, gameTime);
         }
     }
 }

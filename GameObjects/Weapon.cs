@@ -54,9 +54,9 @@ namespace StopTheBoats.GameObjects
             }
         }
 
-        public override void Draw(Renderer renderer)
+        public override void Draw(Renderer renderer, GameTime gameTime)
         {
-            base.Draw(renderer);
+            base.Draw(renderer, gameTime);
             this.sprite.Draw(renderer, this.Position, Color.White, this.Rotation, Vector2.One, SpriteEffects.None);
         }
     }

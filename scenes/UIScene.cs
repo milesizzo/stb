@@ -58,10 +58,10 @@ namespace StopTheBoats.Scenes
             */
         }
 
-        public override void Draw(Renderer renderer)
+        public override void Draw(Renderer renderer, GameTime gameTime)
         {
             this.Graphics.Clear(Color.Black);
-            base.Draw(renderer);
+            base.Draw(renderer, gameTime);
         }
 
         public override void Update(GameTime gameTime)

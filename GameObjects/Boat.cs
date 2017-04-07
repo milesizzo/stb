@@ -12,6 +12,7 @@ using StopTheBoats.Templates;
 using FarseerPhysics.Common;
 using GameEngine.Extensions;
 using Microsoft.Xna.Framework.Graphics;
+using GameEngine.Templates;
 
 namespace StopTheBoats.GameObjects
 {
@@ -164,9 +165,9 @@ namespace StopTheBoats.GameObjects
             this.radar.Update(gameTime);
         }
 
-        public override void Draw(Renderer renderer)
+        public override void Draw(Renderer renderer, GameTime gameTime)
         {
-            base.Draw(renderer);
+            base.Draw(renderer, gameTime);
             var origin = this.Position;
             renderer.World.DrawRectangle(origin + new Vector2(0, -64), new Vector2(this.SpriteTemplate.Texture.Width, 16), Color.Black);
             var colour = Color.LightGreen;
@@ -197,7 +198,7 @@ namespace StopTheBoats.GameObjects
 
                     var random = new Random();
                     var assetName = random.Choice("explosion_sheet2", "explosion_sheet3");
-                    var explosion = new SpriteObject(this.Context, this.Physics, this.Context.Store.Sprites("StopTheBoats", assetName))
+                    var explosion = new SpriteObject(this.Context, this.Physics, this.Context.Store.Sprites<SpriteTemplate>("StopTheBoats", assetName))
                     {
                         Position = this.Position,
                         LinearVelocity = this.LinearVelocity,

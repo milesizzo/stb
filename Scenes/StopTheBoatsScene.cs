@@ -18,6 +18,7 @@ using Microsoft.Xna.Framework.Content;
 using GameEngine.Content;
 using GameEngine.UI;
 using GameEngine.Helpers;
+using GameEngine.Templates;
 
 namespace StopTheBoats.Scenes
 {
@@ -70,7 +71,7 @@ namespace StopTheBoats.Scenes
             this.UI.Enabled = false;
             this.UI.DrawMouseCursor = (mouse, renderer) =>
             {
-                this.Store.Sprites("Base", "mouse_cursor").DrawSprite(renderer.Screen, new Vector2(mouse.X, mouse.Y), Color.White, 0, new Vector2(0.5f), SpriteEffects.None);
+                this.Store.Sprites<SpriteTemplate>("Base", "mouse_cursor").DrawSprite(renderer.Screen, new Vector2(mouse.X, mouse.Y), Color.White, 0, new Vector2(0.5f), SpriteEffects.None);
             };
 
             UIElement.ScreenDimensions = new Size2(this.Camera.Viewport.Width, this.Camera.Viewport.Height);
@@ -231,11 +232,11 @@ namespace StopTheBoats.Scenes
             base.Update(gameTime);
         }
 
-        public override void Draw(Renderer renderer)
+        public override void Draw(Renderer renderer, GameTime gameTime)
         {
             this.Camera.Clear(Color.DarkBlue);
 
-            base.Draw(renderer);
+            base.Draw(renderer, gameTime);
 
             // draw any boat controller specific objects (eg. mouse overlay for human player)
             this.boats.Draw(renderer);

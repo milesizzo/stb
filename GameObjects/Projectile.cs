@@ -6,6 +6,7 @@ using FarseerPhysics.Dynamics.Contacts;
 using GameEngine.GameObjects;
 using GameEngine.Graphics;
 using GameEngine.Extensions;
+using GameEngine.Templates;
 
 namespace StopTheBoats.GameObjects
 {
@@ -45,7 +46,7 @@ namespace StopTheBoats.GameObjects
             base.Update(gameTime);
         }
 
-        public override void Draw(Renderer renderer)
+        public override void Draw(Renderer renderer, GameTime gameTime)
         {
             var length = this.LinearVelocity.LengthSquared();
             Color colour = new Color(0.5f, 0.5f, 0.5f);
@@ -60,7 +61,7 @@ namespace StopTheBoats.GameObjects
                 var envy = this.Context.Store.Fonts("Base", "envy12");
                 renderer.World.DrawString(envy, $"damage: {this.Damage}", this.Position - new Vector2(0, -16), Color.White);
             }
-            base.Draw(renderer);
+            base.Draw(renderer, gameTime);
         }
 
         public override bool HandleCollision(PhysicalObject other, Contact contact)
@@ -71,7 +72,7 @@ namespace StopTheBoats.GameObjects
             {
                 this.IsAwaitingDeletion = true;
                 //this.Context.Store.Audio("StopTheBoats", "explosion1").Audio.Play(0.1f, 0, 0);
-                var explosion = new AttachedObject(this.Context, this.Context.Store.Sprites("StopTheBoats", "explosion_sheet1"));
+                var explosion = new AttachedObject(this.Context, this.Context.Store.Sprites<SpriteTemplate>("StopTheBoats", "explosion_sheet1"));
                 other.AddChild(explosion);
                 explosion.Position = this.Position;
                 explosion.DeleteAfterAnimation = true;
