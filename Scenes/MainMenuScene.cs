@@ -28,7 +28,7 @@ namespace StopTheBoats.Scenes
     {
         private MenuItem selectedItem = MenuItem.None;
 
-        public MainMenuScene(string name, GraphicsDevice graphics, Store store) : base(name, graphics, store) { }
+        public MainMenuScene(string name, GraphicsDevice graphics) : base(name, graphics) { }
 
         public override void SetUp()
         {
@@ -37,7 +37,7 @@ namespace StopTheBoats.Scenes
             this.UI.Clear();
             this.UI.DrawMouseCursor = (mouse, renderer) =>
             {
-                this.Store.Sprites<SpriteTemplate>("Base", "mouse_cursor").DrawSprite(renderer.Screen, new Vector2(mouse.X, mouse.Y), Color.White, 0, new Vector2(0.5f), SpriteEffects.None);
+                Store.Instance.Sprites<SpriteTemplate>("Base", "mouse_cursor").DrawSprite(renderer.Screen, new Vector2(mouse.X, mouse.Y), Color.White, 0, new Vector2(0.5f), SpriteEffects.None);
             };
             this.UI.Enabled = true;
 
@@ -57,19 +57,19 @@ namespace StopTheBoats.Scenes
             menu.Origin = UIOrigin.BottomCentre;
             menu.Placement.RelativeX = 0.5f;
             menu.Placement.RelativeY = 1f;
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Play vs AI", () =>
+            menu.AddButton(Store.Instance.Fonts("Base", "envy12"), "Play vs AI", () =>
             {
                 this.selectedItem = MenuItem.PlayGame;
                 this.SceneEnded = true;
             });
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Polygon bounds editor", () =>
+            menu.AddButton(Store.Instance.Fonts("Base", "envy12"), "Polygon bounds editor", () =>
             {
                 this.selectedItem = MenuItem.Editor;
                 this.SceneEnded = true;
             });
             //menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 2", Color.Yellow);
             //menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 3", Color.Yellow);
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Quit immediately", () =>
+            menu.AddButton(Store.Instance.Fonts("Base", "envy12"), "Quit immediately", () =>
             {
                 this.selectedItem = MenuItem.Quit;
                 this.SceneEnded = true;

@@ -21,7 +21,7 @@ namespace StopTheBoats.Templates
         public float MaxHealth;
         public float Mass;
         public Vector2 EnginePosition;
-        public SpriteTemplate SpriteTemplate;
+        public ISpriteTemplate SpriteTemplate;
         public float RadarRadius;
         public List<WeaponPlacement> Weapons = new List<WeaponPlacement>();
 

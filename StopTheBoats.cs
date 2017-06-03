@@ -7,6 +7,7 @@ using GameEngine.Helpers;
 using GameEngine.Extensions;
 using StopTheBoats.Scenes;
 using GameEngine.Scenes;
+using GameEngine.Content;
 
 namespace StopTheBoats
 {
@@ -34,22 +35,22 @@ namespace StopTheBoats
         /// </summary>
         protected override void LoadContent()
         {
-            this.Store.LoadFromJson("Content\\Base.json");
+            Store.Instance.LoadFromJson("Content\\Base.json");
             this.Scenes.GetOrAdd("MainMenu", (key) =>
             {
-                var scene = new MainMenuScene(key, this.GraphicsDevice, this.Store);
+                var scene = new MainMenuScene(key, this.GraphicsDevice);
                 scene.SceneEnd += this.OnSceneEnd;
                 return scene;
             });
             this.Scenes.GetOrAdd("StopTheBoats", (key) =>
             {
-                var scene = new StopTheBoatsScene(key, this.GraphicsDevice, this.Store);
+                var scene = new StopTheBoatsScene(key, this.GraphicsDevice);
                 scene.SceneEnd += this.OnSceneEnd;
                 return scene;
             });
             this.Scenes.GetOrAdd("BoundsEditor", (key) =>
             {
-                var scene = new PolygonBoundsEditor(key, this.GraphicsDevice, this.Store);
+                var scene = new PolygonBoundsEditor(key, this.GraphicsDevice);
                 scene.SceneEnd += this.OnSceneEnd;
                 return scene;
             });
@@ -86,7 +87,7 @@ namespace StopTheBoats
         /// </summary>
         protected override void UnloadContent()
         {
-            this.Store.SaveAllToJson("Content");
+            Store.Instance.SaveAllToJson("Content");
         }
 
         protected override void Update(GameTime gameTime)
@@ -118,7 +119,7 @@ namespace StopTheBoats
 
         protected override void Draw(Renderer renderer)
         {
-            var envy16 = this.Store["Base"].Fonts["envy16"];
+            var envy16 = Store.Instance["Base"].Fonts["envy16"];
             renderer.Screen.DrawString(envy16, string.Format("FPS: {0:0.0}", this.FPS), new Vector2(1024, 10), Color.White);
             base.Draw(renderer);
         }

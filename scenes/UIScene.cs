@@ -16,7 +16,7 @@ namespace StopTheBoats.Scenes
 {
     public class UIScene : GameAssetScene
     {
-        public UIScene(string name, GraphicsDevice graphics, Store store) : base(name, graphics, store)
+        public UIScene(string name, GraphicsDevice graphics) : base(name, graphics)
         {
         }
 
@@ -37,10 +37,10 @@ namespace StopTheBoats.Scenes
             menu.Origin = UIOrigin.BottomCentre;
             menu.Placement.RelativeX = 0.5f;
             menu.Placement.RelativeY = 1f;
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 1", () => { });
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 2", () => { });
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 3", () => { });
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Button 4", () => { });
+            menu.AddButton(Store.Instance.Fonts("Base", "envy12"), "Button 1", () => { });
+            menu.AddButton(Store.Instance.Fonts("Base", "envy12"), "Button 2", () => { });
+            menu.AddButton(Store.Instance.Fonts("Base", "envy12"), "Button 3", () => { });
+            menu.AddButton(Store.Instance.Fonts("Base", "envy12"), "Button 4", () => { });
 
             this.UI.Add(window);
 

@@ -7,6 +7,7 @@ using GameEngine.GameObjects;
 using GameEngine.Graphics;
 using GameEngine.Extensions;
 using GameEngine.Templates;
+using GameEngine.Content;
 
 namespace StopTheBoats.GameObjects
 {
@@ -58,7 +59,7 @@ namespace StopTheBoats.GameObjects
 
             if (AbstractObject.DebugInfo)
             {
-                var envy = this.Context.Store.Fonts("Base", "envy12");
+                var envy = Store.Instance.Fonts("Base", "envy12");
                 renderer.World.DrawString(envy, $"damage: {this.Damage}", this.Position - new Vector2(0, -16), Color.White);
             }
             base.Draw(renderer, gameTime);
@@ -72,7 +73,7 @@ namespace StopTheBoats.GameObjects
             {
                 this.IsAwaitingDeletion = true;
                 //this.Context.Store.Audio("StopTheBoats", "explosion1").Audio.Play(0.1f, 0, 0);
-                var explosion = new AttachedObject(this.Context, this.Context.Store.Sprites<SpriteTemplate>("StopTheBoats", "explosion_sheet1"));
+                var explosion = new AttachedObject(this.Context, Store.Instance.Sprites<SpriteTemplate>("StopTheBoats", "explosion_sheet1"));
                 other.AddChild(explosion);
                 explosion.Position = this.Position;
                 explosion.DeleteAfterAnimation = true;

@@ -32,7 +32,7 @@ namespace StopTheBoats.Scenes
         private World physics;
         private RectangleF boundaries;
 
-        public StopTheBoatsScene(string name, GraphicsDevice graphics, Store store) : base(name, graphics, store)
+        public StopTheBoatsScene(string name, GraphicsDevice graphics) : base(name, graphics)
         {
             this.physics = new World(Vector2.Zero);
             this.Camera.Rotation = 0;
@@ -57,12 +57,12 @@ namespace StopTheBoats.Scenes
 
         private GameAssetStore StopTheBoatsAssets
         {
-            get { return this.Store.Get<GameAssetStore>("StopTheBoats"); }
+            get { return Store.Instance.Get<GameAssetStore>("StopTheBoats"); }
         }
 
         protected override StbGameContext CreateContext()
         {
-            return new StbGameContext(this.Store);
+            return new StbGameContext();
         }
 
         private void SetupMenu()
@@ -71,7 +71,7 @@ namespace StopTheBoats.Scenes
             this.UI.Enabled = false;
             this.UI.DrawMouseCursor = (mouse, renderer) =>
             {
-                this.Store.Sprites<SpriteTemplate>("Base", "mouse_cursor").DrawSprite(renderer.Screen, new Vector2(mouse.X, mouse.Y), Color.White, 0, new Vector2(0.5f), SpriteEffects.None);
+                Store.Instance.Sprites<SpriteTemplate>("Base", "mouse_cursor").DrawSprite(renderer.Screen, new Vector2(mouse.X, mouse.Y), Color.White, 0, new Vector2(0.5f), SpriteEffects.None);
             };
 
             UIElement.ScreenDimensions = new Size2(this.Camera.Viewport.Width, this.Camera.Viewport.Height);
@@ -89,11 +89,11 @@ namespace StopTheBoats.Scenes
             menu.Origin = UIOrigin.BottomCentre;
             menu.Placement.RelativeX = 0.5f;
             menu.Placement.RelativeY = 1f;
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Resume game", () =>
+            menu.AddButton(Store.Instance.Fonts("Base", "envy12"), "Resume game", () =>
             {
                 this.UI.Enabled = false;
             });
-            menu.AddButton(this.Store.Fonts("Base", "envy12"), "Quit to menu", () =>
+            menu.AddButton(Store.Instance.Fonts("Base", "envy12"), "Quit to menu", () =>
             {
                 this.SceneEnded = true;
             });
@@ -103,7 +103,7 @@ namespace StopTheBoats.Scenes
 
         public override void SetUp()
         {
-            this.Store.LoadFromJson("Content\\StopTheBoats.json");
+            Store.Instance.LoadFromJson("Content\\StopTheBoats.json");
 
             base.SetUp();
 
@@ -241,8 +241,8 @@ namespace StopTheBoats.Scenes
             // draw any boat controller specific objects (eg. mouse overlay for human player)
             this.boats.Draw(renderer);
 
-            var envy12 = this.Store["Base"].Fonts["envy12"];
-            var envy16 = this.Store["Base"].Fonts["envy16"];
+            var envy12 = Store.Instance["Base"].Fonts["envy12"];
+            var envy16 = Store.Instance["Base"].Fonts["envy16"];
             renderer.Screen.DrawString(envy12, string.Format("#objects: {0}", this.Context.NumObjects), new Vector2(10, 10), Color.White);
             renderer.Screen.DrawString(envy12, string.Format("swv: {0}", Mouse.GetState().ScrollWheelValue), new Vector2(10, 24), Color.White);
             renderer.Screen.DrawString(envy12, string.Format("zoom: {0}", this.Camera.Zoom), new Vector2(10, 36), Color.White);

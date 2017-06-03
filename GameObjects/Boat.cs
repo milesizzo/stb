@@ -13,6 +13,7 @@ using FarseerPhysics.Common;
 using GameEngine.Extensions;
 using Microsoft.Xna.Framework.Graphics;
 using GameEngine.Templates;
+using GameEngine.Content;
 
 namespace StopTheBoats.GameObjects
 {
@@ -198,7 +199,7 @@ namespace StopTheBoats.GameObjects
 
                     var random = new Random();
                     var assetName = random.Choice("explosion_sheet2", "explosion_sheet3");
-                    var explosion = new SpriteObject(this.Context, this.Physics, this.Context.Store.Sprites<SpriteTemplate>("StopTheBoats", assetName))
+                    var explosion = new SpriteObject(this.Context, this.Physics, Store.Instance.Sprites<SpriteTemplate>("StopTheBoats", assetName))
                     {
                         Position = this.Position,
                         LinearVelocity = this.LinearVelocity,

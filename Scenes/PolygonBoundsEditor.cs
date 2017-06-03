@@ -22,12 +22,12 @@ namespace StopTheBoats.Scenes
         private List<Vector2> points;
         private Vector2 position;
         private int currentPoint = -1;
-        private List<KeyValuePair<string, SpriteTemplate>> sprites = new List<KeyValuePair<string, SpriteTemplate>>();
+        private List<KeyValuePair<string, ISpriteTemplate>> sprites = new List<KeyValuePair<string, ISpriteTemplate>>();
         private int currentSpriteIndex = 0;
 
-        private SpriteTemplate cursor;
+        private ISpriteTemplate cursor;
 
-        public PolygonBoundsEditor(string name, GraphicsDevice graphics, Store store) : base(name, graphics, store)
+        public PolygonBoundsEditor(string name, GraphicsDevice graphics) : base(name, graphics)
         {
             this.camera = new Camera(graphics);
             this.Camera.Zoom = DefaultZoom;
@@ -43,7 +43,7 @@ namespace StopTheBoats.Scenes
             get { return this.sprites[this.currentSpriteIndex].Key; }
         }
 
-        public SpriteTemplate Current
+        public ISpriteTemplate Current
         {
             get { return this.sprites[this.currentSpriteIndex].Value; }
         }
@@ -65,12 +65,12 @@ namespace StopTheBoats.Scenes
         {
             base.SetUp();
 
-            this.Store.LoadFromJson("Content\\StopTheBoats.json");
-            this.Store.LoadFromJson("Content\\BoundsEditor.json");
+            Store.Instance.LoadFromJson("Content\\StopTheBoats.json");
+            Store.Instance.LoadFromJson("Content\\BoundsEditor.json");
 
-            this.cursor = this.Store.Sprites<SpriteTemplate>("BoundsEditor", "editor_cursor");
+            this.cursor = Store.Instance.Sprites<SpriteTemplate>("BoundsEditor", "editor_cursor");
 
-            foreach (var kvp in this.Store["StopTheBoats"].Sprites.All)
+            foreach (var kvp in Store.Instance["StopTheBoats"].Sprites.All)
             {
                 if (kvp.Value.Shape is PolygonShape)
                 {
@@ -121,9 +121,9 @@ namespace StopTheBoats.Scenes
             if (KeyboardHelper.KeyPressed(Keys.OemTilde))
             {
                 this.Current.Shape = new PolygonShape(new Vertices(this.points), 1f);
-                foreach (var storeName in this.Store.Keys)
+                foreach (var storeName in Store.Instance.Keys)
                 {
-                    this.Store.SaveToJson(storeName, $"{storeName}.json");
+                    Store.Instance.SaveToJson(storeName, $"{storeName}.json");
                 }
             }
 
@@ -207,7 +207,7 @@ namespace StopTheBoats.Scenes
                 }
             }
 
-            var font = this.Store.Fonts("Base", "envy16");
+            var font = Store.Instance.Fonts("Base", "envy16");
             var mouseScreen = new Vector2(mouse.X, mouse.Y);
             var mouseWorld = this.Camera.ScreenToWorld(mouseScreen);
             renderer.Screen.DrawString(font, string.Format("Mouse (screen): {0}", mouseScreen), new Vector2(8, 8), Color.White);

@@ -15,7 +15,7 @@ namespace StopTheBoats.GameObjects
         private Vector2 localPosition;
         private float rotation;
 
-        public AttachedObject(IGameContext context, SpriteTemplate spriteTemplate) : base(context)
+        public AttachedObject(IGameContext context, ISpriteTemplate spriteTemplate) : base(context)
         {
             this.sprite = new Sprite(spriteTemplate);
         }
